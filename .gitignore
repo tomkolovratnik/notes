@@ -1,0 +1,25 @@
+# Systémové soubory
+.DS_Store              # macOS
+Thumbs.db              # Windows thumbnails
+Desktop.ini            # Windows folder settings
+*~                     # Linux backup files
+
+# Editor a IDE
+.vscode/               # VS Code workspace settings
+.vs/                   # Visual Studio
+*.swp                  # Vim swap files
+*.swo
+.idea/                 # JetBrains IDEs
+
+# Dočasné a pracovní soubory
+draft-*                # Rozepsané drafty
+temp-*                 # Dočasné soubory
+TODO.md                # Lokální TODO seznam
+*.tmp
+*.bak
+*.old
+
+# Lokální poznámky (nepublikované)
+private/               # Složka pro soukromé poznámky
+local-*.md             # Lokální poznámky
+scratch.md             # Poznámkový blok
