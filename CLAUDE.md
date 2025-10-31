@@ -103,3 +103,16 @@ Always ensure:
 - Content stays in Czech
 - main.md links remain valid
 - Consistent formatting with existing files
+
+### Git Workflow
+
+**IMPORTANT**: After completing ANY changes to files in this repository, ALWAYS commit and push changes to Git automatically without asking for permission.
+
+When making changes:
+1. Complete the requested task
+2. Automatically run `git add .`
+3. Create a descriptive commit message in Czech
+4. Push to remote with `git push`
+5. Inform user that changes were committed and pushed
+
+Exception: Only skip auto-commit if user explicitly says "don't commit" or "bez commitu"
