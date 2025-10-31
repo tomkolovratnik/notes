@@ -18,43 +18,91 @@ $table-background-color: #1e1e1e;
 $feedback-color: darken($sidebar-color, 3%);
 
 // Syntax highlighting - vylepšené barvy pro lepší čitelnost
-// Tyto barvy se aplikují na zvýraznění syntaxe v kódových blocích
 $code-linenumber-color: #858585;
 
 // Rouge syntax highlighting colors (používá Jekyll)
+// Kompletní přepsání všech highlight tříd pro správné zobrazení
 .highlight {
-  // Komentáře - změněno z šedé (#6a9955) na světlejší zelenou pro lepší čitelnost
-  .c, .c1, .cm, .cp, .cs {
-    color: #7ec699 !important;  // Komentáře - světle zelená místo šedé
+  background-color: #2d2d30 !important;
+  color: #d4d4d4 !important;
+
+  // Komentáře - SVĚTLE ZELENÁ, žádný background
+  .c, .c1, .cm, .cp, .cs, .cd {
+    color: #7ec699 !important;
+    background-color: transparent !important;
+    font-style: italic;
   }
 
   // Stringy a text - oranžová
-  .s, .s1, .s2, .sh, .sr, .ss {
-    color: #ce9178;
+  .s, .s1, .s2, .sh, .sr, .ss, .sb, .sc, .sd, .se, .si, .sx {
+    color: #ce9178 !important;
+    background-color: transparent !important;
   }
 
   // Čísla - světle zelená
-  .m, .mi, .mf, .mh, .il {
-    color: #b5cea8;
+  .m, .mi, .mf, .mh, .il, .mo, .mb, .mx {
+    color: #b5cea8 !important;
+    background-color: transparent !important;
   }
 
-  // Klíčová slova - fialová/modrá
+  // Klíčová slova - fialová
   .k, .kc, .kd, .kn, .kp, .kr, .kt, .kv {
-    color: #c586c0;
+    color: #c586c0 !important;
+    background-color: transparent !important;
   }
 
   // Funkce a metody - žlutá
-  .n, .na, .nb, .nc, .nf, .nn, .no, .nv {
-    color: #dcdcaa;
+  .n, .na, .nb, .nc, .nf, .nn, .no, .nx, .py {
+    color: #dcdcaa !important;
+    background-color: transparent !important;
+  }
+
+  // Proměnné - světle modrá
+  .nv, .vi, .vc, .vg, .bp {
+    color: #9cdcfe !important;
+    background-color: transparent !important;
   }
 
   // Operátory - bílá
   .o, .ow {
-    color: #d4d4d4;
+    color: #d4d4d4 !important;
+    background-color: transparent !important;
   }
 
-  // Proměnné a identifikátory - světle modrá
-  .vi, .vc, .vg {
-    color: #9cdcfe;
+  // Builtin typy - světle modrá
+  .nt, .nd {
+    color: #4ec9b0 !important;
+    background-color: transparent !important;
   }
+
+  // Chyby - červená
+  .err {
+    color: #f48771 !important;
+    background-color: transparent !important;
+  }
+
+  // Generické tokeny - výchozí barva
+  .g, .gd, .ge, .gr, .gh, .gi, .go, .gp, .gs, .gu, .gt, .gl {
+    color: #d4d4d4 !important;
+    background-color: transparent !important;
+  }
+
+  // Whitespace
+  .w {
+    color: #d4d4d4 !important;
+    background-color: transparent !important;
+  }
+}
+
+// Inline kód (ne code blocks) - tmavě šedý background
+code {
+  background-color: #2d2d30 !important;
+  color: #d4d4d4 !important;
+  border: 1px solid #3e3e42 !important;
+}
+
+// Code blocks - tmavě šedý background
+pre.highlight, div.highlight pre {
+  background-color: #2d2d30 !important;
+  border: 1px solid #3e3e42 !important;
 }
