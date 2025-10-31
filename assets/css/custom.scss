@@ -1,0 +1,49 @@
+---
+# Tento soubor musí začínat front matter (prázdné --- ---) aby ho Jekyll zpracoval
+---
+
+@import "just-the-docs";
+
+// MAXIMÁLNÍ PRIORITA - override všech syntax highlighting pravidel
+// Komentáře MUSÍ být zelené!
+
+// Všechny možné selektory pro komentáře
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cp,
+.highlight .cs,
+.highlight .cd,
+.highlight .sd,
+div.highlight .c,
+div.highlight .c1,
+div.highlight .cm,
+div.highlight .cp,
+div.highlight .cs,
+div.highlight .cd,
+div.highlight .sd,
+pre.highlight .c,
+pre.highlight .c1,
+pre.highlight .cm,
+pre.highlight .cp,
+pre.highlight .cs,
+pre.highlight .cd,
+pre.highlight .sd,
+code .c,
+code .c1,
+code .cm,
+code .cp,
+code .cs,
+code .cd,
+code .sd {
+  color: #6a9955 !important;
+  background-color: transparent !important;
+  font-style: italic !important;
+}
+
+// Ještě silnější pravidlo s attribute selector
+[class*="highlight"] [class*="c"],
+[class*="highlight"] [class*="comment"] {
+  color: #6a9955 !important;
+  background-color: transparent !important;
+}

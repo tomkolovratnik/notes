@@ -10,6 +10,11 @@ remote_theme: just-the-docs/just-the-docs@v0.7.0
 search_enabled: true
 color_scheme: custom-dark
 
+# Custom CSS pro override syntax highlighting
+# Jekyll automaticky použije assets/css/custom.scss pokud existuje
+sass:
+  sass_dir: _sass
+
 # Footer
 footer_content: "Osobní poznámky a návody"
 
