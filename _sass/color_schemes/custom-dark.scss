@@ -1,0 +1,60 @@
+// Custom dark color scheme s lepší čitelností komentářů
+// Založeno na výchozím dark schématu s úpravami pro syntax highlighting
+
+$body-background-color: #1e1e1e;
+$sidebar-color: #252526;
+$border-color: #3e3e42;
+
+$body-text-color: #d4d4d4;
+$body-heading-color: #ffffff;
+$nav-child-link-color: #d4d4d4;
+$link-color: #569cd6;
+$btn-primary-color: #569cd6;
+$base-button-color: #3e3e42;
+
+$code-background-color: #2d2d30;
+$search-background-color: #2d2d30;
+$table-background-color: #1e1e1e;
+$feedback-color: darken($sidebar-color, 3%);
+
+// Syntax highlighting - vylepšené barvy pro lepší čitelnost
+// Tyto barvy se aplikují na zvýraznění syntaxe v kódových blocích
+$code-linenumber-color: #858585;
+
+// Rouge syntax highlighting colors (používá Jekyll)
+.highlight {
+  // Komentáře - změněno z šedé (#6a9955) na světlejší zelenou pro lepší čitelnost
+  .c, .c1, .cm, .cp, .cs {
+    color: #7ec699 !important;  // Komentáře - světle zelená místo šedé
+  }
+
+  // Stringy a text - oranžová
+  .s, .s1, .s2, .sh, .sr, .ss {
+    color: #ce9178;
+  }
+
+  // Čísla - světle zelená
+  .m, .mi, .mf, .mh, .il {
+    color: #b5cea8;
+  }
+
+  // Klíčová slova - fialová/modrá
+  .k, .kc, .kd, .kn, .kp, .kr, .kt, .kv {
+    color: #c586c0;
+  }
+
+  // Funkce a metody - žlutá
+  .n, .na, .nb, .nc, .nf, .nn, .no, .nv {
+    color: #dcdcaa;
+  }
+
+  // Operátory - bílá
+  .o, .ow {
+    color: #d4d4d4;
+  }
+
+  // Proměnné a identifikátory - světle modrá
+  .vi, .vc, .vg {
+    color: #9cdcfe;
+  }
+}
