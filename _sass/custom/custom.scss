@@ -1,8 +1,5 @@
----
-# Tento soubor musí začínat front matter (prázdné --- ---) aby ho Jekyll zpracoval
----
-
-@import "just-the-docs";
+// Custom styles pro override syntax highlighting
+// Just the Docs automaticky načte tento soubor z _sass/custom/
 
 // MAXIMÁLNÍ PRIORITA - override všech syntax highlighting pravidel
 // Komentáře MUSÍ být zelené!
