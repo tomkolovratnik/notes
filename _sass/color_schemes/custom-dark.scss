@@ -27,14 +27,22 @@ $code-linenumber-color: #858585;
   color: #d4d4d4 !important;
 
   // Komentáře - SVĚTLE ZELENÁ, žádný background
-  .c, .c1, .cm, .cp, .cs, .cd {
-    color: #7ec699 !important;
+  // Všechny možné třídy pro komentáře
+  .c, .c1, .cm, .cp, .cs, .cd, .comment {
+    color: #6a9955 !important;  // Zelená jako ve VS Code
     background-color: transparent !important;
     font-style: italic;
   }
 
-  // Stringy a text - oranžová
-  .s, .s1, .s2, .sh, .sr, .ss, .sb, .sc, .sd, .se, .si, .sx {
+  // Speciální komentáře (dokumentační)
+  .sd {
+    color: #6a9955 !important;
+    background-color: transparent !important;
+    font-style: italic;
+  }
+
+  // Stringy a text - oranžová (POZOR: .sd je komentář, ne string!)
+  .s, .s1, .s2, .sh, .sr, .ss, .sb, .sc, .se, .si, .sx {
     color: #ce9178 !important;
     background-color: transparent !important;
   }
@@ -105,4 +113,18 @@ code {
 pre.highlight, div.highlight pre {
   background-color: #2d2d30 !important;
   border: 1px solid #3e3e42 !important;
+}
+
+// Globální pravidla pro komentáře (aplikuje se i mimo .highlight)
+// Pro případ, že Jekyll používá jinou strukturu HTML
+.c, .c1, .cm, .cp, .cs, .cd, .comment,
+span.c, span.c1, span.cm, span.cp, span.cs, span.cd {
+  color: #6a9955 !important;
+  background-color: transparent !important;
+}
+
+// Dokumentační komentáře
+.sd, span.sd {
+  color: #6a9955 !important;
+  background-color: transparent !important;
 }
