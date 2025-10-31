@@ -1,34 +1,17 @@
 # Jekyll konfigurace pro GitHub Pages
-# Základní metadata
 title: Poznámky & Návody
 description: Kolekce poznámek, návodů a konfigurací pro vývoj
 lang: cs
 
-# Theme (remote_theme pro GitHub Pages)
+# Theme
 remote_theme: just-the-docs/just-the-docs@v0.7.0
 
 # Just the Docs konfigurace
-color_scheme: auto  # Automatický dark/light mode podle systému
 search_enabled: true
-search_tokenizer_separator: /[\s\-\.]+/
-
-# Navigace
-nav_sort: case_insensitive
-nav_enabled: true
+color_scheme: auto
 
 # Footer
 footer_content: "Osobní poznámky a návody"
-
-# Back to top link
-back_to_top: true
-back_to_top_text: "Zpět nahoru"
-
-# Code blocks
-kramdown:
-  syntax_highlighter: rouge
-  syntax_highlighter_opts:
-    block:
-      line_numbers: false
 
 # Soubory a složky vyloučené z publikování
 exclude:
