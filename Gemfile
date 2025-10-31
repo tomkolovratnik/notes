@@ -1,18 +1,11 @@
 source "https://rubygems.org"
 
-# Jekyll core
-gem "jekyll", "~> 4.3"
-
-# Just the Docs theme
-gem "just-the-docs", "~> 0.7"
-
-# GitHub Pages compatibility
+# GitHub Pages gem (zahrnuje Jekyll a kompatibilní pluginy)
 gem "github-pages", group: :jekyll_plugins
 
-# Plugins
+# Plugins pro remote theme
 group :jekyll_plugins do
-  gem "jekyll-seo-tag", "~> 2.8"
-  gem "jekyll-github-metadata", "~> 2.16"
+  gem "jekyll-remote-theme"
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
