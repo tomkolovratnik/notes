@@ -1,3 +1,9 @@
+---
+layout: default
+title: Claude Code
+nav_order: 2
+---
+
 # Claude Code
 
 ## Základní informace

@@ -10,6 +10,7 @@ Desktop.ini            # Windows folder settings
 *.swp                  # Vim swap files
 *.swo
 .idea/                 # JetBrains IDEs
+.claude/               # Claude Code lokální nastavení
 
 # Dočasné a pracovní soubory
 draft-*                # Rozepsané drafty
@@ -23,3 +24,11 @@ TODO.md                # Lokální TODO seznam
 private/               # Složka pro soukromé poznámky
 local-*.md             # Lokální poznámky
 scratch.md             # Poznámkový blok
+
+# Jekyll
+_site/                 # Jekyll build output (vygenerované HTML stránky)
+.jekyll-cache/         # Jekyll cache
+.sass-cache/           # Sass cache
+Gemfile.lock           # Ruby dependencies lock file (generuje se automaticky)
+.bundle/               # Bundler konfigurace
+vendor/                # Vendor dependencies (při použití bundle install --path vendor)

@@ -1,3 +1,9 @@
+---
+layout: default
+title: PowerShell
+nav_order: 10
+---
+
 # PowerShell
 
 ## Základní příkazy

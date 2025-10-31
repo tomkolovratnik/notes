@@ -1,3 +1,9 @@
+---
+layout: default
+title: Node.js / npm
+nav_order: 6
+---
+
 # Node.js / npm
 
 ## Základní příkazy

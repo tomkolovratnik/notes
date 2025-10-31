@@ -1,3 +1,9 @@
+---
+layout: default
+title: Lokální LLM
+nav_order: 11
+---
+
 # Lokální LLM Inference
 
 Poznámky k nasazení lokálních inference serverů pro LLM modely bez Pythonu, s podporou CUDA akcelerace.

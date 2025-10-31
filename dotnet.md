@@ -1,3 +1,9 @@
+---
+layout: default
+title: .NET
+nav_order: 8
+---
+
 # .NET
 
 ## User Secrets (Secret Manager)

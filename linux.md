@@ -1,3 +1,9 @@
+---
+layout: default
+title: Linux / Bash
+nav_order: 9
+---
+
 # Linux / Bash (Ubuntu)
 
 ## Základní příkazy

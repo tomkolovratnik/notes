@@ -1,3 +1,9 @@
+---
+layout: home
+title: Domů
+nav_order: 1
+---
+
 # Poznámky, návody a konfigurace
 
 Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučení a konfigurací pro různé nástroje.
@@ -14,6 +20,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Linux / Bash](linux.md) - Příkazy, aktualizace systému (Ubuntu), užitečné skripty
 - [PowerShell](powershell.md) - Windows příkazy a skripty
 - [Lokální LLM](llm-local.md) - Inference servery bez Pythonu, CUDA build, llama.cpp, KoboldCpp
+- [AI Prompty](ai-prompts.md) - Kolekce AI promptů pro nastavení specializovaných asistentů
 
 ---
 

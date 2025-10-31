@@ -1,3 +1,9 @@
+---
+layout: default
+title: VS Code
+nav_order: 5
+---
+
 # VS Code
 
 ## Užitečné zkratky
