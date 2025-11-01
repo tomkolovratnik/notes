@@ -70,7 +70,7 @@ F7               - Přepnout mezi View a Code-behind // Přechod mezi .xaml a .x
 Ctrl + .         - Rychlé opravy                    // Quick actions a refactoring
 ```
 
-### Terminal (PowerShell/Bash)
+### Terminal (PowerShell/Bash/Git Bash)
 ```
 Ctrl + C         - Přerušit příkaz                  // Zastavení běžícího procesu
 Ctrl + L         - Vyčistit terminál                // Smazání obsahu obrazovky
@@ -81,4 +81,6 @@ Alt + F          - Slovo vpřed                      // Pohyb kurzoru o slovo vp
 Alt + B          - Slovo vzad                       // Pohyb kurzoru o slovo vzad
 Tab              - Automatické doplnění             // Doplnění příkazu nebo cesty
 Ctrl + W         - Smazat slovo                     // Smazání posledního slova
+Ctrl + U         - Smazat řádek                     // Smazání celého řádku od kurzoru na začátek
+Ctrl + K         - Smazat řádek (Git Bash)          // Smazání od kurzoru na konec
 ```
