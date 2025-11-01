@@ -34,3 +34,11 @@ Ctrl + k v      - Markdown preview
   "terminal.integrated.defaultProfile.windows": "PowerShell"  // Výchozí terminál
 }
 ```
+
+## Zkratky
+
+### Visual Studio
+```
+Ctrl + ú a       - Collapse in solution editor      // Sbalení v editoru řešení
+Ctrl + ú s       - Synchronizace editoru s oknem solution  // Převzetí zaměření z okna solution
+```
