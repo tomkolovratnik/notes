@@ -7,7 +7,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Claude Code](claude-code.md) - CLI nástroj, tipy, konfigurace MCP serverů
 - [Git](git.md) - Příkazy, tipy, .gitignore vzory
 - [Docker](docker.md) - Container management, Docker Compose, Dockerfile
-- [VS Code](vscode.md) - Zkratky, rozšíření, nastavení
+- [VS Code](vscode.md) - Zkratky, rozšíření, nastavení, Jupyter Notebooks
 - [Node.js / npm](nodejs.md) - Package management, scripty, troubleshooting
 - [Python / uv](python.md) - Moderní package manager, virtuální prostředí, správa Python verzí
 - [.NET](dotnet.md) - User Secrets, CLI příkazy, konfigurace
