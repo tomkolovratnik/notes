@@ -14,6 +14,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Linux / Bash](linux.md) - Příkazy, aktualizace systému (Ubuntu), užitečné skripty
 - [PowerShell](powershell.md) - Windows příkazy a skripty
 - [Lokální LLM](llm-local.md) - Inference servery bez Pythonu, CUDA build, llama.cpp, KoboldCpp
+- [vLLM](vllm.md) - Vysokovýkonný inference engine pro LLM, OpenAI API server, optimalizace
 
 ---
 

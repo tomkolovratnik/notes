@@ -9,7 +9,8 @@
       "Bash(findstr:*)",
       "Bash(dir:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "WebFetch(domain:sider.ai)"
     ],
     "deny": [],
     "ask": []

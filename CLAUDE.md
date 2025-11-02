@@ -27,6 +27,13 @@ _my-notes/
 
 ## Working with This Repository
 
+### Prostředí (Environment)
+
+Claude Code je spouštěn v **Git Bash** (MINGW64) na Windows. Tato informace je důležitá pro:
+- Příkazy by měly být kompatibilní s Bash (ne PowerShell)
+- Cesty se zapisují s `/` (forward slashes)
+- Skripty a příkazy jsou linux-like, ne Windows-native
+
 ### Language
 All documentation is written in **Czech**. When making changes or additions:
 - Maintain Czech language for consistency
