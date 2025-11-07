@@ -4,6 +4,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 
 ## Obsah
 
+- [Kódovací agenti](coding-agents.md) - Claude Code a Copilot, zkratky, tipy, nastavení
 - [Claude Code](claude-code.md) - CLI nástroj, tipy, konfigurace MCP serverů
 - [Git](git.md) - Příkazy, tipy, .gitignore vzory
 - [Docker](docker.md) - Container management, Docker Compose, Dockerfile
