@@ -17,6 +17,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Windows](windows.md) - Virtuální plochy, zkratky, správa oken
 - [Lokální LLM](llm-local.md) - Inference servery bez Pythonu, CUDA build, llama.cpp, KoboldCpp
 - [vLLM](vllm.md) - Vysokovýkonný inference engine pro LLM, OpenAI API server, optimalizace
+- [Runpod.io](runpod.md) - Cloud GPU pro spuštění LLM, OpenAI API, praktické příklady
 
 ---
 
