@@ -108,3 +108,20 @@ docker compose down
 ```
 
 **Poznámka:** Některé nejnovější Compose funkce nemusí v `podman-compose` hned fungovat. Pro plnou kompatibilitu použij variantu 3.
+
+## Podman Machine (Windows/macOS)
+
+Podman Machine spravuje virtuální Linux VM pro běh Podman na Windows a macOS:
+
+```bash
+# Vytvoření a správa virtuálního stroje
+podman machine init              # Inicializace nového machine s výchozím nastavením
+podman machine start             # Spuštění machine
+podman machine stop              # Zastavení machine
+podman machine rm                # Odstranění machine
+
+# Informace a diagnóza
+podman machine list              # Výpis všech machines (show VM seznamu)
+podman info                      # Zobrazení podman systémových informací (verze, driver, storage, atd.)
+podman system connection list    # Výpis dostupných Podman connections
+```
