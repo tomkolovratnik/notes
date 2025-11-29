@@ -66,11 +66,20 @@ uv venv --python 3.12       # Vytvořit venv s konkrétní verzí Pythonu
 # Windows (PowerShell)
 .venv\Scripts\activate
 
+# Windows (Git Bash / MINGW64)
+source .venv/Scripts/activate  # V Git Bash je složka Scripts, ne bin
+
 # Linux / macOS
 source .venv/bin/activate
 ```
 
 **Tip:** S `uv` často nemusíte aktivovat venv - `uv run` příkazy používají venv automaticky.
+
+### Deaktivace virtuálního prostředí
+
+```bash
+deactivate  # Funguje ve všech shellech (PowerShell, Git Bash, Linux, macOS)
+```
 
 ### Správa závislostí
 
