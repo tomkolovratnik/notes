@@ -13,6 +13,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Python / uv](python.md) - Moderní package manager, virtuální prostředí, správa Python verzí
 - [.NET](dotnet.md) - User Secrets, CLI příkazy, konfigurace
 - [Linux / Bash](linux.md) - Příkazy, aktualizace systému (Ubuntu), užitečné skripty
+- [Git Bash](git-bash.md) - Konfigurace, aliasy, klávesové zkratky, tipy pro maximální produktivitu
 - [CLI nástroje](cli-tools.md) - fzf, ripgrep, fd, bat, jq, yq, delta, zoxide, httpie a další
 - [PowerShell](powershell.md) - Windows příkazy a skripty
 - [Windows](windows.md) - Virtuální plochy, zkratky, správa oken
