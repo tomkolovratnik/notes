@@ -8,7 +8,215 @@ Git Bash je terminálové prostředí pro Windows, které přináší:
 - Bash shell (stejný jako na Linuxu/macOS)
 - Unix nástroje (grep, sed, awk, find, curl...)
 - Git integraci
-- MINGW64 prostředí
+- MINGW64 prostředí (MinGW-w64 = Minimalist GNU for Windows)
+
+## Windows specifika
+
+### Cesty - Unix vs Windows formát
+
+```bash
+# Git Bash používá Unix styl cest
+/c/Users/username/Documents           # Místo C:\Users\username\Documents
+/d/_Repos/project                     # Místo D:\_Repos\project
+
+# Konverze cest
+cygpath -w /c/Users/username          # Unix → Windows: C:\Users\username
+cygpath -u "C:\Users\username"        # Windows → Unix: /c/Users/username
+
+# V příkazech pro Windows programy použij Windows cestu
+notepad "$(cygpath -w ~/notes.txt)"
+
+# Nebo uvozovky s lomítky
+cmd //c "echo Hello"                  # Dvojité // pro Windows přepínače
+```
+
+### Spouštění Windows programů
+
+```bash
+# Přímé spuštění .exe
+notepad.exe file.txt
+explorer.exe .
+code.exe .                            # VS Code
+
+# Bez .exe (pokud je v PATH)
+notepad file.txt
+code .
+
+# Spuštění přes cmd
+cmd //c "dir"                         # Spustí Windows příkaz
+cmd //c start "" "https://google.com" # Otevři URL v prohlížeči
+
+# PowerShell z Git Bash
+powershell -Command "Get-Process"
+pwsh -Command "Get-Process"           # PowerShell Core
+```
+
+### Line endings (CRLF vs LF)
+
+```bash
+# Windows používá CRLF (\r\n), Unix používá LF (\n)
+# Git může automaticky konvertovat
+
+# Globální nastavení (doporučeno pro Windows)
+git config --global core.autocrlf true    # Checkout: LF→CRLF, Commit: CRLF→LF
+
+# Pro konkrétní repo (čistě LF)
+git config core.autocrlf input            # Commit: CRLF→LF, Checkout: beze změny
+
+# Kontrola souboru
+file myfile.txt                           # Ukáže typ line endings
+cat -A myfile.txt                         # ^M na konci = CRLF
+
+# Konverze
+dos2unix file.txt                         # CRLF → LF
+unix2dos file.txt                         # LF → CRLF
+sed -i 's/\r$//' file.txt                # Ruční odstranění CR
+```
+
+### Environment variables
+
+```bash
+# Git Bash dědí Windows environment variables
+echo $PATH                                # Obsahuje Windows i Unix cesty
+echo $USERPROFILE                         # C:\Users\username (Windows)
+echo $HOME                                # /c/Users/username (Unix)
+
+# Nastavení v .bashrc (jen pro Git Bash)
+export MY_VAR="value"
+
+# Systémové Windows proměnné (trvale)
+# Nastav přes: Nastavení → Systém → Rozšířené → Environment Variables
+# Nebo PowerShell: [Environment]::SetEnvironmentVariable("VAR", "value", "User")
+
+# Přístup k Windows proměnným
+echo $APPDATA                             # C:\Users\username\AppData\Roaming
+echo $LOCALAPPDATA                        # C:\Users\username\AppData\Local
+echo $TEMP                                # Temp složka
+```
+
+### Symlinky na Windows
+
+```bash
+# Symlinky vyžadují Developer Mode nebo Admin práva
+# Nastavení → Aktualizace a zabezpečení → Pro vývojáře → Developer Mode
+
+# Vytvoření symlinku
+ln -s /path/to/target linkname
+
+# Pokud nefunguje, Git Bash použije kopii místo symlinku
+# Alternativa: Windows mklink (vyžaduje admin cmd)
+cmd //c "mklink /D linkname C:\path\to\target"
+
+# Git nastavení pro symlinky
+git config --global core.symlinks true
+```
+
+### SSH a GPG na Windows
+
+```bash
+# SSH Agent - automatické spuštění (přidej do .bashrc)
+env=~/.ssh/agent.env
+
+agent_load_env () { test -f "$env" && . "$env" >| /dev/null ; }
+
+agent_start () {
+    (umask 077; ssh-agent >| "$env")
+    . "$env" >| /dev/null ; }
+
+agent_load_env
+
+# agent_run_state: 0=running, 1=without keys, 2=not running
+agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
+
+if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
+    agent_start
+    ssh-add
+elif [ "$SSH_AUTH_SOCK" ] && [ $agent_run_state = 1 ]; then
+    ssh-add
+fi
+
+unset env
+
+# GPG - nastavení pro Git
+git config --global gpg.program "C:/Program Files (x86)/GnuPG/bin/gpg.exe"
+# nebo pro Gpg4win:
+git config --global gpg.program "C:/Program Files (x86)/Gpg4win/../GnuPG/bin/gpg.exe"
+```
+
+### Známá omezení a workaroundy
+
+```bash
+# 1. Pomalý start Git Bash
+# Řešení: Vypni Windows Defender real-time scan pro Git složky
+# Nebo přidej výjimku pro: C:\Program Files\Git
+
+# 2. Ctrl+S zamrzne terminál (XOFF)
+# Řešení: Ctrl+Q pro odblokování
+# Nebo přidej do .bashrc:
+stty -ixon                                # Vypne flow control
+
+# 3. Některé příkazy nefungují (sudo, apt)
+# Git Bash není plný Linux - nemá package manager ani sudo
+# Alternativy: Scoop, Chocolatey, Winget pro instalaci
+
+# 4. watch příkaz není dostupný
+# Řešení: Vytvoř funkci nebo nainstaluj přes Scoop
+watch() {
+    while true; do
+        clear
+        date
+        echo "---"
+        $@
+        sleep 2
+    done
+}
+
+# 5. Problémy s interaktivními programy (less, vim, nano)
+# Řešení: Ujisti se, že TERM je správně nastavený
+export TERM=xterm-256color
+
+# 6. Copy/Paste
+# MinTTY: Ctrl+Shift+C / Ctrl+Shift+V
+# Nebo: Shift+Insert pro paste
+# Prostřední tlačítko myši = paste
+```
+
+### Integrace s Windows aplikacemi
+
+```bash
+# VS Code - otevři soubor/složku
+code .                                    # Aktuální složka
+code file.txt                             # Konkrétní soubor
+code -r .                                 # Reuse window
+
+# Otevři ve výchozí aplikaci
+start document.pdf                        # PDF v prohlížeči
+start https://github.com                  # URL v prohlížeči
+start .                                   # Explorer v aktuální složce
+start excel.exe data.xlsx                 # Konkrétní aplikace
+
+# Schránka (clipboard)
+echo "text" | clip                        # Kopíruj do schránky
+cat /dev/clipboard                        # Čti ze schránky
+cat file.txt | clip                       # Obsah souboru do schránky
+
+# Aliasy pro kompatibilitu s macOS
+alias pbcopy='clip'
+alias pbpaste='cat /dev/clipboard'
+alias open='start'
+```
+
+### Srovnání s alternativami
+
+| Vlastnost | Git Bash | WSL | PowerShell |
+|-----------|----------|-----|------------|
+| Unix příkazy | ✅ Většina | ✅ Plné | ❌ Alias |
+| Windows .exe | ✅ Přímo | ⚠️ Přes .exe | ✅ Přímo |
+| Rychlost startu | ✅ Rychlý | ⚠️ Pomalejší | ✅ Rychlý |
+| Nativní Git | ✅ Ano | ✅ Ano | ⚠️ Přes alias |
+| Package manager | ❌ Ne | ✅ apt | ✅ winget |
+| Souborový systém | Windows | Linux + Windows | Windows |
+| Instalace | S Git | Samostatná | Vestavěný |
 
 ## Konfigurace
 
