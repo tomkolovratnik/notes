@@ -13,6 +13,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Python / uv](python.md) - Moderní package manager, virtuální prostředí, správa Python verzí
 - [.NET](dotnet.md) - User Secrets, CLI příkazy, konfigurace
 - [Linux / Bash](linux.md) - Příkazy, aktualizace systému (Ubuntu), užitečné skripty
+- [jq](jq.md) - JSON procesor pro příkazovou řádku, filtry, transformace
 - [PowerShell](powershell.md) - Windows příkazy a skripty
 - [Windows](windows.md) - Virtuální plochy, zkratky, správa oken
 - [Lokální LLM](llm-local.md) - Inference servery bez Pythonu, CUDA build, llama.cpp, KoboldCpp
