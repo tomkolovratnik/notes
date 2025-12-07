@@ -4,27 +4,27 @@ Moderní příkazové nástroje pro produktivnější práci v terminálu.
 
 ## Přehled nástrojů
 
-| Nástroj | Popis | Nahrazuje |
-|---------|-------|-----------|
-| [Pager (less)](#práce-s-pagerem-less) | Ovládání stránkování v terminálu | - |
-| [fzf](#fzf---fuzzy-finder) | Interaktivní fuzzy vyhledávač | - |
-| [ripgrep (rg)](#ripgrep-rg---rychlé-vyhledávání) | Extrémně rychlé vyhledávání v souborech | grep |
-| [fd](#fd---vyhledávání-souborů) | Rychlé a přívětivé hledání souborů | find |
-| [bat](#bat---prohlížení-souborů) | Cat se syntax highlightingem | cat |
-| [eza](#eza---výpis-souborů) | Moderní ls s barvami a ikonami | ls |
-| [delta](#delta---git-diff-viewer) | Vylepšený git diff | git diff |
-| [zoxide](#zoxide---chytrá-navigace) | Chytré cd s historií | cd |
-| [jq](#jq---json-procesor) | Zpracování JSON dat | - |
-| [yq](#yq---yaml-procesor) | Zpracování YAML/TOML/XML | - |
-| [httpie](#httpie---http-klient) | Přívětivý HTTP klient | curl |
-| [sd](#sd---find--replace) | Jednoduchý find & replace | sed |
-| [tldr](#tldr---zjednodušené-manuály) | Praktické příklady příkazů | man |
-| [lazygit](#lazygit---git-tui) | Interaktivní TUI pro Git | git |
-| [tmux](#tmux---terminál-multiplexor) | Více terminálů v jednom okně | - |
-| [direnv](#direnv---automatické-env-variables) | Automatické env variables per-projekt | - |
-| [ncdu](#ncdu---disk-usage-analyzer) | Interaktivní analýza místa na disku | du |
-| [htop/btop](#htopbtop---system-monitoring) | Interaktivní monitoring systému | top |
-| [oh-my-posh](#oh-my-posh---moderní-prompt) | Moderní prompt pro shell | PS1 |
+| Nástroj | Popis | Nahrazuje | Git Bash |
+|---------|-------|-----------|----------|
+| [Pager (less)](#práce-s-pagerem-less) | Ovládání stránkování v terminálu | - | ✅ |
+| [fzf](#fzf---fuzzy-finder) | Interaktivní fuzzy vyhledávač | - | ✅ |
+| [ripgrep (rg)](#ripgrep-rg---rychlé-vyhledávání) | Extrémně rychlé vyhledávání v souborech | grep | ✅ |
+| [fd](#fd---vyhledávání-souborů) | Rychlé a přívětivé hledání souborů | find | ✅ |
+| [bat](#bat---prohlížení-souborů) | Cat se syntax highlightingem | cat | ✅ |
+| [eza](#eza---výpis-souborů) | Moderní ls s barvami a ikonami | ls | ✅ |
+| [delta](#delta---git-diff-viewer) | Vylepšený git diff | git diff | ✅ |
+| [zoxide](#zoxide---chytrá-navigace) | Chytré cd s historií | cd | ✅ |
+| [jq](#jq---json-procesor) | Zpracování JSON dat | - | ✅ |
+| [yq](#yq---yaml-procesor) | Zpracování YAML/TOML/XML | - | ✅ |
+| [httpie](#httpie---http-klient) | Přívětivý HTTP klient | curl | ✅ |
+| [sd](#sd---find--replace) | Jednoduchý find & replace | sed | ✅ |
+| [tldr](#tldr---zjednodušené-manuály) | Praktické příklady příkazů | man | ✅ |
+| [lazygit](#lazygit---git-tui) | Interaktivní TUI pro Git | git | ✅ |
+| [tmux](#tmux---terminál-multiplexor) | Více terminálů v jednom okně | - | ⚠️ WSL |
+| [direnv](#direnv---automatické-env-variables) | Automatické env variables per-projekt | - | ✅ |
+| [ncdu](#ncdu---disk-usage-analyzer) | Interaktivní analýza místa na disku | du | ✅ |
+| [htop/btop](#htopbtop---system-monitoring) | Interaktivní monitoring systému | top | ⚠️ WSL |
+| [oh-my-posh](#oh-my-posh---moderní-prompt) | Moderní prompt pro shell | PS1 | ✅ |
 
 ---
 
@@ -1268,6 +1268,8 @@ Often combined with a compression method, such as gzip or bzip2.
 
 ## lazygit - Git TUI
 
+> ✅ **Windows Git Bash**: Plně podporováno
+
 Interaktivní textové rozhraní pro Git. Vizuální alternativa k příkazům.
 
 ### Instalace
@@ -1376,9 +1378,9 @@ alias lg='lazygit'
 
 ## tmux - Terminál Multiplexor
 
-Více terminálů v jednom okně, sessions na pozadí, odpojení bez ukončení procesů.
+> ⚠️ **Windows Git Bash**: Nefunguje nativně. Alternativy: Windows Terminal taby, WSL, nebo ConEmu.
 
-**Poznámka:** tmux není nativně dostupný v Git Bash na Windows. Použij WSL nebo Windows Terminal s více taby.
+Více terminálů v jednom okně, sessions na pozadí, odpojení bez ukončení procesů.
 
 ### Instalace
 
@@ -1525,6 +1527,8 @@ Ctrl+B, c                   # Window 3: git
 
 ## direnv - Automatické Env Variables
 
+> ✅ **Windows Git Bash**: Plně podporováno (`scoop install direnv`)
+
 Automatické načítání/obnova environment variables při vstupu/opuštění složky.
 
 ### Instalace
@@ -1643,6 +1647,8 @@ direnv status
 
 ## ncdu - Disk Usage Analyzer
 
+> ✅ **Windows Git Bash**: Plně podporováno (`scoop install ncdu`)
+
 Interaktivní vizualizace využití disku. Rychlejší a přehlednější než `du`.
 
 ### Instalace
@@ -1715,6 +1721,8 @@ alias dux='ncdu --exclude node_modules --exclude .git'
 ---
 
 ## htop/btop - System Monitoring
+
+> ⚠️ **Windows Git Bash**: Nefunguje nativně. Alternativy: Task Manager, Process Explorer, nebo WSL.
 
 Interaktivní monitory systému - CPU, RAM, procesy.
 
@@ -1797,6 +1805,8 @@ update_ms = 1000                   # Refresh rate
 ---
 
 ## oh-my-posh - Moderní Prompt
+
+> ✅ **Windows Git Bash**: Plně podporováno (primárně pro Windows)
 
 Alternativa ke Starship. Cross-platform, 100+ témat.
 

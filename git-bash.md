@@ -317,6 +317,140 @@ alias pbpaste='cat /dev/clipboard'
 alias open='start'
 ```
 
+### Windows Package Managery
+
+```bash
+# SCOOP (doporučeno pro Git Bash)
+# Instalace v PowerShell:
+# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+# Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+scoop search fzf                      # Hledání balíčku
+scoop install fzf ripgrep fd bat      # Instalace
+scoop update fzf                      # Aktualizace
+scoop update *                        # Aktualizace všech
+scoop list                            # Nainstalované balíčky
+scoop uninstall fzf                   # Odinstalace
+
+# WINGET (vestavěný ve Windows 11)
+winget search vscode                  # Hledání
+winget install Microsoft.VisualStudioCode
+winget upgrade --all                  # Aktualizace všech
+winget list                           # Nainstalované
+
+# CHOCOLATEY
+choco search nodejs                   # Hledání
+choco install nodejs                  # Instalace
+choco upgrade all                     # Aktualizace všech
+```
+
+### PowerShell z Git Bash
+
+```bash
+# Spuštění PowerShell příkazu
+powershell -Command "Get-Process"
+pwsh -Command "Get-Process"           # PowerShell Core
+
+# Užitečné PowerShell příkazy z Git Bash
+powershell -Command "Get-Service"                    # Seznam služeb
+powershell -Command "Get-NetIPAddress"               # IP adresy
+powershell -Command "Get-ComputerInfo | Select-Object OsName, OsVersion"
+
+# Restart služby
+powershell -Command "Restart-Service -Name 'servicename'"
+
+# Otevři elevated PowerShell
+powershell -Command "Start-Process powershell -Verb runAs"
+
+# Notifikace
+powershell -Command "New-BurntToastNotification -Text 'Title', 'Message'"
+
+# Funkce pro snadné volání PowerShell
+ps() {
+    powershell -Command "$@"
+}
+# Použití: ps "Get-Process | Select-Object -First 5"
+```
+
+### Práce s Windows cestami ve scriptech
+
+```bash
+# Konverze cest
+cygpath -w /c/Users/username          # Unix → Windows: C:\Users\username
+cygpath -u "C:\Users\username"        # Windows → Unix: /c/Users/username
+cygpath -m /c/Users/username          # Mixed (pro Java): C:/Users/username
+
+# V scriptech - automatická konverze
+WIN_PATH=$(cygpath -w "$UNIX_PATH")
+UNIX_PATH=$(cygpath -u "$WIN_PATH")
+
+# Příklad: Otevření souboru ve Windows aplikaci
+open_in_notepad() {
+    notepad "$(cygpath -w "$1")"
+}
+
+# Příklad: Spuštění Windows příkazu s cestou
+run_windows_cmd() {
+    local win_path=$(cygpath -w "$1")
+    cmd //c "dir \"$win_path\""
+}
+
+# Detekce Windows vs Linux cesty
+is_windows_path() {
+    [[ "$1" =~ ^[A-Za-z]:\\ ]] && return 0 || return 1
+}
+```
+
+### Windows-specifické funkce do .bashrc
+
+```bash
+# Otevři Explorer v aktuální složce
+e() { explorer "$(cygpath -w "${1:-.}")"; }
+
+# Otevři soubor/URL ve výchozí aplikaci
+o() { start "$@"; }
+
+# Rychlé otevření ve VS Code
+c() { code "${@:-.}"; }
+
+# Kopíruj aktuální cestu do schránky
+cpwd() {
+    pwd | tr -d '\n' | clip
+    echo "Path copied to clipboard"
+}
+
+# Kopíruj Windows cestu do schránky
+cpwwd() {
+    cygpath -w "$(pwd)" | tr -d '\n' | clip
+    echo "Windows path copied to clipboard"
+}
+
+# Otevři Git Bash v aktuální složce (nové okno)
+newbash() {
+    start "" "C:/Program Files/Git/git-bash.exe" --cd="$(pwd)"
+}
+
+# Rychlé vyhledání v PATH
+which_all() {
+    type -a "$1" 2>/dev/null || echo "Not found: $1"
+}
+
+# Zobraz velikost složky (Windows-friendly)
+dirsize() {
+    du -sh "${1:-.}" 2>/dev/null
+}
+
+# Kill proces podle jména
+killp() {
+    taskkill //F //IM "$1" 2>/dev/null || echo "Process not found: $1"
+}
+
+# Seznam běžících procesů (Windows)
+procs() {
+    tasklist //FO TABLE | head -20
+}
+```
+
 ### Srovnání s alternativami
 
 | Vlastnost | Git Bash | WSL | PowerShell |

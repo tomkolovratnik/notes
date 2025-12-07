@@ -2,6 +2,19 @@
 
 Základy a pokročilé techniky pro psaní bash skriptů.
 
+> ✅ **Windows Git Bash**: Většina obsahu funguje. Výjimky jsou označeny ⚠️.
+
+### Co nefunguje v Git Bash na Windows
+
+| Příkaz/funkce | Důvod | Alternativa |
+|---------------|-------|-------------|
+| `sudo` | Windows nemá sudo | Spusť Git Bash jako Admin |
+| `systemctl` | Linux-only služby | `net start/stop`, `sc.exe` |
+| `apt`, `yum` | Linux package managery | Scoop, Chocolatey, Winget |
+| `/etc/passwd` | Linux-only soubor | Není potřeba |
+| `mail` | Linux mail služba | PowerShell `Send-MailMessage` |
+| `cron` | Linux scheduler | Task Scheduler |
+
 ## Základy
 
 ### První script
@@ -712,7 +725,10 @@ trap 'echo "Error in ${FUNCNAME[0]} at line $LINENO"' ERR
 
 ## Praktické příklady
 
-### Backup script
+> ✅ Backup script a Argument parser fungují v Git Bash na Windows.
+> ⚠️ Deploy script a Monitoring script obsahují Linux-specifické příkazy.
+
+### Backup script (Windows Git Bash ✅)
 
 ```bash
 #!/bin/bash
@@ -736,7 +752,9 @@ echo "Backup complete: $DEST_DIR/$BACKUP_NAME"
 echo "Size: $(du -h "$DEST_DIR/$BACKUP_NAME" | cut -f1)"
 ```
 
-### Deploy script
+### Deploy script (Linux ⚠️)
+
+> ⚠️ Tento příklad používá Linux cesty a `systemctl`. Na Windows upravenou verzi viz níže.
 
 ```bash
 #!/bin/bash
@@ -776,7 +794,47 @@ sudo systemctl restart app
 echo "=== Deploy complete! ==="
 ```
 
-### Argument parser
+### Deploy script - Windows verze (Git Bash ✅)
+
+```bash
+#!/bin/bash
+set -euo pipefail
+
+# Konfigurace
+ENV=${1:-production}
+BRANCH=${2:-main}
+APP_DIR="/d/_Projects/myapp"        # Windows cesta v Unix formátu
+
+echo "=== Deploying to $ENV from branch $BRANCH ==="
+
+cd "$APP_DIR"
+
+# Záloha
+echo "Creating backup..."
+cp -r "$APP_DIR" "${APP_DIR}.bak.$(date +%Y%m%d)"
+
+# Git operace
+echo "Fetching latest code..."
+git fetch origin
+git checkout "$BRANCH"
+git pull origin "$BRANCH"
+
+# Dependencies
+echo "Installing dependencies..."
+npm ci --production
+
+# Build
+echo "Building..."
+npm run build
+
+# Na Windows: restart služby přes PowerShell nebo ruční restart
+echo "Build complete! Restart the service manually or use:"
+echo "  powershell -Command \"Restart-Service MyAppService\""
+
+echo "=== Deploy complete! ==="
+```
+
+### Argument parser (Windows Git Bash ✅)
 
 ```bash
 #!/bin/bash
@@ -845,7 +903,9 @@ for file in "${INPUT_FILES[@]}"; do
 done
 ```
 
-### Monitoring script
+### Monitoring script (Linux ⚠️)
+
+> ⚠️ Používá Linux cesty a `mail`. Windows verze níže.
 
 ```bash
 #!/bin/bash
@@ -879,4 +939,49 @@ for mount in / /home /var; do
     [[ -d "$mount" ]] && check_disk "$mount"
 done
 log "=== Disk check completed ==="
+```
+
+### Monitoring script - Windows verze (Git Bash ✅)
+
+```bash
+#!/bin/bash
+
+# Konfigurace
+THRESHOLD=90
+LOG_FILE="$HOME/disk_monitor.log"
+
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+}
+
+check_disk() {
+    local drive=$1
+    # df na Windows vrací jiný formát, použijeme alternativu
+    local usage=$(df "$drive" 2>/dev/null | awk 'NR==2 {print $5}' | tr -d '%')
+
+    if [[ -z "$usage" ]]; then
+        log "SKIP: $drive not found"
+        return 0
+    fi
+
+    if [[ $usage -gt $THRESHOLD ]]; then
+        log "WARNING: $drive at ${usage}% usage"
+        # Na Windows: zobraz notifikaci pomocí PowerShell
+        powershell -Command "[System.Windows.Forms.MessageBox]::Show('Disk $drive at ${usage}%', 'Disk Alert')" 2>/dev/null || true
+        return 1
+    else
+        log "OK: $drive at ${usage}% usage"
+        return 0
+    fi
+}
+
+# Hlavní kontrola
+log "=== Disk check started ==="
+for drive in /c /d /e; do
+    [[ -d "$drive" ]] && check_disk "$drive"
+done
+log "=== Disk check completed ==="
+
+# Zobraz výsledek
+echo "Log saved to: $LOG_FILE"
 ```
