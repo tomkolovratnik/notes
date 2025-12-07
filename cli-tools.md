@@ -6,6 +6,7 @@ Moderní příkazové nástroje pro produktivnější práci v terminálu.
 
 | Nástroj | Popis | Nahrazuje |
 |---------|-------|-----------|
+| [Pager (less)](#práce-s-pagerem-less) | Ovládání stránkování v terminálu | - |
 | [fzf](#fzf---fuzzy-finder) | Interaktivní fuzzy vyhledávač | - |
 | [ripgrep (rg)](#ripgrep-rg---rychlé-vyhledávání) | Extrémně rychlé vyhledávání v souborech | grep |
 | [fd](#fd---vyhledávání-souborů) | Rychlé a přívětivé hledání souborů | find |
@@ -55,6 +56,57 @@ cargo install eza delta zoxide sd
 
 ```bash
 brew install fzf ripgrep fd bat eza git-delta zoxide jq yq httpie sd tldr
+```
+
+---
+
+## Práce s pagerem (less)
+
+Většina CLI nástrojů (`bat`, `git log`, `man`, `help`) používá `less` pro stránkování dlouhého výstupu. Ovládání je jednotné.
+
+### Pohyb po stránkách
+
+```bash
+# Základní pohyb
+Space / f           # O stránku dolů (forward)
+b                   # O stránku nahoru (back)
+d / u               # O půl stránky dolů/nahoru
+Enter / j           # O řádek dolů
+k                   # O řádek nahoru
+g                   # Na začátek souboru
+G                   # Na konec souboru
+50g                 # Skok na řádek 50
+
+# Hledání
+/pattern            # Hledej dopředu (regex)
+?pattern            # Hledej dozadu
+n                   # Další výskyt
+N                   # Předchozí výskyt
+&pattern            # Zobraz jen řádky odpovídající patternu
+
+# Ukončení
+q                   # Ukončit prohlížení
+```
+
+### Užitečné zkratky
+
+```bash
+h                   # Nápověda (help) - zobrazí všechny klávesy
+-N                  # Zapnout/vypnout čísla řádků (za běhu)
+-S                  # Zapnout/vypnout zalamování řádků
+F                   # Follow mode (jako tail -f) - Ctrl+C pro ukončení
+v                   # Otevře soubor v editoru ($EDITOR)
+!příkaz             # Spustí shell příkaz
+```
+
+### Nastavení pro Git Bash
+
+```bash
+# V ~/.bashrc - lepší výchozí chování
+export LESS='-R -F -X'
+# -R = interpret ANSI barev
+# -F = ukončit pokud se vše vejde na obrazovku
+# -X = nevymazat obrazovku při ukončení
 ```
 
 ---
@@ -412,8 +464,13 @@ bat --style=grid file.js                # Mřížka
 bat --style=full file.js                # Vše (výchozí)
 bat --style=plain file.js               # Jen syntax highlighting
 
-# Bez stránkování
-bat --paging=never file.js
+# Stránkování
+bat --paging=never file.js              # Vypne pager, vypíše vše najednou
+bat --paging=always file.js             # Vždy použít pager
+bat -P file.js                          # Zkratka pro --paging=never
+
+# Ovládání pageru - viz sekce "Práce s pagerem (less)" výše
+# Space/f = stránka dolů, b = stránka nahoru, /text = hledání, q = konec
 
 # Jazyk
 bat --language=json file.txt            # Vynutí JSON highlighting
