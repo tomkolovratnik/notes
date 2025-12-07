@@ -19,6 +19,12 @@ Moderní příkazové nástroje pro produktivnější práci v terminálu.
 | [httpie](#httpie---http-klient) | Přívětivý HTTP klient | curl |
 | [sd](#sd---find--replace) | Jednoduchý find & replace | sed |
 | [tldr](#tldr---zjednodušené-manuály) | Praktické příklady příkazů | man |
+| [lazygit](#lazygit---git-tui) | Interaktivní TUI pro Git | git |
+| [tmux](#tmux---terminál-multiplexor) | Více terminálů v jednom okně | - |
+| [direnv](#direnv---automatické-env-variables) | Automatické env variables per-projekt | - |
+| [ncdu](#ncdu---disk-usage-analyzer) | Interaktivní analýza místa na disku | du |
+| [htop/btop](#htopbtop---system-monitoring) | Interaktivní monitoring systému | top |
+| [oh-my-posh](#oh-my-posh---moderní-prompt) | Moderní prompt pro shell | PS1 |
 
 ---
 
@@ -1257,6 +1263,630 @@ Often combined with a compression method, such as gzip or bzip2.
 - Extract files matching a pattern:
     tar xf source.tar --wildcards "*.html"
 ```
+
+---
+
+## lazygit - Git TUI
+
+Interaktivní textové rozhraní pro Git. Vizuální alternativa k příkazům.
+
+### Instalace
+
+```bash
+# Windows (Scoop)
+scoop install lazygit
+
+# Ubuntu
+LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+tar xf lazygit.tar.gz lazygit
+sudo install lazygit /usr/local/bin
+
+# macOS
+brew install lazygit
+```
+
+### Spuštění
+
+```bash
+lazygit                         # V git repozitáři
+lg                              # S aliasem: alias lg='lazygit'
+lazygit -p /path/to/repo        # Konkrétní repo
+```
+
+### Klávesové zkratky
+
+```bash
+# Navigace mezi panely
+h / l           # Přepínání panelů vlevo/vpravo
+j / k           # Pohyb nahoru/dolů v seznamu
+[ / ]           # Předchozí/další tab
+Enter           # Vstup do detailu
+Esc             # Zpět / zavřít
+?               # Nápověda (zobrazí všechny zkratky)
+
+# Panel: Files (soubory)
+Space           # Stage/unstage souboru
+a               # Stage/unstage všech souborů
+d               # Zahodit změny (discard)
+e               # Editovat soubor v editoru
+o               # Otevřít soubor
+
+# Panel: Commits
+c               # Commit (otevře editor pro zprávu)
+A               # Amend poslední commit
+r               # Reword commit message
+s               # Squash commit do předchozího
+f               # Fixup commit
+
+# Panel: Branches (větve)
+n               # Nová větev
+Space           # Checkout větev
+M               # Merge do aktuální větve
+r               # Rebase na tuto větev
+d               # Smazat větev
+
+# Panel: Stash
+Space           # Aplikovat stash
+g               # Pop stash
+d               # Zahodit stash
+n               # Nový stash
+
+# Remote operace
+p               # Pull
+P               # Push
+f               # Fetch
+
+# Ostatní
+x               # Menu s akcemi pro aktuální položku
+/               # Hledání
++               # Zvětšit panel
+_               # Zmenšit panel
+```
+
+### Konfigurace
+
+```yaml
+# ~/.config/lazygit/config.yml
+gui:
+  theme:
+    lightTheme: false             # Tmavé téma
+  showFileTree: true              # Stromové zobrazení souborů
+  showRandomTip: false            # Vypnout tipy
+
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never  # Použij delta pro diff
+
+keybinding:
+  universal:
+    quit: 'q'
+    quit-alt1: '<c-c>'
+```
+
+### Alias
+
+```bash
+# Přidej do ~/.bashrc
+alias lg='lazygit'
+```
+
+---
+
+## tmux - Terminál Multiplexor
+
+Více terminálů v jednom okně, sessions na pozadí, odpojení bez ukončení procesů.
+
+**Poznámka:** tmux není nativně dostupný v Git Bash na Windows. Použij WSL nebo Windows Terminal s více taby.
+
+### Instalace
+
+```bash
+# WSL / Ubuntu
+sudo apt install tmux
+
+# macOS
+brew install tmux
+```
+
+### Základní koncepty
+
+```
+Session (relace)
+  └── Window (okno/tab)
+        └── Pane (panel/rozdělení)
+```
+
+- **Session** - hlavní kontejner, může běžet na pozadí i po odpojení
+- **Window** - jako tab v prohlížeči, v rámci session
+- **Pane** - rozdělení okna na části
+
+### Práce se sessions
+
+```bash
+# Nová session
+tmux                              # Nová bez jména
+tmux new -s mysession             # Pojmenovaná session
+
+# Odpojení od session (session běží dál)
+Ctrl+B, D                         # Prefix + D
+
+# Seznam sessions
+tmux ls
+tmux list-sessions
+
+# Připojení k session
+tmux attach                       # K poslední
+tmux attach -t mysession          # K pojmenované
+tmux a -t mysession               # Zkráceně
+
+# Ukončení session
+exit                              # V rámci session
+tmux kill-session -t mysession    # Zvenku
+tmux kill-server                  # Všechny sessions
+```
+
+### Klávesové zkratky (prefix = Ctrl+B)
+
+```bash
+# Vždy nejdříve stiskni Ctrl+B, pak další klávesu
+
+# Sessions
+Ctrl+B, d         # Odpojit se (detach)
+Ctrl+B, s         # Seznam sessions
+Ctrl+B, $         # Přejmenovat session
+
+# Windows (taby)
+Ctrl+B, c         # Nový window
+Ctrl+B, n         # Další window
+Ctrl+B, p         # Předchozí window
+Ctrl+B, 0-9       # Přepnutí na window podle čísla
+Ctrl+B, ,         # Přejmenovat window
+Ctrl+B, &         # Zavřít window
+
+# Panes (rozdělení)
+Ctrl+B, %         # Rozdělit vertikálně (levá/pravá)
+Ctrl+B, "         # Rozdělit horizontálně (horní/dolní)
+Ctrl+B, šipky     # Přepínání mezi panes
+Ctrl+B, x         # Zavřít pane
+Ctrl+B, z         # Zoom - maximalizovat/obnovit pane
+Ctrl+B, Space     # Změnit layout panes
+Ctrl+B, {         # Prohodit pane s předchozím
+Ctrl+B, }         # Prohodit pane s následujícím
+Ctrl+B, !         # Přesunout pane do nového window
+
+# Ostatní
+Ctrl+B, ?         # Nápověda - seznam všech zkratek
+Ctrl+B, :         # Command mode
+Ctrl+B, [         # Copy mode (scrollování, hledání)
+Ctrl+B, t         # Zobrazit čas
+```
+
+### ~/.tmux.conf - Konfigurace
+
+```bash
+# ~/.tmux.conf
+
+# Změna prefixu na Ctrl+A (pohodlnější)
+unbind C-b
+set -g prefix C-a
+bind C-a send-prefix
+
+# Mouse support - scrollování, výběr pane
+set -g mouse on
+
+# Indexování od 1 (ne 0)
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Lepší rozdělení oken
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+
+# Navigace mezi panes jako vim (h/j/k/l)
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Rychlé přenačtení konfigurace
+bind r source-file ~/.tmux.conf \; display "Config reloaded!"
+
+# Větší historie scrollbacku
+set -g history-limit 10000
+
+# Barevný terminál
+set -g default-terminal "screen-256color"
+```
+
+### Praktické příklady
+
+```bash
+# Dlouhoběžící proces na serveru
+ssh server
+tmux new -s build           # Nová session "build"
+npm run build               # Spusť build
+Ctrl+B, D                   # Odpoj se
+exit                        # Odhlásit z SSH
+# ... build pokračuje na serveru ...
+ssh server
+tmux attach -t build        # Znovu se připoj
+
+# Vývojové prostředí
+tmux new -s dev
+# Window 1: editor
+Ctrl+B, c                   # Window 2: server
+Ctrl+B, c                   # Window 3: git
+# Přepínání: Ctrl+B, 1/2/3
+```
+
+---
+
+## direnv - Automatické Env Variables
+
+Automatické načítání/obnova environment variables při vstupu/opuštění složky.
+
+### Instalace
+
+```bash
+# Windows (Scoop)
+scoop install direnv
+
+# Ubuntu
+sudo apt install direnv
+
+# macOS
+brew install direnv
+
+# Aktivace (přidej do ~/.bashrc)
+eval "$(direnv hook bash)"
+```
+
+### Základní použití
+
+```bash
+# Vytvoř .envrc v projektu
+cd myproject
+echo 'export API_KEY="secret123"' > .envrc
+echo 'export DATABASE_URL="postgres://..."' >> .envrc
+
+# Povol soubor (bezpečnostní krok - musíš potvrdit)
+direnv allow
+
+# Teď při vstupu do složky:
+cd myproject
+# direnv: loading .envrc
+# direnv: export +API_KEY +DATABASE_URL
+echo $API_KEY                       # secret123
+
+# Při opuštění se automaticky zruší:
+cd ..
+# direnv: unloading
+echo $API_KEY                       # (prázdné)
+```
+
+### Struktura .envrc
+
+```bash
+# Základní proměnné
+export NODE_ENV=development
+export DEBUG=true
+export PORT=3000
+
+# Načtení z .env souboru (pokud existuje)
+dotenv                              # Načte .env
+dotenv_if_exists .env.local         # Načte jen pokud existuje
+
+# Načtení .envrc z rodičovské složky
+source_up
+
+# Kontrola povinných proměnných
+: ${API_KEY:?'API_KEY is required'}
+
+# Dynamické hodnoty
+export PATH=$PWD/bin:$PATH          # Přidej lokální bin do PATH
+export PROJECT_ROOT=$PWD
+
+# Python virtualenv
+layout python3                      # Automaticky aktivuje venv
+
+# Node.js - přidej node_modules/.bin do PATH
+PATH_add node_modules/.bin
+```
+
+### Praktické příklady
+
+```bash
+# 1. AWS profily per-projekt
+# ~/project-a/.envrc
+export AWS_PROFILE=project-a
+export AWS_REGION=eu-west-1
+
+# ~/project-b/.envrc
+export AWS_PROFILE=project-b
+export AWS_REGION=us-east-1
+
+# 2. Různé Node verze (s nvm)
+# .envrc
+use_nvm() {
+    local version=$1
+    source ~/.nvm/nvm.sh
+    nvm use "$version"
+}
+use_nvm 18
+
+# 3. Kubernetes context
+# .envrc
+export KUBECONFIG=$PWD/kubeconfig.yaml
+
+# 4. Kombinace s .env soubory (pro secrets)
+# .envrc
+dotenv_if_exists .env               # Veřejné proměnné (v gitu)
+dotenv_if_exists .env.local         # Tajné proměnné (v .gitignore)
+```
+
+### Bezpečnost
+
+```bash
+# Po změně .envrc musíš znovu povolit
+direnv allow
+
+# Zakázat .envrc (při podezřelém souboru)
+direnv deny
+
+# Zobrazit stav
+direnv status
+```
+
+---
+
+## ncdu - Disk Usage Analyzer
+
+Interaktivní vizualizace využití disku. Rychlejší a přehlednější než `du`.
+
+### Instalace
+
+```bash
+# Windows (Scoop)
+scoop install ncdu
+
+# Ubuntu
+sudo apt install ncdu
+
+# macOS
+brew install ncdu
+```
+
+### Použití
+
+```bash
+# Analýza aktuální složky
+ncdu
+
+# Analýza konkrétní složky
+ncdu /path/to/folder
+
+# Analýza s vyloučením složek
+ncdu --exclude node_modules
+ncdu --exclude .git
+ncdu -x /                           # Zůstane na jednom filesystem
+
+# Export/import pro pozdější analýzu (velké disky)
+ncdu -o disk.json /                 # Uložit scan
+ncdu -f disk.json                   # Načíst a prohlížet
+```
+
+### Klávesové zkratky
+
+```bash
+# Navigace
+↑ / ↓       # Pohyb v seznamu
+→ / Enter   # Vstup do složky
+← / <       # Rodičovská složka
+
+# Zobrazení
+g           # Přepnout procenta / graf / obojí / nic
+c           # Zobrazit počet položek
+e           # Zobrazit skryté položky
+i           # Informace o položce (přesná velikost, čas)
+
+# Řazení
+n           # Seřadit podle jména
+s           # Seřadit podle velikosti (výchozí)
+
+# Akce
+d           # Smazat položku (s potvrzením!)
+r           # Přepočítat aktuální složku
+
+# Ostatní
+q           # Ukončit
+?           # Nápověda
+```
+
+### Aliasy
+
+```bash
+# Přidej do ~/.bashrc
+alias duh='ncdu --color dark'
+alias dux='ncdu --exclude node_modules --exclude .git'
+```
+
+---
+
+## htop/btop - System Monitoring
+
+Interaktivní monitory systému - CPU, RAM, procesy.
+
+### Instalace
+
+```bash
+# htop
+# Windows: nativně nedostupné, použij v WSL
+# WSL / Ubuntu
+sudo apt install htop
+# macOS
+brew install htop
+
+# btop (modernější, hezčí)
+# Ubuntu 22.04+
+sudo apt install btop
+# Starší Ubuntu / jiné
+sudo snap install btop
+# macOS
+brew install btop
+```
+
+### htop - Základní použití
+
+```bash
+htop                        # Spuštění (interaktivní)
+
+# Klávesové zkratky
+F1 / ?      # Nápověda
+F2 / S      # Setup - konfigurace zobrazení
+F3 / /      # Hledání procesu podle jména
+F4 / \      # Filtrování procesů
+F5 / t      # Stromové zobrazení (procesy a potomci)
+F6 / < >    # Řazení podle sloupce
+F7 / F8     # Snížit/zvýšit prioritu (nice)
+F9 / k      # Kill proces (vybrat signál)
+F10 / q     # Ukončit
+
+# Pohyb
+↑ / ↓       # Výběr procesu
+Space       # Označit proces (pro hromadné operace)
+U           # Odznačit vše
+u           # Zobrazit pouze procesy daného uživatele
+H           # Skrýt/zobrazit user threads
+K           # Skrýt/zobrazit kernel threads
+```
+
+### btop - Modernější alternativa
+
+```bash
+btop                        # Spuštění
+
+# Klávesové zkratky
+h / ?       # Nápověda
+Esc         # Menu / zpět
+1-4         # Přepínání mezi sekcemi (CPU, Memory, Network, Disks)
+e           # Stromové zobrazení
+p           # Řadit podle CPU
+m           # Řadit podle paměti
+r           # Obrátit řazení
+f           # Filtrovat procesy
+k           # Kill proces
+s           # Signál procesu
+q           # Ukončit
+```
+
+### Konfigurace btop
+
+```bash
+# ~/.config/btop/btop.conf
+color_theme = "dracula"
+theme_background = True
+truecolor = True
+rounded_corners = True
+graph_symbol = "braille"          # braille, block, tty
+shown_boxes = "cpu mem net proc"   # Které sekce zobrazit
+update_ms = 1000                   # Refresh rate
+```
+
+---
+
+## oh-my-posh - Moderní Prompt
+
+Alternativa ke Starship. Cross-platform, 100+ témat.
+
+### Instalace
+
+```bash
+# Windows (Scoop)
+scoop install oh-my-posh
+
+# Windows (Winget)
+winget install JanDeDobbeleer.OhMyPosh
+
+# macOS
+brew install oh-my-posh
+
+# Linux
+curl -s https://ohmyposh.dev/install.sh | bash -s
+
+# Aktivace (přidej do ~/.bashrc)
+eval "$(oh-my-posh init bash --config ~/.poshthemes/theme.omp.json)"
+```
+
+### Témata
+
+```bash
+# Seznam všech témat
+oh-my-posh get themes
+
+# Náhled tématu
+oh-my-posh print primary --config ~/path/to/theme.omp.json
+
+# Použití vestavěného tématu
+eval "$(oh-my-posh init bash --config $(oh-my-posh get themes --list | head -1))"
+
+# Populární témata
+# - agnoster
+# - dracula
+# - powerlevel10k_rainbow
+# - atomic
+# - catppuccin
+```
+
+### Vlastní téma
+
+```json
+// ~/.poshthemes/custom.omp.json
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#61AFEF",
+          "properties": {
+            "style": "folder"
+          }
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "#E5C07B",
+          "properties": {
+            "branch_icon": " "
+          }
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#98C379",
+          "template": " ❯ "
+        }
+      ]
+    }
+  ]
+}
+```
+
+### oh-my-posh vs Starship
+
+| Vlastnost | oh-my-posh | Starship |
+|-----------|------------|----------|
+| Konfigurace | JSON | TOML |
+| Témata | 100+ vestavěných | Méně, ale customizovatelný |
+| Rychlost | Rychlý | Rychlejší |
+| Windows | Nativní, PowerShell integrace | Nativní |
+| Dokumentace | Dobrá | Výborná |
 
 ---
 

@@ -111,7 +111,118 @@ cmd //c "mklink /D linkname C:\path\to\target"
 git config --global core.symlinks true
 ```
 
-### SSH a GPG na Windows
+### SSH konfigurace
+
+#### Generování SSH klíče
+
+```bash
+# Generování nového SSH klíče (Ed25519 - doporučeno, moderní a bezpečný)
+ssh-keygen -t ed25519 -C "email@example.com"
+# -t ed25519 = typ klíče (Ed25519 je rychlejší a bezpečnější než RSA)
+# -C = komentář (typicky email pro identifikaci)
+
+# Starší RSA (pro kompatibilitu se staršími servery)
+ssh-keygen -t rsa -b 4096 -C "email@example.com"
+# -b 4096 = délka klíče v bitech
+
+# Klíče jsou uloženy v ~/.ssh/
+# ~/.ssh/id_ed25519     = privátní klíč (NIKDY NESDÍLEJ!)
+# ~/.ssh/id_ed25519.pub = veřejný klíč (tento sdílej)
+
+# Klíč s vlastním názvem (pro více klíčů)
+ssh-keygen -t ed25519 -C "work@company.com" -f ~/.ssh/id_ed25519_work
+```
+
+#### Nahrání klíče na Linux server (přihlášení bez hesla)
+
+```bash
+# Metoda 1: ssh-copy-id (doporučeno)
+ssh-copy-id -i ~/.ssh/id_ed25519.pub user@server.com
+# Zadej heslo jednou, pak už se přihlásíš klíčem
+
+# Metoda 2: Ruční kopírování (pokud ssh-copy-id nefunguje)
+cat ~/.ssh/id_ed25519.pub | ssh user@server.com "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+
+# Metoda 3: Kopírování přes SCP
+scp ~/.ssh/id_ed25519.pub user@server.com:~/
+ssh user@server.com
+# Na serveru:
+mkdir -p ~/.ssh
+cat ~/id_ed25519.pub >> ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+rm ~/id_ed25519.pub
+
+# Testování připojení bez hesla
+ssh user@server.com                    # Mělo by se připojit bez dotazu na heslo
+```
+
+#### Oprávnění souborů (důležité pro bezpečnost)
+
+```bash
+# Lokálně (Git Bash)
+chmod 700 ~/.ssh                       # Složka - pouze vlastník
+chmod 600 ~/.ssh/id_ed25519            # Privátní klíč - pouze vlastník čtení/zápis
+chmod 644 ~/.ssh/id_ed25519.pub        # Veřejný klíč - vlastník čtení/zápis, ostatní čtení
+chmod 600 ~/.ssh/config                # Config - pouze vlastník
+
+# Na serveru (v ~/.ssh/)
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+```
+
+#### ~/.ssh/config - Konfigurace připojení
+
+```bash
+# ~/.ssh/config - aliasy, více účtů, custom porty
+
+# Výchozí GitHub
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
+# Druhý GitHub účet (např. pracovní)
+Host github-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_work
+    IdentitiesOnly yes
+# Použití: git clone git@github-work:company/repo.git
+
+# Linux server s custom portem
+Host myserver
+    HostName 192.168.1.100
+    User admin
+    Port 2222
+    IdentityFile ~/.ssh/id_server
+
+# Zkratka pro časté připojení
+Host prod
+    HostName production.example.com
+    User deploy
+    IdentityFile ~/.ssh/id_deploy
+    ForwardAgent yes                   # Předá SSH agent na server
+# Použití: ssh prod (místo ssh deploy@production.example.com)
+
+# Výchozí nastavení pro všechny hosty
+Host *
+    AddKeysToAgent yes                 # Automaticky přidá klíče do agenta
+    ServerAliveInterval 60             # Keepalive každých 60 sekund
+    ServerAliveCountMax 3              # Počet pokusů před odpojením
+```
+
+#### Testování připojení
+
+```bash
+ssh -T git@github.com                  # Test GitHub
+ssh -T git@github-work                 # Test druhého účtu (pokud máš)
+ssh -vT git@github.com                 # Verbose pro debugging (-v, -vv, -vvv)
+ssh -o BatchMode=yes user@server exit  # Test bez interakce (pro skripty)
+```
+
+#### SSH Agent na Windows
 
 ```bash
 # SSH Agent - automatické spuštění (přidej do .bashrc)
@@ -416,6 +527,56 @@ gitignore() {
     curl -sL "https://www.toptal.com/developers/gitignore/api/$1"
 }
 # Použití: gitignore node > .gitignore
+
+# ============================================
+# POKROČILÉ FUNKCE
+# ============================================
+
+# Záloha souboru před editací
+backup() { cp "$1"{,.bak.$(date +%Y%m%d_%H%M%S)}; }
+# Použití: backup config.json → config.json.bak.20240115_143022
+
+# HTTP server pro aktuální složku
+serve() {
+    local port=${1:-8000}
+    echo "Serving on http://localhost:$port"
+    python -m http.server "$port"
+}
+
+# Stáhni a extrahuj archiv
+download_extract() {
+    local url=$1
+    local filename=$(basename "$url")
+    curl -L -O "$url" && extract "$filename" && rm "$filename"
+}
+
+# Najdi proces a ukonči ho (s fzf)
+fkill() {
+    local pid
+    pid=$(ps aux | fzf --height 40% --header-lines=1 | awk '{print $2}')
+    [[ -n "$pid" ]] && kill -9 "$pid"
+}
+
+# Port scanner - kdo používá port?
+port() { netstat -ano | grep ":$1"; }
+# Použití: port 3000
+
+# Rychlé poznámky
+note() {
+    local notes_file=~/notes.md
+    if [ -z "$1" ]; then
+        cat "$notes_file"  # Bez argumentu zobraz poznámky
+    else
+        echo "$(date '+%Y-%m-%d %H:%M'): $*" >> "$notes_file"
+    fi
+}
+
+# Timer/stopky
+timer() {
+    local seconds=${1:-60}
+    echo "Timer: $seconds seconds"
+    sleep "$seconds" && echo -e "\a⏰ Time's up!"  # Bell sound
+}
 
 # ============================================
 # CLI NÁSTROJE (pokud máš nainstalované)
@@ -758,6 +919,192 @@ curl -O https://example.com/file.zip
 wget https://example.com/file.zip
 ```
 
+### sed - Stream Editor
+
+```bash
+# Základní nahrazení
+sed 's/old/new/' file.txt              # První výskyt na řádku
+sed 's/old/new/g' file.txt             # Všechny výskyty na řádku
+sed 's/old/new/gi' file.txt            # Case-insensitive
+
+# In-place editace (přepíše soubor)
+sed -i 's/old/new/g' file.txt          # Linux
+sed -i '' 's/old/new/g' file.txt       # macOS
+
+# Mazání řádků
+sed '/pattern/d' file.txt              # Řádky obsahující pattern
+sed '/^$/d' file.txt                   # Prázdné řádky
+sed '/^#/d' file.txt                   # Komentáře (začínající #)
+sed '1d' file.txt                      # První řádek
+sed '1,5d' file.txt                    # Řádky 1-5
+
+# Zobrazení konkrétních řádků
+sed -n '10p' file.txt                  # Řádek 10
+sed -n '10,20p' file.txt               # Řádky 10-20
+sed -n '/pattern/p' file.txt           # Řádky obsahující pattern
+
+# Přidání textu
+sed 's/^/prefix: /' file.txt           # Na začátek každého řádku
+sed 's/$/ suffix/' file.txt            # Na konec každého řádku
+sed '1i\Header line' file.txt          # Vložit před první řádek
+sed '$a\Footer line' file.txt          # Přidat za poslední řádek
+
+# Praktické příklady
+sed 's/\r$//' file.txt                 # Odstranit Windows line endings (CRLF → LF)
+sed 's/[[:space:]]*$//' file.txt       # Odstranit trailing whitespace
+sed 's/  */ /g' file.txt               # Nahradit multiple spaces jedním
+```
+
+### awk - Pattern Scanning
+
+```bash
+# Tisk sloupců (oddělovač: whitespace)
+awk '{print $1}' file.txt              # První sloupec
+awk '{print $NF}' file.txt             # Poslední sloupec
+awk '{print $1, $3}' file.txt          # První a třetí sloupec
+awk '{print NR, $0}' file.txt          # Číslo řádku + celý řádek
+
+# Custom oddělovač
+awk -F',' '{print $2}' data.csv        # CSV - druhý sloupec
+awk -F':' '{print $1}' /etc/passwd     # Dvojtečka jako oddělovač
+awk -F'\t' '{print $1}' file.tsv       # Tab jako oddělovač
+
+# Filtrování
+awk '/pattern/ {print $0}' file.txt    # Řádky obsahující pattern
+awk '$3 > 100 {print $0}' file.txt     # Kde 3. sloupec > 100
+awk 'NR > 1 {print $0}' file.txt       # Přeskočit hlavičku (první řádek)
+awk 'NF > 0' file.txt                  # Neprázdné řádky
+
+# Výpočty
+awk '{sum += $1} END {print sum}' numbers.txt           # Součet
+awk '{sum += $1; n++} END {print sum/n}' numbers.txt    # Průměr
+awk 'BEGIN {max=0} $1>max {max=$1} END {print max}'     # Maximum
+
+# Praktické příklady
+ps aux | awk '{print $2, $11}'         # PID a název procesu
+df -h | awk 'NR>1 {print $5, $6}'      # Využití disků (bez hlavičky)
+du -sh * | awk '$1 ~ /G/ {print}'      # Složky větší než 1GB
+cat access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head  # Top IP adresy
+```
+
+### Globbing patterns
+
+Wildcards pro práci se soubory v Bash.
+
+```bash
+# Základní patterny
+*               # Libovolné znaky (kromě /)
+?               # Jeden libovolný znak
+[abc]           # Jeden z uvedených znaků
+[a-z]           # Rozsah znaků
+[!abc]          # NE uvedené znaky (negace)
+**              # Rekurzivně - všechny podsložky (vyžaduje shopt -s globstar)
+
+# Příklady
+ls *.js                                # Všechny .js soubory
+ls test*                               # Soubory začínající "test"
+ls ?.txt                               # a.txt, b.txt (jeden znak před .txt)
+ls file[0-9].txt                       # file0.txt až file9.txt
+ls file[!0-9].txt                      # fileA.txt, fileB.txt (ne čísla)
+
+# Rekurzivní hledání
+shopt -s globstar                      # Povol ** pattern
+ls **/*.ts                             # Všechny .ts soubory ve všech podsložkách
+rm -rf **/node_modules                 # Smaž node_modules rekurzivně
+
+# Case-insensitive
+shopt -s nocaseglob
+ls *.TXT                               # Najde i *.txt, *.Txt, *.TXT
+```
+
+#### Extended globbing (extglob)
+
+```bash
+# Povol extended globbing
+shopt -s extglob
+
+# Patterny
+?(pattern)      # 0 nebo 1 výskyt
+*(pattern)      # 0 nebo více výskytů
++(pattern)      # 1 nebo více výskytů
+@(pattern)      # Přesně 1 výskyt
+!(pattern)      # Negace - vše kromě pattern
+
+# Příklady
+ls !(*.log)                            # Vše kromě .log souborů
+ls *.@(js|ts)                          # Soubory .js nebo .ts
+ls !(node_modules|dist)/               # Složky kromě node_modules a dist
+rm !(important.txt)                    # Smaž vše kromě important.txt
+cp *.+(js|ts|json) dest/               # Kopíruj .js, .ts, .json soubory
+```
+
+### Kombinace CLI nástrojů
+
+Synergické použití nástrojů pro maximální produktivitu. Vyžaduje nainstalované nástroje (viz [CLI nástroje](cli-tools.md)).
+
+```bash
+# rg + fzf + bat: Interaktivní hledání v kódu
+# Hledej text, vyber soubor, zobraz s náhledem
+rgf() {
+    local result
+    result=$(rg --line-number --color=always "$1" |
+        fzf --ansi --delimiter ':' \
+            --preview 'bat --color=always --highlight-line {2} {1}' \
+            --preview-window 'up,60%' |
+        awk -F: '{print $1 ":" $2}')
+    [[ -n "$result" ]] && code -g "$result"  # Otevři ve VS Code na řádku
+}
+# Použití: rgf "TODO"
+
+# fd + fzf + bat: Hledání souborů s náhledem
+fbat() {
+    local file
+    file=$(fd --type f "$1" |
+        fzf --preview 'bat --color=always --style=numbers {}')
+    [[ -n "$file" ]] && code "$file"
+}
+# Použití: fbat ".ts"
+
+# git + fzf: Interaktivní výběr větve
+gco() {
+    local branch
+    branch=$(git branch -a | fzf --height 40% | sed 's/^[* ]*//' | sed 's#remotes/origin/##')
+    [[ -n "$branch" ]] && git checkout "$branch"
+}
+
+# git + fzf: Interaktivní git add
+gaf() {
+    local files
+    files=$(git status -s | fzf -m --preview 'git diff --color=always {2}' | awk '{print $2}')
+    [[ -n "$files" ]] && echo "$files" | xargs git add
+}
+
+# git + fzf + delta: Interaktivní diff
+gdf() {
+    git diff --name-only | fzf --preview 'git diff {} | delta'
+}
+
+# zoxide + fzf: Interaktivní navigace do projektu
+proj() {
+    local dir
+    dir=$(zoxide query -l | fzf --height 40%)
+    [[ -n "$dir" ]] && cd "$dir" && code .
+}
+
+# fd + rg: Hledání v konkrétním typu souboru
+fd -e ts -x rg -l "interface"          # .ts soubory obsahující "interface"
+fd -S +100k -e js -x rg -l "TODO"      # Velké .js soubory s TODO
+
+# Komplexní: Statistiky projektu
+project_stats() {
+    echo "=== Project Statistics ==="
+    echo "TypeScript files: $(fd -e ts | wc -l)"
+    echo "JavaScript files: $(fd -e js | wc -l)"
+    echo "TODO comments: $(rg -c TODO --type ts --type js 2>/dev/null | awk -F: '{sum+=$2} END {print sum+0}')"
+    echo "Total lines: $(fd -e ts -e js -x wc -l 2>/dev/null | tail -1 | awk '{print $1}')"
+}
+```
+
 ## Doporučené nástroje k instalaci
 
 Pro maximální produktivitu nainstaluj tyto nástroje (viz [CLI nástroje](cli-tools.md)):
@@ -821,4 +1168,85 @@ Po úpravě `.bashrc` spusť:
 source ~/.bashrc
 # nebo
 reload                          # Pokud máš alias
+```
+
+## Performance - Zrychlení Git Bash
+
+### Měření doby startu
+
+```bash
+# Jednoduchý test
+time bash -i -c exit
+
+# Detailní profiling - přidej dočasně na začátek .bashrc
+PS4='+ $(date "+%s.%N")\011 '
+exec 3>&2 2>/tmp/bashstart.$$.log
+set -x
+# ... obsah .bashrc ...
+set +x
+exec 2>&3 3>&-
+
+# Analyzuj log
+cat /tmp/bashstart.$$.log | sort -k1 -n | head -20
+```
+
+### Optimalizace .bashrc
+
+```bash
+# 1. Lazy loading nástrojů - načti až při prvním použití
+# Místo: eval "$(zoxide init bash)"  (vždy se spustí)
+_init_zoxide() {
+    unset -f z zi
+    eval "$(zoxide init bash)"
+}
+z() { _init_zoxide; z "$@"; }
+zi() { _init_zoxide; zi "$@"; }
+
+# 2. Kontroluj existenci nástroje před konfigurací
+command -v fzf &>/dev/null && eval "$(fzf --bash)"
+
+# 3. Cache pomalé operace (např. Starship)
+# Místo: eval "$(starship init bash)"
+if [[ ! -f ~/.starship.bash ]] || [[ ~/.config/starship.toml -nt ~/.starship.bash ]]; then
+    starship init bash > ~/.starship.bash
+fi
+source ~/.starship.bash
+
+# 4. Minimalizuj volání externích příkazů v PS1/PROMPT_COMMAND
+# Špatně: PROMPT_COMMAND='echo $(git branch 2>/dev/null)'
+# Dobře: Použij vestavěné __git_ps1 nebo Starship
+```
+
+### Windows specifické optimalizace
+
+```bash
+# 1. Windows Defender - přidej výjimky
+# Nastavení → Zabezpečení Windows → Ochrana před viry → Nastavení
+# Přidej výjimky:
+# - C:\Program Files\Git
+# - D:\_Repos (nebo tvoje složky s projekty)
+# - ~/.bashrc, ~/.bash_profile
+
+# 2. Antivirus obecně - vyloučit Git složky z real-time scanu
+
+# 3. PATH optimalizace - kratší PATH = rychlejší spuštění
+# Zkontroluj duplicity v PATH:
+echo $PATH | tr ':' '\n' | sort | uniq -c | sort -rn | head
+
+# 4. Vypni zbytečné funkce
+# V .bashrc na začátku:
+shopt -u progcomp                # Vypne programmable completion (může zrychlit)
+```
+
+### Porovnání času
+
+```bash
+# Benchmark různých konfigurací
+for i in {1..5}; do time bash -i -c exit; done 2>&1 | grep real
+
+# Typické časy:
+# Minimální .bashrc:     ~0.1-0.2s
+# S fzf + zoxide:        ~0.2-0.4s
+# S Starship:            ~0.3-0.5s
+# Plná konfigurace:      ~0.5-1.0s
 ```
