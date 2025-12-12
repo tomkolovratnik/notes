@@ -10,7 +10,8 @@
       "Bash(dir:*)",
       "Bash(git commit:*)",
       "Bash(git push)",
-      "WebFetch(domain:sider.ai)"
+      "WebFetch(domain:sider.ai)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

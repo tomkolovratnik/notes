@@ -1,5 +1,42 @@
 # Git Bash - Maximální produktivita
 
+#### Minimalistický prompt s dynamickou barvou git větve
+
+Prompt zobrazuje cestu, git větev (žlutá = čisté, červená = změny) a znak ❯.
+
+```toml
+# ~/.config/starship.toml
+# Prompt: cesta (větev) ❯
+# Větev: žlutá = čisté repo, červená = změny
+
+format = """$directory$custom$character"""
+
+[directory]
+style = "cyan"
+truncation_length = 0          # Zobraz celou cestu
+truncate_to_repo = false
+
+[custom.gitbranch]
+command = 'branch=$(git branch --show-current 2>/dev/null); if [ -n "$branch" ]; then if git diff --quiet 2>/dev/null && git diff --cached --quiet 2>/dev/null; then printf "\033[33m(%s)\033[0m" "$branch"; else printf "\033[31m(%s)\033[0m" "$branch"; fi; fi'
+when = "git rev-parse --git-dir 2>/dev/null"
+shell = ["bash", "--noprofile", "--norc"]
+format = "$output "
+
+[git_status]
+disabled = true                # Skryj [!] a podobné symboly
+
+[git_branch]
+disabled = true                # Používáme custom modul
+
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+```
+
+Výsledek: `D:\_Repos\_my-notes (master) ❯`
+
+#### Plný prompt s moduly
+
 Jak vytěžit maximum z Git Bash na Windows.
 
 ## Co je Git Bash
@@ -499,6 +536,7 @@ HISTSIZE=10000                          # Počet příkazů v paměti
 HISTFILESIZE=20000                      # Počet příkazů v souboru
 HISTCONTROL=ignoreboth:erasedups        # Ignoruj duplicity a mezery
 shopt -s histappend                     # Přidávej do historie, nepřepisuj
+PROMPT_COMMAND='history -a'             # Uloží příkaz hned do souboru
 
 # Lepší navigace
 shopt -s autocd                         # cd bez psaní cd (stačí název složky)
@@ -512,8 +550,6 @@ bind "set completion-ignore-case on"
 bind "set show-all-if-ambiguous on"
 
 # ============================================
-# PROMPT (PS1)
-# ============================================
 
 # Jednoduchý prompt s git větví
 parse_git_branch() {
@@ -526,7 +562,6 @@ PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[33m\]$(__git_ps1 "
 # Nebo jednodušší verze bez hostname:
 # PS1='\[\033[01;34m\]\w\[\033[33m\]$(__git_ps1 " (%s)")\[\033[00m\]\$ '
 
-# ============================================
 # ALIASY - NAVIGACE
 # ============================================
 
@@ -582,6 +617,8 @@ alias grh='git reset HEAD'
 alias grhh='git reset HEAD --hard'
 alias gst='git stash'
 alias gstp='git stash pop'
+alias gwip='git add -A && git commit -m "WIP"'   # Rychlý work-in-progress commit
+alias gundo='git reset HEAD~1 --soft'            # Vrať poslední commit (změny zůstanou)
 
 # ============================================
 # ALIASY - UTILITY
@@ -643,8 +680,14 @@ ff() { find . -type f -iname "*$1*"; }
 # Najdi složku podle názvu
 fd() { find . -type d -iname "*$1*"; }
 
-# Najdi text v souborech
-ftext() { grep -rn "$1" .; }
+# Najdi text v souborech (použije rg pokud existuje)
+ftext() {
+    if command -v rg &> /dev/null; then
+        rg "$1"
+    else
+        grep -rn "$1" .
+    fi
+}
 
 # Velikost složek (seřazeno)
 duh() { du -h --max-depth=1 | sort -hr; }
@@ -713,8 +756,12 @@ timer() {
 }
 
 # ============================================
+# Rychlé JSON formátováníjson() { python -m json.tool "$@"; }# Git - smaž merged větve (kromě main/master)git-clean-branches() {    git branch --merged | grep -v '*|main|master' | xargs -n 1 git branch -d 2>/dev/null    echo "Merged branches cleaned"}
 # CLI NÁSTROJE (pokud máš nainstalované)
 # ============================================
+
+# FZF nastavení
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 
 # fzf integrace
 if command -v fzf &> /dev/null; then
