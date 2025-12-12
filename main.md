@@ -15,6 +15,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Linux / Bash](linux.md) - Příkazy, aktualizace systému (Ubuntu), užitečné skripty
 - [Bash Scripting](bash-scripting.md) - Proměnné, podmínky, smyčky, funkce, error handling, debugging
 - [Git Bash](git-bash.md) - Konfigurace, aliasy, klávesové zkratky, tipy pro maximální produktivitu
+- [Git Bash - Kurz](git-bash-kurz.md) - Praktický kurz od základů po pokročilé techniky (9 lekcí)
 - [CLI nástroje](cli-tools.md) - fzf, ripgrep, fd, bat, jq, yq, delta, zoxide, lazygit, tmux a další
 - [PowerShell](powershell.md) - Windows příkazy a skripty
 - [Windows](windows.md) - Virtuální plochy, zkratky, správa oken
