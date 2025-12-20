@@ -28,16 +28,44 @@ Moderní příkazové nástroje pro produktivnější práci v terminálu.
 
 ---
 
+## Předpoklady - Package Manager
+
+Pro instalaci CLI nástrojů potřebuješ package manager. Doporučuji **Scoop** – instaluje do uživatelského profilu bez admin práv.
+
+### Instalace Scoop (jednorázově)
+
+Spusť v **PowerShell** (ne jako admin):
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # Povolí spouštění skriptů
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression        # Stáhne a nainstaluje Scoop
+```
+
+Po instalaci přidej "extras" bucket pro více balíčků:
+
+```powershell
+scoop bucket add extras  # Rozšířená kolekce balíčků
+```
+
+### Správa Scoop
+
+```bash
+scoop search nazev       # Hledání balíčku
+scoop install nazev      # Instalace
+scoop update nazev       # Aktualizace jednoho
+scoop update *           # Aktualizace všech
+scoop list               # Nainstalované balíčky
+scoop uninstall nazev    # Odinstalace
+```
+
+---
+
 ## Instalace všech nástrojů
 
 ### Windows (Scoop) - doporučeno pro Git Bash
 
 ```bash
-# Instalace Scoop (v PowerShell)
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
-
-# Instalace nástrojů
+# Instalace všech nástrojů najednou
 scoop install fzf ripgrep fd bat eza delta zoxide jq yq httpie sd tldr
 ```
 
@@ -617,8 +645,11 @@ Vylepšený diff s syntax highlightingem a side-by-side zobrazením.
 ### Instalace
 
 ```bash
-# Windows (Scoop)
+# Windows (Scoop) - doporučeno
 scoop install delta
+
+# Windows (WinGet)
+winget install dandavison.delta
 
 # Ubuntu
 sudo apt install git-delta
@@ -630,8 +661,9 @@ brew install git-delta
 
 ### Konfigurace pro Git
 
-```bash
-# Přidej do ~/.gitconfig
+Přidej do `~/.gitconfig`:
+
+```ini
 [core]
     pager = delta
 
@@ -640,14 +672,41 @@ brew install git-delta
 
 [delta]
     navigate = true          # Použij n a N pro navigaci mezi soubory
+    dark = true              # Tmavé téma
+    side-by-side = false     # Vedle sebe (true pro side-by-side)
     line-numbers = true      # Čísla řádků
-    side-by-side = true      # Vedle sebe (volitelné)
+    syntax-theme = Dracula   # Barevné téma
 
 [merge]
-    conflictstyle = diff3
+    conflictStyle = zdiff3   # Lepší zobrazení konfliktů
 
 [diff]
-    colorMoved = default
+    colorMoved = default     # Zvýrazní přesunuté bloky
+```
+
+Nebo pomocí git příkazů:
+
+```bash
+git config --global core.pager delta
+git config --global interactive.diffFilter 'delta --color-only'
+git config --global delta.navigate true
+git config --global delta.dark true
+git config --global delta.line-numbers true
+git config --global delta.syntax-theme Dracula
+git config --global merge.conflictStyle zdiff3
+git config --global diff.colorMoved default
+```
+
+### Použití
+
+Po konfiguraci se delta aktivuje automaticky pro všechny git příkazy:
+
+```bash
+git diff                     # Syntax highlighting, line numbers
+git log -p                   # Navigace mezi soubory: n a N
+git show                     # Krásný výstup
+git blame                    # Přehlednější blame
+git diff --side-by-side      # Side-by-side pohled (nebo nastav delta.side-by-side = true)
 ```
 
 ### Přímé použití
@@ -1200,12 +1259,17 @@ Praktické příklady příkazů místo dlouhých man stránek.
 ### Instalace
 
 ```bash
-# Windows (Scoop)
+# Windows (Scoop) - tealdeer (Rust klient, rychlejší)
+scoop install tealdeer
+
+# Windows (Scoop) - Node.js klient
 scoop install tldr
+
+# npm (Node.js)
+npm install -g tldr
 
 # Ubuntu
 sudo apt install tldr
-# nebo: npm install -g tldr
 
 # macOS
 brew install tldr
@@ -1216,6 +1280,8 @@ pip install tldr
 # První spuštění - stažení databáze
 tldr --update
 ```
+
+> **Tip:** Tealdeer je Rust implementace tldr, která je rychlejší a má menší závislosti než Node.js varianta.
 
 ### Použití
 
