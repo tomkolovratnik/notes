@@ -1006,18 +1006,229 @@ V `settings.json` přidej nový profil:
 
 ## Tipy a triky
 
-### Práce se soubory
+### Práce se soubory a adresáři
+
+#### Výpis souborů (ls)
 
 ```bash
-# Rychlé vytvoření více souborů
-touch file{1..5}.txt                    # file1.txt až file5.txt
-mkdir -p project/{src,tests,docs}       # Vytvoř strukturu složek
+ls                                      # Základní výpis
+ls -l                                   # Detailní výpis (práva, velikost, datum)
+ls -la                                  # Včetně skrytých souborů (začínají tečkou)
+ls -lh                                  # Human-readable velikosti (KB, MB, GB)
+ls -lt                                  # Seřazeno podle času (nejnovější první)
+ls -ltr                                 # Seřazeno podle času (nejstarší první)
+ls -lS                                  # Seřazeno podle velikosti (největší první)
+ls -R                                   # Rekurzivní výpis podadresářů
+ls -d */                                # Pouze adresáře
+ls *.txt                                # Pouze .txt soubory
+```
 
-# Přejmenování více souborů
-for f in *.jpeg; do mv "$f" "${f%.jpeg}.jpg"; done
+#### Vytváření souborů a adresářů
+
+```bash
+touch file.txt                          # Vytvoř prázdný soubor (nebo aktualizuj čas)
+touch file{1..5}.txt                    # Vytvoř file1.txt až file5.txt
+mkdir folder                            # Vytvoř adresář
+mkdir -p parent/child/grandchild        # Vytvoř celou cestu (včetně rodičů)
+mkdir -p project/{src,tests,docs}       # Vytvoř strukturu složek najednou
+mkdir -p {2024,2025}/{01..12}           # Vytvoř složky pro roky a měsíce
+```
+
+#### Kopírování (cp)
+
+```bash
+cp source.txt dest.txt                  # Kopíruj soubor
+cp source.txt /path/to/folder/          # Kopíruj do jiného adresáře
+cp -r source_dir/ dest_dir/             # Kopíruj adresář rekurzivně
+cp -i file.txt backup/                  # Interaktivní (ptá se před přepsáním)
+cp -n file.txt backup/                  # Nepřepisuj existující
+cp -u source.txt dest.txt               # Kopíruj jen pokud je source novější
+cp -v *.txt backup/                     # Verbose - ukazuje co kopíruje
+cp -a source/ dest/                     # Archiv - zachová práva, časy, linky
+cp file{,.bak}                          # Rychlá záloha: file → file.bak
 
 # Kopírování s progress barem (pokud máš rsync)
 rsync -ah --progress source/ dest/
+```
+
+#### Přesun a přejmenování (mv)
+
+```bash
+mv old.txt new.txt                      # Přejmenuj soubor
+mv file.txt /path/to/folder/            # Přesuň do jiného adresáře
+mv file.txt folder/newname.txt          # Přesuň a přejmenuj najednou
+mv -i source.txt dest/                  # Interaktivní (ptá se před přepsáním)
+mv -n source.txt dest/                  # Nepřepisuj existující
+mv -v *.txt archive/                    # Verbose - ukazuje co přesouvá
+mv folder/ newfolder/                   # Přejmenuj adresář
+
+# Hromadné přejmenování
+for f in *.jpeg; do mv "$f" "${f%.jpeg}.jpg"; done    # .jpeg → .jpg
+for f in *.txt; do mv "$f" "prefix_$f"; done          # Přidej prefix
+for f in *.TXT; do mv "$f" "${f,,}"; done             # Velká → malá písmena
+```
+
+#### Mazání (rm, rmdir)
+
+```bash
+rm file.txt                             # Smaž soubor
+rm -i file.txt                          # Interaktivní (ptá se před smazáním)
+rm -f file.txt                          # Force - nesmaže-li, nepíše chybu
+rm *.log                                # Smaž všechny .log soubory
+rm -r folder/                           # Smaž adresář rekurzivně
+rm -rf folder/                          # Force rekurzivní (POZOR - nesmaže bez ptaní!)
+rmdir folder/                           # Smaž prázdný adresář
+rmdir -p a/b/c/                         # Smaž prázdné adresáře v cestě
+
+# Bezpečnější mazání - přesun do koše místo smazání
+mkdir -p ~/.trash
+alias del='mv -t ~/.trash'              # Použití: del file.txt
+```
+
+#### Prohlížení obsahu souborů
+
+```bash
+cat file.txt                            # Vypíše celý obsah
+cat file1.txt file2.txt                 # Spojí a vypíše více souborů
+cat -n file.txt                         # S číslováním řádků
+tac file.txt                            # Vypíše pozpátku (poslední řádek první)
+
+less file.txt                           # Interaktivní prohlížení (q = quit)
+                                        # / = hledat, n = další, N = předchozí
+                                        # g = začátek, G = konec
+
+head file.txt                           # Prvních 10 řádků
+head -n 20 file.txt                     # Prvních 20 řádků
+head -c 100 file.txt                    # Prvních 100 bytů
+
+tail file.txt                           # Posledních 10 řádků
+tail -n 20 file.txt                     # Posledních 20 řádků
+tail -f logfile.log                     # Sleduj nové řádky (live log)
+tail -f logfile.log | grep ERROR        # Sleduj jen řádky s ERROR
+```
+
+#### Vyhledávání souborů (find)
+
+```bash
+find . -name "*.txt"                    # Najdi .txt soubory (aktuální adresář)
+find /path -name "file.txt"             # Hledej v konkrétní cestě
+find . -iname "*.TXT"                   # Case-insensitive hledání
+find . -type f                          # Pouze soubory
+find . -type d                          # Pouze adresáře
+find . -type f -empty                   # Prázdné soubory
+find . -size +100M                      # Soubory větší než 100MB
+find . -size -1k                        # Soubory menší než 1KB
+find . -mtime -7                        # Změněno za posledních 7 dní
+find . -mtime +30                       # Změněno před více než 30 dny
+find . -user username                   # Soubory konkrétního uživatele
+
+# Kombinace s akcemi
+find . -name "*.log" -delete            # Najdi a smaž
+find . -name "*.sh" -exec chmod +x {} \; # Najdi a spusť příkaz
+find . -type f -name "*.txt" -exec grep -l "pattern" {} \;  # Hledej v souborech
+```
+
+#### Komprimace a archivace
+
+```bash
+# TAR (archivace bez komprese)
+tar -cvf archive.tar folder/            # Vytvoř archiv (c=create, v=verbose, f=file)
+tar -tvf archive.tar                    # Zobraz obsah archivu
+tar -xvf archive.tar                    # Rozbal archiv
+
+# TAR + GZIP (.tar.gz nebo .tgz)
+tar -czvf archive.tar.gz folder/        # Vytvoř komprimovaný archiv
+tar -tzvf archive.tar.gz                # Zobraz obsah
+tar -xzvf archive.tar.gz                # Rozbal
+tar -xzvf archive.tar.gz -C /target/    # Rozbal do konkrétního adresáře
+
+# TAR + BZIP2 (.tar.bz2) - lepší komprese, pomalejší
+tar -cjvf archive.tar.bz2 folder/
+tar -xjvf archive.tar.bz2
+
+# TAR + XZ (.tar.xz) - nejlepší komprese, nejpomalejší
+tar -cJvf archive.tar.xz folder/
+tar -xJvf archive.tar.xz
+
+# GZIP (komprese jednotlivých souborů)
+gzip file.txt                           # Komprimuj → file.txt.gz (originál smazán)
+gzip -k file.txt                        # Zachovej originál
+gzip -d file.txt.gz                     # Dekomprimuj
+gunzip file.txt.gz                      # Totéž jako gzip -d
+zcat file.txt.gz                        # Zobraz obsah bez rozbalení
+
+# ZIP (kompatibilní s Windows)
+zip archive.zip file1.txt file2.txt     # Vytvoř zip
+zip -r archive.zip folder/              # Rekurzivně (celý adresář)
+zip -e archive.zip folder/              # S heslem (encrypted)
+unzip archive.zip                       # Rozbal
+unzip archive.zip -d /target/           # Rozbal do adresáře
+unzip -l archive.zip                    # Zobraz obsah
+
+# 7-Zip (pokud nainstalováno)
+7z a archive.7z folder/                 # Vytvoř archiv
+7z x archive.7z                         # Rozbal
+7z l archive.7z                         # Zobraz obsah
+```
+
+#### Informace o souborech a discích
+
+```bash
+file document.pdf                       # Zjisti typ souboru
+stat file.txt                           # Detailní informace (práva, časy, inode)
+wc file.txt                             # Počet řádků, slov, bytů
+wc -l file.txt                          # Pouze počet řádků
+wc -w file.txt                          # Pouze počet slov
+
+du -h folder/                           # Velikost adresáře (human-readable)
+du -sh folder/                          # Pouze celková velikost
+du -sh */                               # Velikost všech podadresářů
+du -ah folder/ | sort -rh | head -10    # Top 10 největších souborů
+
+df -h                                   # Místo na discích (human-readable)
+df -h .                                 # Místo na aktuálním disku
+```
+
+#### Práva a vlastnictví
+
+```bash
+# Zobrazení práv: drwxr-xr-x = typ + user + group + others
+# r=read(4), w=write(2), x=execute(1)
+
+chmod +x script.sh                      # Přidej právo spuštění
+chmod -x script.sh                      # Odeber právo spuštění
+chmod 755 script.sh                     # rwxr-xr-x (spustitelný skript)
+chmod 644 file.txt                      # rw-r--r-- (běžný soubor)
+chmod 600 private.key                   # rw------- (jen vlastník)
+chmod -R 755 folder/                    # Rekurzivně na celý adresář
+
+chown user file.txt                     # Změň vlastníka
+chown user:group file.txt               # Změň vlastníka i skupinu
+chown -R user:group folder/             # Rekurzivně
+```
+
+#### Linky (symbolické a pevné)
+
+```bash
+ln -s /path/to/original link_name       # Symbolický link (jako Windows shortcut)
+ln -s ../relative/path link_name        # Relativní cesta
+ln original.txt hardlink.txt            # Pevný link (sdílí stejná data)
+readlink link_name                      # Zobraz kam link ukazuje
+readlink -f link_name                   # Absolutní cesta cíle
+```
+
+#### Porovnání souborů
+
+```bash
+diff file1.txt file2.txt                # Zobraz rozdíly
+diff -u file1.txt file2.txt             # Unified formát (čitelnější)
+diff -y file1.txt file2.txt             # Side-by-side zobrazení
+diff -r dir1/ dir2/                     # Porovnej adresáře rekurzivně
+diff -q dir1/ dir2/                     # Pouze seznam rozdílných souborů
+
+cmp file1 file2                         # Binární porovnání
+md5sum file.txt                         # MD5 hash souboru
+sha256sum file.txt                      # SHA256 hash souboru
 ```
 
 ### Piping a přesměrování
