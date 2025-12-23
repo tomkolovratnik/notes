@@ -39,7 +39,7 @@ Výsledek: `D:\_Repos\_my-notes (master) ❯`
 
 Jak vytěžit maximum z Git Bash na Windows.
 
-## Co je Git Bash
+## Úvod a Windows specifika
 
 Git Bash je terminálové prostředí pro Windows, které přináší:
 - Bash shell (stejný jako na Linuxu/macOS)
@@ -47,7 +47,6 @@ Git Bash je terminálové prostředí pro Windows, které přináší:
 - Git integraci
 - MINGW64 prostředí (MinGW-w64 = Minimalist GNU for Windows)
 
-## Windows specifika
 
 ### Cesty - Unix vs Windows formát
 
@@ -524,7 +523,7 @@ touch ~/.bashrc
 code ~/.bashrc
 ```
 
-## Základní .bashrc konfigurace
+### Základní .bashrc
 
 ```bash
 # ============================================
@@ -780,7 +779,9 @@ command -v eza &> /dev/null && alias ls='eza --icons' && alias ll='eza -la --ico
 command -v rg &> /dev/null && alias grep='rg'
 ```
 
-## Klávesové zkratky v Bash
+## Práce v terminálu
+
+### Klávesové zkratky
 
 ### Pohyb kurzoru
 
@@ -830,7 +831,7 @@ command -v rg &> /dev/null && alias grep='rg'
 | `Ctrl+D` | Zavři terminál / EOF |
 | `Ctrl+L` | Vyčisti obrazovku (jako `clear`) |
 
-## Historie příkazů - Tipy
+### Historie příkazů
 
 ### Rychlé použití historie
 
@@ -870,7 +871,7 @@ history | grep git      # Filtruj příkazy s "git"
 Ctrl+R                  # Fuzzy hledání v historii
 ```
 
-## MinTTY konfigurace (~/.minttyrc)
+### MinTTY (~/.minttyrc)
 
 ```ini
 # ~/.minttyrc - konfigurace terminálu
@@ -916,7 +917,9 @@ CtrlShiftShortcuts=yes
 Transparency=off
 ```
 
-## Starship prompt (alternativa k PS1)
+## Prompt a terminál
+
+### Starship prompt
 
 Moderní, rychlý a konfigurovatelný prompt.
 
@@ -977,7 +980,7 @@ symbol = " "
 format = "[$symbol$context]($style) "
 ```
 
-## Windows Terminal integrace
+### Windows Terminal
 
 ### Přidání Git Bash do Windows Terminal
 
@@ -2712,7 +2715,7 @@ oh-my-posh get themes
 # Populární témata: agnoster, dracula, powerlevel10k_rainbow, catppuccin
 ```
 
-## Doporučené nástroje k instalaci
+### Doporučené nástroje
 
 Pro maximální produktivitu nainstaluj tyto nástroje:
 
@@ -2724,7 +2727,9 @@ scoop install fzf ripgrep fd bat eza delta zoxide jq starship
 scoop install fzf zoxide starship
 ```
 
-## Rychlý start - Minimální .bashrc
+## Rychlý start a optimalizace
+
+### Minimální .bashrc
 
 Pokud chceš rychle začít, zkopíruj toto:
 
@@ -2777,7 +2782,7 @@ source ~/.bashrc
 reload                          # Pokud máš alias
 ```
 
-## Performance - Zrychlení Git Bash
+### Performance
 
 ### Měření doby startu
 
