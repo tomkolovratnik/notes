@@ -1,3 +1,9 @@
+---
+layout: default
+title: Git Bash - Kurz
+nav_order: 16
+---
+
 # Git Bash - Praktický kurz
 
 Interaktivní kurz pro zvládnutí Git Bash na Windows. Od úplných základů po pokročilé techniky.

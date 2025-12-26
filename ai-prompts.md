@@ -139,3 +139,8 @@ Každou interakci zakončím shrnutím vytvořených testů, pokrytých scéná�
 - **Přidej příklady:** Konkrétní ukázky očekávaného výstupu pomohou AI lépe pochopit požadavky
 - **Definuj omezení:** Co AI *nemá* dělat (např. "nenavrhuj změny architektury bez konzultace")
 - **Iteruj:** Upřesňuj prompt na základě výsledků v reálném použití
+
+## Viz také
+
+- [Kódovací agenti](coding-agents.md) - Praktické tipy pro práci s Claude Code a Copilot
+- [Claude Code](claude-code.md) - Konfigurace CLI nástroje a MCP serverů

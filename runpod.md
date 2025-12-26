@@ -1,3 +1,9 @@
+---
+layout: default
+title: Runpod.io
+nav_order: 14
+---
+
 # Runpod.io
 
 Runpod.io je cloud platforma pro spouštění GPU workloadů. Umožňuje snadno spustit vlastní LLM modely s OpenAI-kompatibilním API bez zbytečné složitosti.
@@ -294,3 +300,8 @@ python chatbot.py
 - **Runpod docs**: https://docs.runpod.io/
 - **vLLM OpenAI API**: https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html
 - **Hugging Face modely**: https://huggingface.co/models
+
+## Viz také
+
+- [vLLM](vllm.md) - Detailní konfigurace vLLM serveru a optimalizace
+- [Lokální LLM](llm-local.md) - Alternativy pro lokální inference bez cloudu

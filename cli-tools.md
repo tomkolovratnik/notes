@@ -1,3 +1,9 @@
+---
+layout: default
+title: CLI nástroje
+nav_order: 18
+---
+
 # CLI nástroje
 
 Moderní příkazové nástroje pro produktivnější práci v terminálu.

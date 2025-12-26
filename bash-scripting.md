@@ -1,19 +1,14 @@
+---
+layout: default
+title: Bash Scripting
+nav_order: 17
+---
+
 # Bash Scripting
 
 Základy a pokročilé techniky pro psaní bash skriptů.
 
-> ✅ **Windows Git Bash**: Většina obsahu funguje. Výjimky jsou označeny ⚠️.
-
-### Co nefunguje v Git Bash na Windows
-
-| Příkaz/funkce | Důvod | Alternativa |
-|---------------|-------|-------------|
-| `sudo` | Windows nemá sudo | Spusť Git Bash jako Admin |
-| `systemctl` | Linux-only služby | `net start/stop`, `sc.exe` |
-| `apt`, `yum` | Linux package managery | Scoop, Chocolatey, Winget |
-| `/etc/passwd` | Linux-only soubor | Není potřeba |
-| `mail` | Linux mail služba | PowerShell `Send-MailMessage` |
-| `cron` | Linux scheduler | Task Scheduler |
+> ✅ **Windows Git Bash**: Většina obsahu funguje. Výjimky jsou označeny ⚠️. Pro konfiguraci Git Bash viz [git-bash.md](git-bash.md).
 
 ## Základy
 

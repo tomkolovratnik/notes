@@ -1,3 +1,9 @@
+---
+layout: default
+title: Git Bash
+nav_order: 15
+---
+
 # Git Bash - Maximální produktivita
 
 #### Minimalistický prompt s dynamickou barvou git větve

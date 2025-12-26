@@ -1,3 +1,9 @@
+---
+layout: default
+title: vLLM
+nav_order: 13
+---
+
 # vLLM
 
 vLLM je inferenční engine určený pro efektivní spouštění velkých jazykových modelů s vysokou propustností a nízkou latencí. Je ideální pro produkční nasazení, kde potřebujete obsloužit více uživatelů současně.
@@ -293,3 +299,8 @@ python -m vllm.entrypoints.openai.api_server \
 - [GitHub репо](https://github.com/vllm-project/vllm)
 - [Hugging Face Models](https://huggingface.co/models)
 - [OpenAI API kompatibilita](https://docs.vllm.ai/en/latest/getting_started/installation.html)
+
+## Viz také
+
+- [Lokální LLM](llm-local.md) - Alternativní inference servery (llama.cpp, KoboldCpp)
+- [Runpod.io](runpod.md) - Cloud GPU pro spuštění vLLM bez vlastního hardwaru

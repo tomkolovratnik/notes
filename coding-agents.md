@@ -210,6 +210,11 @@ function getUsersOrderedByRegistrationDate(userId) {
 | **Cena** | Subscription | Subscription |
 | **Vhodné pro** | Refactor, nové feature | Hledání se během psaní |
 
+## Viz také
+
+- [Claude Code](claude-code.md) - Detailní konfigurace Claude Code CLI
+- [AI Prompty](ai-prompts.md) - Prompty pro nastavení AI asistentů
+
 ---
 
 **Poslední aktualizace:** 2025-11-07

@@ -155,3 +155,8 @@ Shell příkazy spouštěné při určitých událostech (např. před/po tool c
 
 ### Statusline
 Konfigurace stavového řádku pro zobrazení důležitých informací.
+
+## Viz také
+
+- [Kódovací agenti](coding-agents.md) - Porovnání Claude Code vs. Copilot, tipy
+- [AI Prompty](ai-prompts.md) - Prompty pro nastavení AI asistentů

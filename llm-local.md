@@ -231,3 +231,8 @@ Pokud nelze stahovat předkompilované binárky:
 - [KoboldCpp GitHub](https://github.com/LostRuins/koboldcpp)
 - [LLamaSharp GitHub](https://github.com/SciSharp/LLamaSharp)
 - [LM Studio](https://lmstudio.ai/)
+
+## Viz také
+
+- [vLLM](vllm.md) - Vysokovýkonný inference engine pro produkční nasazení
+- [Runpod.io](runpod.md) - Cloud GPU alternativa pro spouštění LLM
