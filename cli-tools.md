@@ -2000,3 +2000,8 @@ alias cd='z'
 alias preview='fzf --preview "bat --color=always {}"'
 alias vf='code $(fzf)'                  # Otevři vybraný soubor v VS Code
 ```
+
+## Viz také
+
+- [Git Bash](git-bash.md) - Konfigurace .bashrc a aliasů
+- [Bash Scripting](bash-scripting.md) - Pokročilé bash programování

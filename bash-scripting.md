@@ -985,3 +985,8 @@ log "=== Disk check completed ==="
 # Zobraz výsledek
 echo "Log saved to: $LOG_FILE"
 ```
+
+## Viz také
+
+- [Git Bash](git-bash.md) - Konfigurace prostředí a produktivita
+- [CLI nástroje](cli-tools.md) - Moderní nástroje pro terminál
