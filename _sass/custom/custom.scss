@@ -1,6 +1,16 @@
 // Custom styles pro override syntax highlighting
 // Just the Docs automaticky načte tento soubor z _sass/custom/
 
+// Navigace - všechny kategorie defaultně rozbalené
+.nav-list .nav-list-item .nav-list {
+  display: block !important;
+}
+
+// Otočit šipku (indikátor rozbalení)
+.nav-list-expander svg {
+  transform: rotate(-90deg);
+}
+
 // MAXIMÁLNÍ PRIORITA - override všech syntax highlighting pravidel
 // Komentáře MUSÍ být zelené!
 
