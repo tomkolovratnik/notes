@@ -755,7 +755,14 @@ timer() {
 }
 
 # ============================================
-# Rychlé JSON formátováníjson() { python -m json.tool "$@"; }# Git - smaž merged větve (kromě main/master)git-clean-branches() {    git branch --merged | grep -v '*|main|master' | xargs -n 1 git branch -d 2>/dev/null    echo "Merged branches cleaned"}
+# Rychlé JSON formátování
+json() { python -m json.tool "$@"; }
+
+# Git - smaž merged větve (kromě main/master)
+git-clean-branches() {
+    git branch --merged | grep -v '*|main|master' | xargs -n 1 git branch -d 2>/dev/null
+    echo "Merged branches cleaned"
+}
 # CLI NÁSTROJE (pokud máš nainstalované)
 # ============================================
 
