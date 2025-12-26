@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Node.js / npm
-nav_order: 6
+parent: Programovací jazyky
+nav_order: 1
 ---
 
 # Node.js / npm

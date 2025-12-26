@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Git Bash
-nav_order: 15
+parent: Shell & Terminál
+nav_order: 1
 ---
 
 # Git Bash - Maximální produktivita

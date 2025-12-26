@@ -1,7 +1,8 @@
 ---
 layout: default
 title: PowerShell
-nav_order: 10
+parent: Shell & Terminál
+nav_order: 6
 ---
 
 # PowerShell

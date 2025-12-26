@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Bash Scripting
-nav_order: 17
+parent: Shell & Terminál
+nav_order: 3
 ---
 
 # Bash Scripting

@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Lokální LLM
-nav_order: 11
+parent: AI & LLM
+nav_order: 4
 ---
 
 # Lokální LLM Inference

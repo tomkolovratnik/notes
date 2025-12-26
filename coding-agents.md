@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Kódovací agenti
-nav_order: 3
+parent: AI & LLM
+nav_order: 1
 ---
 
 # Kódovací agenti

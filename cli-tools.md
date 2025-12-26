@@ -1,7 +1,8 @@
 ---
 layout: default
 title: CLI nástroje
-nav_order: 18
+parent: Shell & Terminál
+nav_order: 4
 ---
 
 # CLI nástroje

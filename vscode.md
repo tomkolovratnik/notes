@@ -1,7 +1,8 @@
 ---
 layout: default
 title: VS Code
-nav_order: 5
+parent: Vývojové nástroje
+nav_order: 2
 ---
 
 # VS Code

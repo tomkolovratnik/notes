@@ -1,7 +1,8 @@
 ---
 layout: default
 title: vLLM
-nav_order: 13
+parent: AI & LLM
+nav_order: 5
 ---
 
 # vLLM

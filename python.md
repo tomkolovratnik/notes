@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Python / uv
-nav_order: 7
+parent: Programovací jazyky
+nav_order: 2
 ---
 
 # Python / uv

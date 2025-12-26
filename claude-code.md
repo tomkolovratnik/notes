@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Claude Code
+parent: AI & LLM
 nav_order: 2
 ---
 

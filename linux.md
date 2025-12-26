@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Linux / Bash
-nav_order: 9
+parent: Shell & Terminál
+nav_order: 5
 ---
 
 # Linux / Bash (Ubuntu)

@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Docker
-nav_order: 4
+parent: Vývojové nástroje
+nav_order: 3
 ---
 
 # Docker

@@ -1,7 +1,8 @@
 ---
 layout: default
 title: .NET
-nav_order: 8
+parent: Programovací jazyky
+nav_order: 3
 ---
 
 # .NET

@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Git
-nav_order: 3
+parent: Vývojové nástroje
+nav_order: 1
 ---
 
 # Git

@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Git Bash - Kurz
-nav_order: 16
+parent: Shell & Terminál
+nav_order: 2
 ---
 
 # Git Bash - Praktický kurz

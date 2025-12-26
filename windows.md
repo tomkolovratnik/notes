@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Windows
-nav_order: 10
+parent: Operační systém
+nav_order: 1
 ---
 
 # Windows

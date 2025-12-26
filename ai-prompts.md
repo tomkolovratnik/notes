@@ -1,7 +1,8 @@
 ---
 layout: default
 title: AI Prompty
-nav_order: 12
+parent: AI & LLM
+nav_order: 3
 ---
 
 # AI Prompty

@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Runpod.io
-nav_order: 14
+parent: AI & LLM
+nav_order: 6
 ---
 
 # Runpod.io
