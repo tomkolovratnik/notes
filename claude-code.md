@@ -43,6 +43,18 @@ Vytvářejte vlastní příkazy v `.claude/commands/` jako `.md` soubory.
 
 ## Konfigurace
 
+### Umístění konfiguračních souborů
+
+| Funkce | User (globální) | Project | Local (gitignore) |
+|--------|-----------------|---------|-------------------|
+| Settings | `~/.claude/settings.json` | `.claude/settings.json` | `.claude/settings.local.json` |
+| Subagents | `~/.claude/agents/` | `.claude/agents/` | — |
+| MCP servers | `~/.claude.json` | `.mcp.json` | `~/.claude.json` (per-project) |
+| Plugins | `~/.claude/settings.json` | `.claude/settings.json` | `.claude/settings.local.json` |
+| CLAUDE.md | `~/.claude/CLAUDE.md` | `CLAUDE.md` nebo `.claude/CLAUDE.md` | `CLAUDE.local.md` |
+
+**Priorita načítání:** Local > Project > User (lokální přepisuje projektové, projektové přepisuje globální)
+
 ### MCP Servery
 Model Context Protocol (MCP) servery rozšiřují funkcionalitu Claude Code o dodatečné nástroje a schopnosti.
 
