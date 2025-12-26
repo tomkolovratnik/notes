@@ -14,14 +14,21 @@
       "Bash(cat:*)",
       "Bash(git pull:*)",
       "Bash(git stash:*)",
-      "Bash(git stash pop:*)"
+      "Bash(git stash pop:*)",
+      "Bash(ls:*)",
+      "Bash(sort:*)",
+      "Bash(wc:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(xargs:*)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []
   },
-  "outputStyle": "default",
   "statusLine": {
     "type": "command",
     "command": "input=$(cat); echo \"$(echo \"$input\" | jq -r '.workspace.current_dir') ❯\""
-  }
+  },
+  "outputStyle": "default"
 }

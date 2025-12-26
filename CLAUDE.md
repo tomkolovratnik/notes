@@ -12,7 +12,7 @@ The repository uses a modular structure with topic-specific markdown files:
 
 ```
 _my-notes/
-├── main.md                 # Index/rozcestník s odkazy na všechny téma
+├── index.md                # Index/rozcestník s odkazy na všechny téma
 ├── claude-code.md          # Claude Code: CLI nástroj, tipy, MCP konfigurace
 ├── git.md                  # Git: příkazy, tipy, .gitignore vzory
 ├── docker.md               # Docker: container management, Compose, Dockerfile
@@ -23,7 +23,7 @@ _my-notes/
 └── powershell.md           # PowerShell: Windows příkazy a skripty
 ```
 
-**Entry point:** `main.md` - serves as index with links to all topic-specific files
+**Entry point:** `index.md` - serves as index with links to all topic-specific files
 
 ## Working with This Repository
 
@@ -42,7 +42,7 @@ All documentation is written in **Czech**. When making changes or additions:
 
 ### File Organization Principles
 
-#### main.md
+#### index.md
 - Acts as a table of contents/index only
 - Contains links to topic-specific files with brief descriptions
 - Should NOT contain detailed content (only in topic files)
@@ -60,16 +60,16 @@ Each topic file follows this structure:
 #### Adding a New Topic
 When adding documentation for a new tool/technology:
 1. Create a new `.md` file with kebab-case naming (e.g., `kubernetes.md`)
-2. Add entry to main.md table of contents with link and brief description
+2. Add entry to index.md table of contents with link and brief description
 3. Follow the existing file structure pattern
-4. Update the date in main.md
+4. Update the date in index.md
 
 #### Updating Existing Topics
 - Edit the relevant topic file directly
 - Preserve existing structure and formatting
 - Add new examples to appropriate subsections
 - Keep command examples concise and practical
-- Update main.md date if significant changes
+- Update index.md date if significant changes
 
 ### Content Philosophy
 
@@ -103,12 +103,12 @@ When working in this repository, typical requests include:
 
 **Adding content**: "Přidej sekci o X do Y.md"
 **Creating new topic**: "Vytvoř nový soubor pro téma X s obsahem Y"
-**Updating index**: "Přidej odkaz do main.md"
+**Updating index**: "Přidej odkaz do index.md"
 **Restructuring**: "Reorganizuj sekci X v souboru Y"
 
 Always ensure:
 - Content stays in Czech
-- main.md links remain valid
+- index.md links remain valid
 - Consistent formatting with existing files
 
 ### Git Workflow
