@@ -446,16 +446,16 @@ fd -e tmp -X rm -i                      # -X = všechny najednou, -i = ptá se
 fd -t f "package.json"
 
 # Najít velké soubory
-fd -S +50M -t f
+fd -S +50M -t f                         # -S = size, +50M = větší než 50MB, -t f = jen soubory
 
 # Najít prázdné složky
-fd -t d -e empty
+fd -t d -e empty                        # -t d = složky, -e = přípona/pattern
 
 # Najít a otevřít v editoru
-fd -e md | fzf | xargs code
+fd -e md | fzf | xargs code             # fd najde .md soubory → fzf výběr → otevře v VS Code
 
 # Najít duplicitní názvy
-fd -t f | sort | uniq -d
+fd -t f | sort | uniq -d                # -d = vypíše jen duplicitní řádky
 ```
 
 ---
