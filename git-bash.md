@@ -39,7 +39,7 @@ Výsledek: `D:\_Repos\_my-notes (master) ❯`
 
 Jak vytěžit maximum z Git Bash na Windows.
 
-## Co je Git Bash
+## Úvod a Windows specifika
 
 Git Bash je terminálové prostředí pro Windows, které přináší:
 - Bash shell (stejný jako na Linuxu/macOS)
@@ -47,7 +47,6 @@ Git Bash je terminálové prostředí pro Windows, které přináší:
 - Git integraci
 - MINGW64 prostředí (MinGW-w64 = Minimalist GNU for Windows)
 
-## Windows specifika
 
 ### Cesty - Unix vs Windows formát
 
@@ -524,7 +523,7 @@ touch ~/.bashrc
 code ~/.bashrc
 ```
 
-## Základní .bashrc konfigurace
+### Základní .bashrc
 
 ```bash
 # ============================================
@@ -780,7 +779,9 @@ command -v eza &> /dev/null && alias ls='eza --icons' && alias ll='eza -la --ico
 command -v rg &> /dev/null && alias grep='rg'
 ```
 
-## Klávesové zkratky v Bash
+## Práce v terminálu
+
+### Klávesové zkratky
 
 ### Pohyb kurzoru
 
@@ -830,7 +831,7 @@ command -v rg &> /dev/null && alias grep='rg'
 | `Ctrl+D` | Zavři terminál / EOF |
 | `Ctrl+L` | Vyčisti obrazovku (jako `clear`) |
 
-## Historie příkazů - Tipy
+### Historie příkazů
 
 ### Rychlé použití historie
 
@@ -870,7 +871,7 @@ history | grep git      # Filtruj příkazy s "git"
 Ctrl+R                  # Fuzzy hledání v historii
 ```
 
-## MinTTY konfigurace (~/.minttyrc)
+### MinTTY (~/.minttyrc)
 
 ```ini
 # ~/.minttyrc - konfigurace terminálu
@@ -916,7 +917,9 @@ CtrlShiftShortcuts=yes
 Transparency=off
 ```
 
-## Starship prompt (alternativa k PS1)
+## Prompt a terminál
+
+### Starship prompt
 
 Moderní, rychlý a konfigurovatelný prompt.
 
@@ -977,7 +980,7 @@ symbol = " "
 format = "[$symbol$context]($style) "
 ```
 
-## Windows Terminal integrace
+### Windows Terminal
 
 ### Přidání Git Bash do Windows Terminal
 
@@ -1006,18 +1009,229 @@ V `settings.json` přidej nový profil:
 
 ## Tipy a triky
 
-### Práce se soubory
+### Práce se soubory a adresáři
+
+#### Výpis souborů (ls)
 
 ```bash
-# Rychlé vytvoření více souborů
-touch file{1..5}.txt                    # file1.txt až file5.txt
-mkdir -p project/{src,tests,docs}       # Vytvoř strukturu složek
+ls                                      # Základní výpis
+ls -l                                   # Detailní výpis (práva, velikost, datum)
+ls -la                                  # Včetně skrytých souborů (začínají tečkou)
+ls -lh                                  # Human-readable velikosti (KB, MB, GB)
+ls -lt                                  # Seřazeno podle času (nejnovější první)
+ls -ltr                                 # Seřazeno podle času (nejstarší první)
+ls -lS                                  # Seřazeno podle velikosti (největší první)
+ls -R                                   # Rekurzivní výpis podadresářů
+ls -d */                                # Pouze adresáře
+ls *.txt                                # Pouze .txt soubory
+```
 
-# Přejmenování více souborů
-for f in *.jpeg; do mv "$f" "${f%.jpeg}.jpg"; done
+#### Vytváření souborů a adresářů
+
+```bash
+touch file.txt                          # Vytvoř prázdný soubor (nebo aktualizuj čas)
+touch file{1..5}.txt                    # Vytvoř file1.txt až file5.txt
+mkdir folder                            # Vytvoř adresář
+mkdir -p parent/child/grandchild        # Vytvoř celou cestu (včetně rodičů)
+mkdir -p project/{src,tests,docs}       # Vytvoř strukturu složek najednou
+mkdir -p {2024,2025}/{01..12}           # Vytvoř složky pro roky a měsíce
+```
+
+#### Kopírování (cp)
+
+```bash
+cp source.txt dest.txt                  # Kopíruj soubor
+cp source.txt /path/to/folder/          # Kopíruj do jiného adresáře
+cp -r source_dir/ dest_dir/             # Kopíruj adresář rekurzivně
+cp -i file.txt backup/                  # Interaktivní (ptá se před přepsáním)
+cp -n file.txt backup/                  # Nepřepisuj existující
+cp -u source.txt dest.txt               # Kopíruj jen pokud je source novější
+cp -v *.txt backup/                     # Verbose - ukazuje co kopíruje
+cp -a source/ dest/                     # Archiv - zachová práva, časy, linky
+cp file{,.bak}                          # Rychlá záloha: file → file.bak
 
 # Kopírování s progress barem (pokud máš rsync)
 rsync -ah --progress source/ dest/
+```
+
+#### Přesun a přejmenování (mv)
+
+```bash
+mv old.txt new.txt                      # Přejmenuj soubor
+mv file.txt /path/to/folder/            # Přesuň do jiného adresáře
+mv file.txt folder/newname.txt          # Přesuň a přejmenuj najednou
+mv -i source.txt dest/                  # Interaktivní (ptá se před přepsáním)
+mv -n source.txt dest/                  # Nepřepisuj existující
+mv -v *.txt archive/                    # Verbose - ukazuje co přesouvá
+mv folder/ newfolder/                   # Přejmenuj adresář
+
+# Hromadné přejmenování
+for f in *.jpeg; do mv "$f" "${f%.jpeg}.jpg"; done    # .jpeg → .jpg
+for f in *.txt; do mv "$f" "prefix_$f"; done          # Přidej prefix
+for f in *.TXT; do mv "$f" "${f,,}"; done             # Velká → malá písmena
+```
+
+#### Mazání (rm, rmdir)
+
+```bash
+rm file.txt                             # Smaž soubor
+rm -i file.txt                          # Interaktivní (ptá se před smazáním)
+rm -f file.txt                          # Force - nesmaže-li, nepíše chybu
+rm *.log                                # Smaž všechny .log soubory
+rm -r folder/                           # Smaž adresář rekurzivně
+rm -rf folder/                          # Force rekurzivní (POZOR - nesmaže bez ptaní!)
+rmdir folder/                           # Smaž prázdný adresář
+rmdir -p a/b/c/                         # Smaž prázdné adresáře v cestě
+
+# Bezpečnější mazání - přesun do koše místo smazání
+mkdir -p ~/.trash
+alias del='mv -t ~/.trash'              # Použití: del file.txt
+```
+
+#### Prohlížení obsahu souborů
+
+```bash
+cat file.txt                            # Vypíše celý obsah
+cat file1.txt file2.txt                 # Spojí a vypíše více souborů
+cat -n file.txt                         # S číslováním řádků
+tac file.txt                            # Vypíše pozpátku (poslední řádek první)
+
+less file.txt                           # Interaktivní prohlížení (q = quit)
+                                        # / = hledat, n = další, N = předchozí
+                                        # g = začátek, G = konec
+
+head file.txt                           # Prvních 10 řádků
+head -n 20 file.txt                     # Prvních 20 řádků
+head -c 100 file.txt                    # Prvních 100 bytů
+
+tail file.txt                           # Posledních 10 řádků
+tail -n 20 file.txt                     # Posledních 20 řádků
+tail -f logfile.log                     # Sleduj nové řádky (live log)
+tail -f logfile.log | grep ERROR        # Sleduj jen řádky s ERROR
+```
+
+#### Vyhledávání souborů (find)
+
+```bash
+find . -name "*.txt"                    # Najdi .txt soubory (aktuální adresář)
+find /path -name "file.txt"             # Hledej v konkrétní cestě
+find . -iname "*.TXT"                   # Case-insensitive hledání
+find . -type f                          # Pouze soubory
+find . -type d                          # Pouze adresáře
+find . -type f -empty                   # Prázdné soubory
+find . -size +100M                      # Soubory větší než 100MB
+find . -size -1k                        # Soubory menší než 1KB
+find . -mtime -7                        # Změněno za posledních 7 dní
+find . -mtime +30                       # Změněno před více než 30 dny
+find . -user username                   # Soubory konkrétního uživatele
+
+# Kombinace s akcemi
+find . -name "*.log" -delete            # Najdi a smaž
+find . -name "*.sh" -exec chmod +x {} \; # Najdi a spusť příkaz
+find . -type f -name "*.txt" -exec grep -l "pattern" {} \;  # Hledej v souborech
+```
+
+#### Komprimace a archivace
+
+```bash
+# TAR (archivace bez komprese)
+tar -cvf archive.tar folder/            # Vytvoř archiv (c=create, v=verbose, f=file)
+tar -tvf archive.tar                    # Zobraz obsah archivu
+tar -xvf archive.tar                    # Rozbal archiv
+
+# TAR + GZIP (.tar.gz nebo .tgz)
+tar -czvf archive.tar.gz folder/        # Vytvoř komprimovaný archiv
+tar -tzvf archive.tar.gz                # Zobraz obsah
+tar -xzvf archive.tar.gz                # Rozbal
+tar -xzvf archive.tar.gz -C /target/    # Rozbal do konkrétního adresáře
+
+# TAR + BZIP2 (.tar.bz2) - lepší komprese, pomalejší
+tar -cjvf archive.tar.bz2 folder/
+tar -xjvf archive.tar.bz2
+
+# TAR + XZ (.tar.xz) - nejlepší komprese, nejpomalejší
+tar -cJvf archive.tar.xz folder/
+tar -xJvf archive.tar.xz
+
+# GZIP (komprese jednotlivých souborů)
+gzip file.txt                           # Komprimuj → file.txt.gz (originál smazán)
+gzip -k file.txt                        # Zachovej originál
+gzip -d file.txt.gz                     # Dekomprimuj
+gunzip file.txt.gz                      # Totéž jako gzip -d
+zcat file.txt.gz                        # Zobraz obsah bez rozbalení
+
+# ZIP (kompatibilní s Windows)
+zip archive.zip file1.txt file2.txt     # Vytvoř zip
+zip -r archive.zip folder/              # Rekurzivně (celý adresář)
+zip -e archive.zip folder/              # S heslem (encrypted)
+unzip archive.zip                       # Rozbal
+unzip archive.zip -d /target/           # Rozbal do adresáře
+unzip -l archive.zip                    # Zobraz obsah
+
+# 7-Zip (pokud nainstalováno)
+7z a archive.7z folder/                 # Vytvoř archiv
+7z x archive.7z                         # Rozbal
+7z l archive.7z                         # Zobraz obsah
+```
+
+#### Informace o souborech a discích
+
+```bash
+file document.pdf                       # Zjisti typ souboru
+stat file.txt                           # Detailní informace (práva, časy, inode)
+wc file.txt                             # Počet řádků, slov, bytů
+wc -l file.txt                          # Pouze počet řádků
+wc -w file.txt                          # Pouze počet slov
+
+du -h folder/                           # Velikost adresáře (human-readable)
+du -sh folder/                          # Pouze celková velikost
+du -sh */                               # Velikost všech podadresářů
+du -ah folder/ | sort -rh | head -10    # Top 10 největších souborů
+
+df -h                                   # Místo na discích (human-readable)
+df -h .                                 # Místo na aktuálním disku
+```
+
+#### Práva a vlastnictví
+
+```bash
+# Zobrazení práv: drwxr-xr-x = typ + user + group + others
+# r=read(4), w=write(2), x=execute(1)
+
+chmod +x script.sh                      # Přidej právo spuštění
+chmod -x script.sh                      # Odeber právo spuštění
+chmod 755 script.sh                     # rwxr-xr-x (spustitelný skript)
+chmod 644 file.txt                      # rw-r--r-- (běžný soubor)
+chmod 600 private.key                   # rw------- (jen vlastník)
+chmod -R 755 folder/                    # Rekurzivně na celý adresář
+
+chown user file.txt                     # Změň vlastníka
+chown user:group file.txt               # Změň vlastníka i skupinu
+chown -R user:group folder/             # Rekurzivně
+```
+
+#### Linky (symbolické a pevné)
+
+```bash
+ln -s /path/to/original link_name       # Symbolický link (jako Windows shortcut)
+ln -s ../relative/path link_name        # Relativní cesta
+ln original.txt hardlink.txt            # Pevný link (sdílí stejná data)
+readlink link_name                      # Zobraz kam link ukazuje
+readlink -f link_name                   # Absolutní cesta cíle
+```
+
+#### Porovnání souborů
+
+```bash
+diff file1.txt file2.txt                # Zobraz rozdíly
+diff -u file1.txt file2.txt             # Unified formát (čitelnější)
+diff -y file1.txt file2.txt             # Side-by-side zobrazení
+diff -r dir1/ dir2/                     # Porovnej adresáře rekurzivně
+diff -q dir1/ dir2/                     # Pouze seznam rozdílných souborů
+
+cmp file1 file2                         # Binární porovnání
+md5sum file.txt                         # MD5 hash souboru
+sha256sum file.txt                      # SHA256 hash souboru
 ```
 
 ### Piping a přesměrování
@@ -1286,9 +1500,1224 @@ project_stats() {
 }
 ```
 
-## Doporučené nástroje k instalaci
+### fzf - Fuzzy Finder
 
-Pro maximální produktivitu nainstaluj tyto nástroje (viz [CLI nástroje](cli-tools.md)):
+Interaktivní vyhledávání souborů, historie a čehokoli. Game changer pro produktivitu.
+
+```bash
+# Instalace
+scoop install fzf                       # Windows (Scoop)
+winget install junegunn.fzf             # Windows (WinGet)
+
+# Základní použití
+fzf                                     # Interaktivní výběr souboru
+cat $(fzf)                              # Vyber soubor a zobraz obsah
+code $(fzf)                             # Vyber soubor a otevři ve VS Code
+
+# Hledání v konkrétním adresáři
+find ~/.config | fzf                    # Prohledej config soubory
+ls -la | fzf                            # Interaktivní výběr z výpisu
+
+# S náhledem obsahu souboru
+fzf --preview 'cat {}'                  # Náhled při výběru
+fzf --preview 'head -50 {}'             # Náhled prvních 50 řádků
+```
+
+#### Klávesové zkratky fzf (po integraci do .bashrc)
+
+```bash
+# Přidej do .bashrc pro aktivaci zkratek
+eval "$(fzf --bash)"                    # Bash integrace
+
+# Zkratky (po aktivaci):
+# Ctrl+R  - Fuzzy hledání v historii (SUPER užitečné!)
+# Ctrl+T  - Fuzzy výběr souboru a vložení do příkazu
+# Alt+C   - Fuzzy cd do adresáře
+```
+
+#### Praktické fzf příklady
+
+```bash
+# Git integrace
+git checkout $(git branch | fzf)                    # Přepni větev
+git log --oneline | fzf | cut -d' ' -f1 | xargs git show  # Zobraz commit
+git diff $(git diff --name-only | fzf)              # Diff konkrétního souboru
+
+# Procesy
+kill -9 $(ps aux | fzf | awk '{print $2}')          # Interaktivně zabij proces
+
+# Docker
+docker exec -it $(docker ps | fzf | awk '{print $1}') bash  # Připoj se ke kontejneru
+docker logs $(docker ps -a | fzf | awk '{print $1}')        # Zobraz logy
+
+# SSH
+ssh $(grep "Host " ~/.ssh/config | awk '{print $2}' | fzf)  # Vyber server
+
+# Proměnné prostředí
+env | fzf                                           # Prohledej env variables
+```
+
+#### fzf konfigurace v .bashrc
+
+```bash
+# Výchozí nastavení fzf
+export FZF_DEFAULT_OPTS='
+  --height 40%
+  --layout=reverse
+  --border
+  --info=inline
+  --preview-window=right:50%
+'
+
+# Použij fd místo find (rychlejší, respektuje .gitignore)
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+
+# Náhled souborů při Ctrl+T
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+
+# Náhled adresářů při Alt+C
+export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --color=always {}'"
+```
+
+### Textové utility
+
+Nástroje pro zpracování textu, CSV, logů a datových souborů.
+
+#### sort - Řazení
+
+```bash
+sort file.txt                           # Seřaď abecedně
+sort -n file.txt                        # Seřaď numericky
+sort -r file.txt                        # Seřaď obráceně (descending)
+sort -u file.txt                        # Seřaď a odstraň duplicity
+sort -k2 file.txt                       # Seřaď podle 2. sloupce
+sort -k2 -n file.txt                    # 2. sloupec numericky
+sort -t',' -k3 data.csv                 # CSV: seřaď podle 3. sloupce
+sort -h sizes.txt                       # Human-readable (1K, 2M, 3G)
+sort -R file.txt                        # Náhodné pořadí (shuffle)
+
+# Praktické příklady
+du -sh */ | sort -h                     # Adresáře podle velikosti
+ps aux --sort=-%mem | head             # Procesy podle paměti
+```
+
+#### uniq - Unikátní řádky
+
+```bash
+# POZOR: uniq vyžaduje seřazený vstup!
+sort file.txt | uniq                    # Odstraň duplicitní řádky
+sort file.txt | uniq -c                 # Počet výskytů každého řádku
+sort file.txt | uniq -d                 # Pouze duplicitní řádky
+sort file.txt | uniq -u                 # Pouze unikátní řádky (bez duplicit)
+
+# Praktické příklady
+cat access.log | cut -d' ' -f1 | sort | uniq -c | sort -rn | head -10
+# ^ Top 10 IP adres v logu
+
+history | awk '{print $2}' | sort | uniq -c | sort -rn | head -10
+# ^ Top 10 nejpoužívanějších příkazů
+```
+
+#### cut - Výběr sloupců
+
+```bash
+cut -d',' -f1 data.csv                  # 1. sloupec CSV
+cut -d',' -f1,3 data.csv                # 1. a 3. sloupec
+cut -d',' -f2-4 data.csv                # Sloupce 2 až 4
+cut -d':' -f1 /etc/passwd               # Uživatelská jména (Linux)
+cut -c1-10 file.txt                     # Prvních 10 znaků každého řádku
+cut -c5- file.txt                       # Od 5. znaku do konce
+
+# Praktické příklady
+echo $PATH | cut -d':' -f1              # První cesta v PATH
+git log --oneline | cut -d' ' -f1       # Pouze hash commitů
+```
+
+#### tr - Transformace znaků
+
+```bash
+echo "hello" | tr 'a-z' 'A-Z'           # Malá → velká písmena
+echo "HELLO" | tr 'A-Z' 'a-z'           # Velká → malá písmena
+echo "hello" | tr -d 'l'                # Smaž všechna 'l' → heo
+echo "a  b   c" | tr -s ' '             # Squeeze: smaž opakované mezery
+cat file.txt | tr '\n' ' '              # Řádky → jeden řádek
+echo "a,b,c" | tr ',' '\n'              # Čárky → řádky
+cat file.txt | tr -d '\r'               # Odstraň Windows CRLF
+
+# Praktické příklady
+echo "Hello World" | tr ' ' '_'         # Hello_World
+cat file.txt | tr -cd '[:alnum:]\n'     # Zachovej pouze alfanumerické znaky
+```
+
+#### paste - Spojení souborů vedle sebe
+
+```bash
+paste file1.txt file2.txt               # Spoj soubory vedle sebe (tab)
+paste -d',' file1.txt file2.txt         # Spoj s čárkou jako oddělovačem
+paste -s file.txt                       # Řádky → sloupce (transpose)
+paste -d'\n' file1.txt file2.txt        # Střídavě řádky z obou souborů
+
+# Praktické příklady
+paste names.txt emails.txt | column -t  # Vytvoř tabulku ze dvou souborů
+seq 1 10 | paste - - -                  # Tři sloupce z čísel 1-10
+```
+
+#### column - Formátování do sloupců
+
+```bash
+cat data.csv | column -t -s','          # CSV jako zarovnaná tabulka
+mount | column -t                       # Zarovnej výstup mount
+cat /etc/passwd | column -t -s':'       # Passwd jako tabulka
+
+# Praktické příklady
+echo -e "Name,Age,City\nJohn,25,Prague\nJane,30,Brno" | column -t -s','
+```
+
+#### Kombinace textových utilit
+
+```bash
+# Analýza CSV souboru
+cat data.csv | tail -n +2 | cut -d',' -f3 | sort | uniq -c | sort -rn
+# ^ Přeskoč header, vezmi 3. sloupec, spočítej výskyty
+
+# Extrakce e-mailů z textu
+grep -oE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' file.txt | sort -u
+
+# Frekvence slov v souboru
+cat file.txt | tr -s ' ' '\n' | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn | head -20
+
+# Log analýza - requesty za hodinu
+cat access.log | cut -d'[' -f2 | cut -d':' -f1,2 | sort | uniq -c
+```
+
+### xargs - Paralelní zpracování
+
+Převádí vstup na argumenty příkazu. Umožňuje paralelní zpracování.
+
+```bash
+# Základní použití
+echo "file1 file2 file3" | xargs rm           # Smaž soubory
+find . -name "*.log" | xargs rm               # Najdi a smaž .log soubory
+cat urls.txt | xargs wget                     # Stáhni všechny URL
+
+# S placeholderem {}
+find . -name "*.txt" | xargs -I {} cp {} backup/     # Kopíruj každý soubor
+cat files.txt | xargs -I {} echo "Processing: {}"    # Zpracuj každý řádek
+
+# Paralelní zpracování (-P = počet procesů)
+find . -name "*.jpg" | xargs -P 4 -I {} convert {} -resize 50% small_{}
+cat urls.txt | xargs -P 10 -I {} curl -s {}          # 10 paralelních stahování
+
+# Bezpečné zpracování souborů s mezerami
+find . -name "*.txt" -print0 | xargs -0 rm           # Null-separated
+find . -type f -print0 | xargs -0 -I {} cp {} backup/
+
+# Omezení počtu argumentů na příkaz
+echo {1..1000} | xargs -n 100 echo            # 100 čísel na řádek
+
+# Interaktivní potvrzení
+find . -name "*.tmp" | xargs -p rm            # Ptá se před každým
+```
+
+#### Praktické xargs příklady
+
+```bash
+# Git: checkout všech změněných souborů
+git diff --name-only | xargs git checkout
+
+# Kompilace všech .c souborů paralelně
+find . -name "*.c" | xargs -P $(nproc) -I {} gcc -c {}
+
+# Najdi velké soubory a zobraz detaily
+find . -size +100M | xargs ls -lh
+
+# Hromadné přejmenování
+ls *.jpeg | xargs -I {} bash -c 'mv "$1" "${1%.jpeg}.jpg"' _ {}
+
+# Docker: smaž všechny stopped kontejnery
+docker ps -aq --filter "status=exited" | xargs docker rm
+
+# Hromadný grep v souborech
+find . -name "*.js" | xargs grep -l "TODO"
+```
+
+### Clipboard integrace
+
+Kopírování mezi terminálem a Windows schránkou.
+
+```bash
+# Kopírování do schránky (Windows clip.exe)
+echo "text" | clip                      # Zkopíruj text do schránky
+cat file.txt | clip                     # Zkopíruj obsah souboru
+pwd | clip                              # Zkopíruj aktuální cestu
+git diff | clip                         # Zkopíruj git diff
+
+# Vložení ze schránky (PowerShell)
+powershell -command "Get-Clipboard"     # Zobraz obsah schránky
+powershell -command "Get-Clipboard" > file.txt  # Ulož do souboru
+
+# Užitečné aliasy do .bashrc
+alias copy='clip'                       # Kratší příkaz
+alias paste='powershell -command "Get-Clipboard"'
+
+# Praktické příklady
+history | tail -20 | clip               # Posledních 20 příkazů do schránky
+git log --oneline -10 | clip            # Posledních 10 commitů
+cat ~/.ssh/id_rsa.pub | clip            # SSH public key do schránky
+echo $PATH | tr ':' '\n' | clip         # PATH jako seznam
+```
+
+#### Clipboard funkce pro .bashrc
+
+```bash
+# Kopíruj výstup příkazu
+# Použití: ls -la | cb
+cb() {
+    cat | clip
+    echo "Copied to clipboard!"
+}
+
+# Kopíruj obsah souboru
+# Použití: cbf ~/.ssh/id_rsa.pub
+cbf() {
+    cat "$1" | clip
+    echo "Copied $1 to clipboard!"
+}
+
+# Vlož a spusť příkaz ze schránky (POZOR - bezpečnost!)
+# Použití: cbpaste
+cbpaste() {
+    powershell -command "Get-Clipboard"
+}
+```
+
+### Directory jumping - zoxide
+
+Inteligentní cd, které si pamatuje navštívené adresáře. Konec s `cd ../../../project`.
+
+```bash
+# Instalace
+scoop install zoxide                    # Windows (Scoop)
+winget install ajeetdsouza.zoxide       # Windows (WinGet)
+
+# Aktivace v .bashrc
+eval "$(zoxide init bash)"              # Přidej na konec .bashrc
+
+# Základní použití (po aktivaci)
+z project                               # Skoč do adresáře obsahujícího "project"
+z notes                                 # Skoč do ~/notes nebo podobného
+z doc down                              # Skoč do Documents/Downloads (fuzzy match)
+
+# Interaktivní výběr (s fzf)
+zi                                      # Zobraz seznam a vyber interaktivně
+zi project                              # Filtrovaný interaktivní výběr
+
+# Správa databáze
+zoxide query                            # Zobraz všechny uložené cesty
+zoxide query project                    # Hledej cesty obsahující "project"
+zoxide add /path/to/dir                 # Ručně přidej cestu
+zoxide remove /path/to/dir              # Odstraň cestu
+```
+
+#### Jak zoxide funguje
+
+```bash
+# zoxide si pamatuje frekvenci a recenci návštěv
+# Čím častěji a nedávněji jsi byl v adresáři, tím vyšší skóre
+
+# Příklad: pracuješ často v ~/projects/webapp
+cd ~/projects/webapp                    # Navštívíš adresář
+# ... po několika návštěvách:
+z webapp                                # Skoč rovnou tam
+
+# Pokud máš více "webapp" adresářů:
+z webapp                                # Skoč do nejčastěji navštěvovaného
+z projects webapp                       # Upřesni cestu
+zi webapp                               # Nebo vyber interaktivně
+```
+
+#### Alternativy k zoxide
+
+```bash
+# autojump (starší, podobný koncept)
+scoop install autojump
+eval "$(autojump --bash)"               # V .bashrc
+j project                               # Skoč do adresáře
+
+# z.sh (originální implementace)
+# Stáhni z https://github.com/rupa/z
+source ~/z.sh                           # V .bashrc
+z project                               # Skoč do adresáře
+```
+
+### curl a wget - HTTP requesty
+
+Nástroje pro stahování souborů a práci s API.
+
+#### curl - univerzální HTTP klient
+
+```bash
+# Základní requesty
+curl https://example.com                # GET request, výstup na stdout
+curl -o file.html https://example.com   # Ulož do souboru
+curl -O https://example.com/file.zip    # Ulož s původním názvem
+curl -L https://short.url               # Následuj přesměrování
+curl -s https://api.example.com         # Silent mode (bez progress)
+
+# HTTP metody
+curl -X GET https://api.example.com/users
+curl -X POST https://api.example.com/users
+curl -X PUT https://api.example.com/users/1
+curl -X DELETE https://api.example.com/users/1
+
+# POST s daty
+curl -X POST -d "name=John&age=30" https://api.example.com/users
+curl -X POST -d '{"name":"John"}' -H "Content-Type: application/json" https://api.example.com/users
+
+# Headers
+curl -H "Authorization: Bearer TOKEN" https://api.example.com
+curl -H "Accept: application/json" https://api.example.com
+curl -I https://example.com             # Pouze headers (HEAD request)
+
+# Autentizace
+curl -u username:password https://api.example.com
+curl -u username https://api.example.com  # Zeptá se na heslo
+
+# Upload souborů
+curl -F "file=@document.pdf" https://api.example.com/upload
+curl -T file.txt https://api.example.com/upload
+
+# Debugging
+curl -v https://example.com             # Verbose (zobraz vše)
+curl -w "%{http_code}" https://example.com  # Zobraz HTTP kód
+curl -w "\nTime: %{time_total}s\n" https://example.com  # Čas requestu
+```
+
+#### Praktické curl příklady
+
+```bash
+# Testování API
+curl -s https://api.github.com/users/octocat | jq .  # GitHub API + formátování
+
+# Stažení s progress barem
+curl -# -O https://example.com/large-file.zip
+
+# Pokračování v přerušeném stahování
+curl -C - -O https://example.com/large-file.zip
+
+# Kontrola, zda web funguje
+curl -s -o /dev/null -w "%{http_code}" https://example.com
+
+# POST JSON z souboru
+curl -X POST -H "Content-Type: application/json" -d @data.json https://api.example.com
+
+# Uložení cookies a jejich použití
+curl -c cookies.txt https://example.com/login -d "user=me&pass=secret"
+curl -b cookies.txt https://example.com/protected
+
+# Paralelní stahování více souborů
+cat urls.txt | xargs -P 5 -I {} curl -O {}
+```
+
+#### wget - stahování souborů
+
+```bash
+# Základní stahování
+wget https://example.com/file.zip       # Stáhni soubor
+wget -O custom-name.zip https://example.com/file.zip  # Vlastní název
+wget -c https://example.com/file.zip    # Pokračuj v přerušeném stahování
+wget -q https://example.com/file.zip    # Quiet mode
+
+# Stahování celého webu (mirror)
+wget -m https://example.com             # Zrcadlo webu
+wget -r -l 2 https://example.com        # Rekurzivně, max 2 úrovně
+wget -p https://example.com/page.html   # Stáhni stránku + závislosti (CSS, JS)
+
+# Hromadné stahování
+wget -i urls.txt                        # Stáhni všechny URL ze souboru
+wget -r -A "*.pdf" https://example.com  # Stáhni pouze PDF soubory
+
+# Limitování rychlosti
+wget --limit-rate=1m https://example.com/large.zip  # Max 1 MB/s
+
+# S autentizací
+wget --user=username --password=pass https://example.com
+```
+
+### watch - Sledování příkazů
+
+Opakované spouštění příkazu a zobrazení výstupu v reálném čase.
+
+```bash
+# Základní použití (refresh každé 2 sekundy)
+watch ls -la                            # Sleduj změny v adresáři
+watch date                              # Zobraz aktuální čas
+watch -n 1 date                         # Refresh každou sekundu
+watch -n 5 df -h                        # Místo na disku každých 5 sekund
+
+# Zvýrazni rozdíly od posledního běhu
+watch -d ls -la                         # Zvýrazni změny
+watch -d "ps aux | head -10"            # Sleduj procesy
+
+# Ukončení při změně
+watch -g "ls | wc -l"                   # Ukonči když se změní počet souborů
+
+# Praktické příklady
+watch -n 1 "docker ps"                  # Sleduj Docker kontejnery
+watch -n 2 "kubectl get pods"           # Kubernetes pods
+watch -n 5 "git status"                 # Git status
+watch -n 1 "nvidia-smi"                 # GPU využití
+watch -d "free -h"                      # Paměť se zvýrazněním změn
+watch "tail -20 /var/log/app.log"       # Posledních 20 řádků logu
+
+# Kombinace s dalšími příkazy
+watch "ps aux | grep node | grep -v grep"  # Sleduj Node procesy
+watch "netstat -an | grep ESTABLISHED | wc -l"  # Počet spojení
+```
+
+#### Alternativa: while loop
+
+```bash
+# Pokud watch není k dispozici nebo potřebuješ větší kontrolu
+while true; do
+    clear
+    date
+    docker ps
+    sleep 2
+done
+
+# S podmínkou ukončení
+while ! curl -s localhost:3000 > /dev/null; do
+    echo "Waiting for server..."
+    sleep 1
+done
+echo "Server is up!"
+```
+
+### Bash funkce
+
+Vlastní funkce v .bashrc pro automatizaci opakujících se úkolů.
+
+#### Základy funkcí
+
+```bash
+# Jednoduchá funkce
+greet() {
+    echo "Hello, $1!"                   # $1 = první argument
+}
+greet "World"                           # → Hello, World!
+
+# Funkce s více argumenty
+add() {
+    echo $(($1 + $2))                   # $1 + $2
+}
+add 5 3                                 # → 8
+
+# Funkce s default hodnotou
+greet() {
+    local name="${1:-User}"             # Default: "User"
+    echo "Hello, $name!"
+}
+greet                                   # → Hello, User!
+greet "John"                            # → Hello, John!
+
+# Návratová hodnota
+is_git_repo() {
+    git rev-parse --git-dir > /dev/null 2>&1
+    return $?                           # 0 = success, jinak = error
+}
+
+if is_git_repo; then
+    echo "This is a git repository"
+fi
+```
+
+#### Praktické funkce do .bashrc
+
+```bash
+# Vytvoř adresář a vstup do něj
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
+# Použití: mkcd new-project
+
+# Extrakce libovolného archivu
+extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2)   tar xjf "$1"     ;;
+            *.tar.gz)    tar xzf "$1"     ;;
+            *.tar.xz)    tar xJf "$1"     ;;
+            *.bz2)       bunzip2 "$1"     ;;
+            *.gz)        gunzip "$1"      ;;
+            *.tar)       tar xf "$1"      ;;
+            *.zip)       unzip "$1"       ;;
+            *.7z)        7z x "$1"        ;;
+            *.rar)       unrar x "$1"     ;;
+            *)           echo "Cannot extract '$1'" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+# Použití: extract archive.tar.gz
+
+# Rychlý HTTP server v aktuálním adresáři
+serve() {
+    local port="${1:-8000}"
+    echo "Serving on http://localhost:$port"
+    python -m http.server "$port"
+}
+# Použití: serve nebo serve 3000
+
+# Git: commit se zprávou
+gc() {
+    git add -A && git commit -m "$*"
+}
+# Použití: gc Fix bug in login form
+
+# Git: nová větev a push
+gnew() {
+    git checkout -b "$1" && git push -u origin "$1"
+}
+# Použití: gnew feature/new-login
+
+# Najdi a nahraď v souborech
+replace() {
+    local search="$1"
+    local replace="$2"
+    local files="${3:-.}"
+    grep -rl "$search" "$files" | xargs sed -i "s/$search/$replace/g"
+}
+# Použití: replace "old_text" "new_text" src/
+
+# Backup souboru s timestamp
+backup() {
+    cp "$1" "$1.backup.$(date +%Y%m%d_%H%M%S)"
+}
+# Použití: backup important.conf
+
+# Zobraz velikost adresářů seřazeně
+dirsize() {
+    du -sh "${1:-.}"/* 2>/dev/null | sort -h
+}
+# Použití: dirsize nebo dirsize /path
+
+# Weather v terminálu
+weather() {
+    curl -s "wttr.in/${1:-Prague}?format=3"
+}
+# Použití: weather nebo weather London
+
+# Cheat sheet pro příkazy (cheat.sh)
+cheat() {
+    curl -s "cheat.sh/$1"
+}
+# Použití: cheat tar nebo cheat git-rebase
+
+# Rychlé poznámky
+note() {
+    local file=~/.notes.txt
+    if [ -z "$1" ]; then
+        cat "$file"                     # Bez argumentu = zobraz poznámky
+    else
+        echo "$(date '+%Y-%m-%d %H:%M'): $*" >> "$file"
+        echo "Note saved!"
+    fi
+}
+# Použití: note Buy milk nebo note (zobrazí všechny)
+
+# Docker: vstup do kontejneru
+dexec() {
+    docker exec -it "$1" "${2:-bash}"
+}
+# Použití: dexec container_name nebo dexec container_name sh
+
+# Najdi proces podle jména
+psg() {
+    ps aux | grep -i "$1" | grep -v grep
+}
+# Použití: psg node
+
+# Port - kdo poslouchá na portu
+port() {
+    netstat -ano | grep ":$1 "
+}
+# Použití: port 3000
+```
+
+#### Složitější funkce
+
+```bash
+# Git log s fzf pro interaktivní výběr commitu
+gshow() {
+    git log --oneline --color=always | \
+        fzf --ansi --preview 'git show --color=always {1}' | \
+        cut -d' ' -f1 | \
+        xargs git show
+}
+
+# Interaktivní výběr a smazání git větví
+gbdel() {
+    git branch | grep -v '^\*' | \
+        fzf -m --preview 'git log --oneline -10 {}' | \
+        xargs -r git branch -d
+}
+
+# Rychlé přepínání Node verzí (pokud máš nvm)
+nvm_use() {
+    if [ -f .nvmrc ]; then
+        nvm use
+    elif [ -f package.json ]; then
+        local version=$(jq -r '.engines.node // empty' package.json)
+        [ -n "$version" ] && nvm use "$version"
+    fi
+}
+
+# Automaticky spusť nvm_use při cd (přidej do .bashrc)
+cd() {
+    builtin cd "$@" && nvm_use 2>/dev/null
+}
+```
+
+## CLI nástroje
+
+Moderní příkazové nástroje pro produktivnější práci v terminálu.
+
+### Předpoklady - Package Manager (Scoop)
+
+Pro instalaci CLI nástrojů potřebuješ package manager. Doporučuji **Scoop** – instaluje do uživatelského profilu bez admin práv.
+
+```bash
+# Instalace Scoop (v PowerShell, ne jako admin)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser  # Povolí skripty
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression        # Instalace
+
+# Po instalaci přidej extras bucket
+scoop bucket add extras                 # Rozšířená kolekce balíčků
+
+# Správa Scoop
+scoop search nazev                      # Hledání balíčku
+scoop install nazev                     # Instalace
+scoop update nazev                      # Aktualizace jednoho
+scoop update *                          # Aktualizace všech
+scoop list                              # Nainstalované balíčky
+scoop uninstall nazev                   # Odinstalace
+```
+
+### Hromadná instalace nástrojů
+
+```bash
+# Windows (Scoop) - všechny nástroje najednou
+scoop install fzf ripgrep fd bat eza delta zoxide jq yq httpie sd tldr lazygit ncdu direnv starship
+
+# Minimum pro začátek
+scoop install fzf zoxide bat ripgrep fd starship
+```
+
+### Práce s pagerem (less)
+
+Většina CLI nástrojů (`bat`, `git log`, `man`) používá `less` pro stránkování.
+
+```bash
+# Pohyb
+Space / f                               # O stránku dolů
+b                                       # O stránku nahoru
+d / u                                   # O půl stránky dolů/nahoru
+g                                       # Na začátek
+G                                       # Na konec
+50g                                     # Skok na řádek 50
+
+# Hledání
+/pattern                                # Hledej dopředu (regex)
+?pattern                                # Hledej dozadu
+n                                       # Další výskyt
+N                                       # Předchozí výskyt
+&pattern                                # Zobraz jen řádky odpovídající patternu
+
+# Ostatní
+q                                       # Ukončit
+h                                       # Nápověda
+-N                                      # Zapnout/vypnout čísla řádků
+-S                                      # Zapnout/vypnout zalamování
+F                                       # Follow mode (jako tail -f)
+
+# Nastavení v .bashrc
+export LESS='-R -F -X'                  # -R=barvy, -F=ukončit pokud krátké, -X=nemazat
+```
+
+### ripgrep (rg) - Rychlé vyhledávání
+
+Extrémně rychlý grep napsaný v Rustu. Automaticky ignoruje .gitignore.
+
+```bash
+# Instalace
+scoop install ripgrep
+
+# Základní použití
+rg "pattern"                            # Hledání v aktuální složce (rekurzivně)
+rg "pattern" ./src                      # Hledání v konkrétní složce
+rg -i "pattern"                         # Case-insensitive
+rg -w "word"                            # Celé slovo
+rg "func.*\(" src/                      # Regex pattern
+
+# Filtrování souborů
+rg "TODO" -t js                         # Jen JavaScript
+rg "TODO" -t py -t js                   # Python a JavaScript
+rg "TODO" -T js                         # Vše kromě JavaScriptu
+rg "pattern" -g "*.ts"                  # Jen .ts soubory
+rg "pattern" -g "!*.test.js"            # Ignorovat test soubory
+rg "pattern" --hidden                   # Včetně skrytých souborů
+rg "pattern" --no-ignore                # Ignorovat .gitignore
+
+# Výstup
+rg -l "pattern"                         # Jen názvy souborů
+rg -c "pattern"                         # Počet na soubor
+rg -C 3 "pattern"                       # 3 řádky kontextu
+rg -n "pattern"                         # S čísly řádků
+
+# Nahrazení (dry-run)
+rg "old" --replace "new"                # Ukáže výsledek (nemění soubory)
+rg -l "old" | xargs sed -i 's/old/new/g' # Skutečná náhrada
+```
+
+### fd - Vyhledávání souborů
+
+Rychlejší a přívětivější alternativa k `find`.
+
+```bash
+# Instalace
+scoop install fd
+
+# Základní použití
+fd pattern                              # Hledá soubory/složky obsahující "pattern"
+fd "\.js$"                              # Regex - soubory končící na .js
+fd -e js                                # Soubory s příponou .js
+fd pattern ./src                        # Hledej jen v src/
+
+# Filtrování
+fd -t f pattern                         # Jen soubory (file)
+fd -t d pattern                         # Jen složky (directory)
+fd -H pattern                           # Včetně skrytých
+fd -I pattern                           # Ignorovat .gitignore
+
+# Pokročilé
+fd -S +100M                             # Větší než 100MB
+fd --changed-within 1d                  # Změněno za poslední den
+fd -E node_modules                      # Ignorovat node_modules
+
+# Akce
+fd -e txt -x wc -l                      # Počet řádků každého .txt
+fd -e jpg -x convert {} {.}.png         # Konverze jpg na png
+fd -t f -e log -x rm {}                 # Smaž všechny .log
+```
+
+### bat - Prohlížení souborů
+
+`cat` s křídly - syntax highlighting, čísla řádků, git integrace.
+
+```bash
+# Instalace
+scoop install bat
+
+# Základní použití
+bat file.js                             # Se syntax highlightingem
+bat --line-range 10:20 file.js          # Řádky 10-20
+bat -A file.txt                         # Ukáže skryté znaky
+
+# Formátování
+bat --style=numbers file.js             # Jen čísla řádků
+bat --style=plain file.js               # Jen highlighting
+bat --paging=never file.js              # Bez pageru
+bat -P file.js                          # Zkratka pro --paging=never
+
+# Témata
+bat --list-themes                       # Seznam témat
+bat --theme="Dracula" file.js           # Použití tématu
+export BAT_THEME="Dracula"              # Trvalé nastavení v .bashrc
+
+# Integrace
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"  # Jako pager pro man
+fzf --preview 'bat --color=always {}'              # S fzf náhledem
+
+# Aliasy
+alias cat='bat --paging=never'
+alias catn='bat --style=plain'
+```
+
+### eza - Výpis souborů
+
+Moderní náhrada `ls` s barvami, ikonami a git integrací.
+
+```bash
+# Instalace
+scoop install eza
+
+# Základní použití
+eza                                     # Základní výpis
+eza -l                                  # Long format
+eza -la                                 # Včetně skrytých
+eza --icons                             # S ikonami
+eza --icons -l                          # Long + ikony
+
+# Stromová struktura
+eza --tree                              # Strom
+eza --tree --level=2                    # Max 2 úrovně
+eza -T -L 3                             # Zkráceně
+
+# Git status
+eza --git                               # Zobrazí git status
+eza -l --git                            # V long formátu
+
+# Řazení
+eza --sort=size                         # Podle velikosti
+eza --sort=modified                     # Podle data změny
+eza -l -s modified --reverse            # Sestupně
+
+# Aliasy
+alias ls='eza --icons'
+alias ll='eza -l --icons --git'
+alias la='eza -la --icons --git'
+alias lt='eza --tree --level=2 --icons'
+```
+
+### delta - Git Diff Viewer
+
+Vylepšený diff s syntax highlightingem.
+
+```bash
+# Instalace
+scoop install delta
+
+# Konfigurace pro Git (~/.gitconfig)
+git config --global core.pager delta
+git config --global interactive.diffFilter 'delta --color-only'
+git config --global delta.navigate true
+git config --global delta.dark true
+git config --global delta.line-numbers true
+git config --global delta.syntax-theme Dracula
+git config --global merge.conflictStyle zdiff3
+git config --global diff.colorMoved default
+
+# Po konfiguraci se aktivuje automaticky
+git diff                                # Syntax highlighting, line numbers
+git log -p                              # Navigace mezi soubory: n a N
+git show                                # Krásný výstup
+
+# Přímé použití
+delta file1.js file2.js                 # Diff dvou souborů
+delta --side-by-side file1 file2        # Side-by-side
+```
+
+### jq - JSON procesor
+
+Příkazový nástroj pro zpracování JSON dat.
+
+```bash
+# Instalace
+scoop install jq
+
+# Pretty print
+jq '.' file.json                        # Formátování JSON
+curl -s https://api.example.com | jq '.' # API odpověď
+
+# Extrakce hodnot
+jq '.name' file.json                    # Hodnota klíče
+jq '.user.address.city' file.json       # Vnořený objekt
+jq -r '.name' file.json                 # Raw output (bez uvozovek)
+
+# Práce s poli
+jq '.items[0]' file.json                # První prvek
+jq '.items[-1]' file.json               # Poslední prvek
+jq '.items[]' file.json                 # Iterace přes pole
+jq '.items | length' file.json          # Délka pole
+
+# Filtry
+jq '.users[] | {name, email}' file.json # Výběr polí
+jq '.users[] | select(.age > 18)' file.json  # Filtrování
+jq '.items | sort_by(.price)' file.json      # Řazení
+
+# Úpravy
+jq '.newKey = "value"' file.json        # Přidání klíče
+jq 'del(.unwantedKey)' file.json        # Smazání klíče
+jq '.price += 10' file.json             # Aktualizace hodnoty
+
+# Praktické
+curl -s https://api.github.com/users/octocat | jq '.name, .location'
+jq -r '.users[] | [.name, .email] | @csv' users.json  # JSON na CSV
+```
+
+### yq - YAML procesor
+
+`jq` pro YAML, TOML a XML.
+
+```bash
+# Instalace
+scoop install yq
+
+# Základní použití
+yq '.' file.yaml                        # Pretty print
+yq '.metadata.name' deployment.yaml     # Extrakce hodnoty
+yq '.spec.containers[].name' pod.yaml   # Všechny položky pole
+
+# Úpravy
+yq '.replicas = 3' deployment.yaml      # Změna hodnoty
+yq -i '.replicas = 5' deployment.yaml   # In-place úprava
+yq 'del(.metadata.annotations)' file.yaml  # Smazání klíče
+
+# Konverze formátů
+yq -o=json '.' file.yaml                # YAML na JSON
+yq -P '.' file.json                     # JSON na YAML
+yq -o=toml '.' file.yaml                # YAML na TOML
+
+# Kubernetes příklady
+yq '.spec.containers[].image' deployment.yaml  # Všechny image
+yq '.spec.containers[0].image = "nginx:1.25"' deployment.yaml  # Změna image
+```
+
+### httpie - HTTP klient
+
+Uživatelsky přívětivější alternativa k curl.
+
+```bash
+# Instalace
+scoop install httpie
+
+# GET request
+http https://api.example.com/users
+http GET https://api.example.com/users
+
+# POST request (JSON je výchozí)
+http POST https://api.example.com/users name=John age:=25 active:=true
+
+# Headers a auth
+http api.example.com Authorization:"Bearer token123"
+http -a user:password api.example.com/protected
+
+# Výstup
+http --body api.example.com/users       # Jen body
+http --headers api.example.com/users    # Jen headers
+http -d api.example.com/file.zip        # Stáhnout soubor
+
+# Form data
+http --form POST api.example.com/login username=admin password=secret
+```
+
+### sd - Find & Replace
+
+Jednodušší alternativa k `sed`.
+
+```bash
+# Instalace
+scoop install sd
+
+# Základní použití
+echo "hello world" | sd 'world' 'universe'
+sd 'old' 'new' file.txt                 # In-place
+sd -p 'old' 'new' file.txt              # Preview bez změny
+
+# Regex
+sd '(\w+)@(\w+)' '$2@$1' file.txt       # Capture groups
+
+# Více souborů
+fd -e js -x sd 'console.log' '// console.log' {}
+rg -l 'pattern' | xargs sd 'old' 'new'
+```
+
+### tldr - Zjednodušené manuály
+
+Praktické příklady příkazů místo dlouhých man stránek.
+
+```bash
+# Instalace (tealdeer - rychlejší Rust klient)
+scoop install tealdeer
+
+# První spuštění
+tldr --update                           # Stažení databáze
+
+# Použití
+tldr tar                                # Příklady pro tar
+tldr git-commit                         # Git příkazy
+tldr docker-compose                     # Docker Compose
+
+# Platformy
+tldr -p linux tar
+tldr -p windows clip
+```
+
+### lazygit - Git TUI
+
+Interaktivní textové rozhraní pro Git.
+
+```bash
+# Instalace
+scoop install lazygit
+
+# Spuštění
+lazygit                                 # V git repozitáři
+lg                                      # S aliasem: alias lg='lazygit'
+
+# Klávesové zkratky
+# Navigace
+h / l                                   # Přepínání panelů
+j / k                                   # Pohyb v seznamu
+?                                       # Nápověda
+
+# Files panel
+Space                                   # Stage/unstage
+a                                       # Stage/unstage všech
+d                                       # Zahodit změny
+e                                       # Editovat soubor
+
+# Commits panel
+c                                       # Commit
+A                                       # Amend
+r                                       # Reword message
+s                                       # Squash
+
+# Branches panel
+n                                       # Nová větev
+Space                                   # Checkout
+M                                       # Merge
+d                                       # Smazat větev
+
+# Remote
+p                                       # Pull
+P                                       # Push
+f                                       # Fetch
+
+# Alias
+alias lg='lazygit'
+```
+
+### tmux - Terminál Multiplexor
+
+> ⚠️ **Windows Git Bash**: Nefunguje nativně. Použij Windows Terminal taby nebo WSL.
+
+```bash
+# WSL / Ubuntu
+sudo apt install tmux
+
+# Základní koncepty: Session → Window → Pane
+
+# Sessions
+tmux                                    # Nová session
+tmux new -s mysession                   # Pojmenovaná
+Ctrl+B, D                               # Odpojit se (session běží dál)
+tmux ls                                 # Seznam sessions
+tmux attach -t mysession                # Připojit se
+tmux kill-session -t mysession          # Ukončit
+
+# Klávesové zkratky (prefix = Ctrl+B)
+Ctrl+B, c                               # Nový window
+Ctrl+B, n / p                           # Další / předchozí window
+Ctrl+B, 0-9                             # Window podle čísla
+Ctrl+B, %                               # Rozdělit vertikálně
+Ctrl+B, "                               # Rozdělit horizontálně
+Ctrl+B, šipky                           # Přepínání panes
+Ctrl+B, x                               # Zavřít pane
+Ctrl+B, z                               # Zoom pane
+Ctrl+B, ?                               # Nápověda
+```
+
+### direnv - Automatické Env Variables
+
+Automatické načítání environment variables při vstupu do složky.
+
+```bash
+# Instalace
+scoop install direnv
+
+# Aktivace (přidej do ~/.bashrc)
+eval "$(direnv hook bash)"
+
+# Použití
+cd myproject
+echo 'export API_KEY="secret123"' > .envrc
+direnv allow                            # Povol soubor
+
+# Při vstupu do složky se proměnné načtou automaticky
+# Při opuštění se zruší
+
+# .envrc příklady
+export NODE_ENV=development
+dotenv                                  # Načte .env
+dotenv_if_exists .env.local             # Načte jen pokud existuje
+PATH_add node_modules/.bin              # Přidej do PATH
+```
+
+### ncdu - Disk Usage Analyzer
+
+Interaktivní vizualizace využití disku.
+
+```bash
+# Instalace
+scoop install ncdu
+
+# Použití
+ncdu                                    # Analýza aktuální složky
+ncdu /path/to/folder                    # Konkrétní složka
+ncdu --exclude node_modules             # Vyloučit složky
+
+# Klávesové zkratky
+↑ / ↓                                   # Pohyb
+→ / Enter                               # Vstup do složky
+← / <                                   # Rodičovská složka
+d                                       # Smazat (s potvrzením!)
+g                                       # Přepnout graf
+n / s                                   # Řadit podle jména / velikosti
+q                                       # Ukončit
+
+# Alias
+alias dux='ncdu --exclude node_modules --exclude .git'
+```
+
+### htop/btop - System Monitoring
+
+> ⚠️ **Windows Git Bash**: Nefunguje nativně. Použij Task Manager nebo WSL.
+
+```bash
+# WSL / Ubuntu
+sudo apt install htop btop
+
+# htop klávesy
+F1 / ?                                  # Nápověda
+F3 / /                                  # Hledání procesu
+F5 / t                                  # Stromové zobrazení
+F9 / k                                  # Kill proces
+F10 / q                                 # Ukončit
+
+# btop klávesy
+h / ?                                   # Nápověda
+1-4                                     # Přepínání sekcí
+p / m                                   # Řadit podle CPU / paměti
+f                                       # Filtrovat
+k                                       # Kill proces
+q                                       # Ukončit
+```
+
+### oh-my-posh - Moderní Prompt
+
+Alternativa ke Starship. Cross-platform, 100+ témat.
+
+```bash
+# Instalace
+scoop install oh-my-posh
+
+# Aktivace (přidej do ~/.bashrc)
+eval "$(oh-my-posh init bash --config ~/.poshthemes/theme.omp.json)"
+
+# Seznam témat
+oh-my-posh get themes
+
+# Populární témata: agnoster, dracula, powerlevel10k_rainbow, catppuccin
+```
+
+### Doporučené nástroje
+
+Pro maximální produktivitu nainstaluj tyto nástroje:
 
 ```bash
 # Windows (Scoop) - doporučeno
@@ -1298,7 +2727,9 @@ scoop install fzf ripgrep fd bat eza delta zoxide jq starship
 scoop install fzf zoxide starship
 ```
 
-## Rychlý start - Minimální .bashrc
+## Rychlý start a optimalizace
+
+### Minimální .bashrc
 
 Pokud chceš rychle začít, zkopíruj toto:
 
@@ -1351,7 +2782,7 @@ source ~/.bashrc
 reload                          # Pokud máš alias
 ```
 
-## Performance - Zrychlení Git Bash
+### Performance
 
 ### Měření doby startu
 
