@@ -1068,8 +1068,10 @@ ls                                      # Základní výpis
 ls -l                                   # Detailní výpis (práva, velikost, datum)
 ls -la                                  # Včetně skrytých souborů (začínají tečkou)
 ls -lh                                  # Human-readable velikosti (KB, MB, GB)
-ls -lt                                  # Seřazeno podle času (nejnovější první)
-ls -ltr                                 # Seřazeno podle času (nejstarší první)
+ls -lt                                  # Seřazeno podle času modifikace (nejnovější první)
+ls -ltr                                 # Seřazeno podle času modifikace (nejstarší první)
+ls -lth                                 # Nejnovější první + human-readable velikosti
+ls -lt | head -10                       # 10 naposledy změněných souborů
 ls -lS                                  # Seřazeno podle velikosti (největší první)
 ls -R                                   # Rekurzivní výpis podadresářů
 ls -d */                                # Pouze adresáře
