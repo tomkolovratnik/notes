@@ -62,15 +62,51 @@ Git Bash je terminálové prostředí pro Windows, které přináší:
 /c/Users/username/Documents           # Místo C:\Users\username\Documents
 /d/_Repos/project                     # Místo D:\_Repos\project
 
-# Konverze cest
+# Pravidla převodu:
+# 1. Zpětná lomítka (\) → dopředná lomítka (/)
+# 2. Disk C: → /c (malé písmeno, bez dvojtečky)
+
+# Konverze cest pomocí cygpath
 cygpath -w /c/Users/username          # Unix → Windows: C:\Users\username
 cygpath -u "C:\Users\username"        # Windows → Unix: /c/Users/username
+cygpath "C:\Users\username"           # Stejné jako -u (default)
 
 # V příkazech pro Windows programy použij Windows cestu
 notepad "$(cygpath -w ~/notes.txt)"
 
 # Nebo uvozovky s lomítky
 cmd //c "echo Hello"                  # Dvojité // pro Windows přepínače
+```
+
+### Rychlý cd na Windows cestu
+
+```bash
+# cd s inline konverzí - zkopíruj Windows cestu a vlož mezi uvozovky
+cd "$(cygpath 'C:\Users\Tom\Documents\projekt')"
+
+# Pro cesty s mezerami funguje stejně
+cd "$(cygpath 'C:\Program Files\nodejs')"
+
+# Cesta s mezerami bez konverze - použij uvozovky
+cd "/c/Program Files/nodejs"
+
+# Drag & drop - přetáhni složku do Git Bash okna
+# Automaticky se vloží správná cesta
+
+# Tilda (~) - zkratka pro domovský adresář
+cd ~                                  # Přejde do /c/Users/<username>
+cd ~/Documents                        # Přejde do /c/Users/<username>/Documents
+```
+
+### Alias pro snadné cd na Windows cestu
+
+```bash
+# Přidej do ~/.bashrc
+alias cdw='function _cdw(){ cd "$(cygpath "$1")"; }; _cdw'
+
+# Použití - zkopíruj Windows cestu přímo
+cdw "C:\Users\Tom\Documents"
+cdw "C:\Program Files\nodejs"
 ```
 
 ### Spouštění Windows programů
