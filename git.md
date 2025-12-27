@@ -76,6 +76,69 @@ git stash apply stash@{0}       # Aplikování konkrétního stashe (zachová v 
 git stash pop                   # Obnovení naposledy uložených změn (odstraní ze seznamu)
 ```
 
+## Git Bash - práce s cestami
+
+### Převod Windows cesty na Bash formát
+```bash
+# Windows cesta: C:\Users\Tom\Documents\projekt
+# Git Bash cesta: /c/Users/Tom/Documents/projekt
+
+# Pravidla převodu:
+# 1. Zpětná lomítka (\) → dopředná lomítka (/)
+# 2. Disk C: → /c (malé písmeno, bez dvojtečky)
+
+cd /c/Users/Tom/Documents/projekt    # Správný formát pro Git Bash
+```
+
+### Rychlé triky
+```bash
+# Cesta s mezerami - použij uvozovky
+cd "/c/Program Files/nodejs"
+
+# Zkopírovaná Windows cesta - vlož do uvozovek a nahraď lomítka
+cd "C:\Users\Tom\My Documents"       # NEFUNGUJE
+cd "/c/Users/Tom/My Documents"       # FUNGUJE
+
+# Drag & drop - přetáhni složku do Git Bash okna
+# Automaticky se vloží správná cesta
+
+# pwd - zobrazí aktuální cestu v Bash formátu
+pwd                                  # Vypíše např. /c/Users/Tom
+
+# Tilda (~) - zkratka pro domovský adresář
+cd ~                                 # Přejde do /c/Users/<username>
+cd ~/Documents                       # Přejde do /c/Users/<username>/Documents
+```
+
+### Konverze cesty v proměnné
+```bash
+# Převod Windows cesty na Unix formát pomocí sed
+WIN_PATH="C:\Users\Tom\projekt"
+UNIX_PATH=$(echo "$WIN_PATH" | sed 's/\\/\//g' | sed 's/://')
+# Výsledek: /C/Users/Tom/projekt
+
+# Jednodušší varianta - cygpath (vestavěný v Git Bash)
+WIN_PATH="C:\Users\Tom\projekt"
+UNIX_PATH=$(cygpath "$WIN_PATH")     # Převede na /c/Users/Tom/projekt
+cd "$UNIX_PATH"
+
+# Opačný směr - Unix na Windows
+cygpath -w /c/Users/Tom/projekt      # Vypíše C:\Users\Tom\projekt
+```
+
+### Přejít na Windows cestu jedním příkazem
+```bash
+# cd s inline konverzí - zkopíruj Windows cestu a vlož mezi uvozovky
+cd "$(cygpath 'C:\Users\Tom\Documents\projekt')"
+
+# Pro cesty s mezerami funguje stejně
+cd "$(cygpath 'C:\Program Files\nodejs')"
+
+# Tip: vytvoř si alias v ~/.bashrc pro rychlejší použití
+alias cdw='function _cdw(){ cd "$(cygpath "$1")"; }; _cdw'
+# Použití: cdw "C:\Users\Tom\Documents"
+```
+
 ## Azure DevOps
 ```bash
 # Klonování repozitáře
