@@ -139,6 +139,18 @@ docker exec mosquitto cat /mosquitto/config/passwd
 
 ## ACL - Řízení přístupu k topicům
 
+ACL je **volitelné**. Pokud `acl_file` v konfiguraci chybí, všichni autentizovaní uživatelé mají přístup ke všem topicům.
+
+**Pozor:** Pokud je `acl_file` nastaven ale soubor neexistuje, Mosquitto se nespustí!
+
+```bash
+# Vytvoření prázdného ACL (pozor: nikdo nemá přístup k ničemu!)
+touch /mosquitto/config/acl
+
+# Nebo základní ACL - všichni autentizovaní mají plný přístup
+echo "topic readwrite #" > /mosquitto/config/acl
+```
+
 Soubor `mosquitto/config/acl`:
 
 ```conf
