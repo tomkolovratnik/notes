@@ -121,6 +121,22 @@ mosquitto_passwd /mosquitto/config/passwd admin
 mosquitto_passwd -b /mosquitto/config/passwd user1 tajneheslo
 ```
 
+### Výpis uživatelů
+
+```bash
+# Celý soubor (username:hash)
+cat /mosquitto/config/passwd
+
+# Pouze jména uživatelů
+cut -d: -f1 /mosquitto/config/passwd
+```
+
+Přes `docker exec`:
+
+```bash
+docker exec mosquitto cat /mosquitto/config/passwd
+```
+
 ## ACL - Řízení přístupu k topicům
 
 Soubor `mosquitto/config/acl`:
@@ -250,6 +266,72 @@ tail -f mosquitto/log/mosquitto.log
 ```
 
 Na Synology v Container Manageru: klikni na kontejner → záložka **Protokol** (Log)
+
+## Retained messages
+
+Retained zpráva zůstane uložená na brokeru a pošle se každému novému subscriberovi.
+
+```bash
+# Publikování retained zprávy (-r flag)
+mosquitto_pub -h localhost -u admin -P heslo -t "device/status" -m "online" -r
+
+# Smazání retained zprávy - publikuj prázdnou zprávu s retain flagem
+mosquitto_pub -h localhost -u admin -P heslo -t "device/status" -m "" -r
+
+# Smazání VŠECH retained zpráv na topicu (wildcard nefunguje, musíš znát topic)
+```
+
+Povolení/zakázání v `mosquitto.conf`:
+
+```conf
+retain_available true   # default, povolí retained messages
+# retain_available false  # zakáže retained messages
+```
+
+## Last Will and Testament (LWT)
+
+Zpráva, kterou broker automaticky publikuje, když klient neočekávaně ztratí spojení.
+
+```bash
+# Klient s LWT - když spadne, broker publikuje "offline" na device/status
+mosquitto_sub -h localhost -u sensor1 -P heslo -t "data/#" \
+  --will-topic "device/status" \
+  --will-payload "offline" \
+  --will-qos 1 \
+  --will-retain
+```
+
+Typické použití: Kombinace s retained message pro sledování online/offline stavu zařízení.
+
+```bash
+# Při připojení publikuj "online" (retained)
+mosquitto_pub -t "device/status" -m "online" -r
+
+# LWT automaticky publikuje "offline" při odpojení
+```
+
+## Užitečné konfigurační volby
+
+```conf
+# Omezení přístupu na konkrétní IP (default 0.0.0.0 = všechny)
+listener 1883 127.0.0.1    # pouze localhost
+listener 1883 192.168.1.10  # konkrétní IP
+
+# Maximální počet připojení (default neomezeno)
+max_connections 100
+
+# Maximální velikost zprávy v bytes (default 268435456 = 256MB)
+message_size_limit 1048576  # 1MB
+
+# Maximální počet QoS 1/2 zpráv ve frontě na klienta
+max_queued_messages 1000
+
+# Timeout pro keep-alive (default 1.5 * keep_alive klienta)
+# Pokud klient nepošle PINGREQ, broker ho odpojí
+
+# Automatické ukládání perzistentních dat (default 1800s = 30min)
+autosave_interval 300  # každých 5 minut
+```
 
 ## TLS/SSL (HTTPS)
 
