@@ -57,7 +57,9 @@ acl_file /mosquitto/config/acl
 3. Klikni na kontejner **mosquitto**
 4. V horní liště klikni na **Akce** (Action)
 5. Vyber **Otevřít terminál** (Open terminal)
-6. Otevře se webový terminál připojený do kontejneru
+6. Otevře se webový terminál - klikni na **Vytvořit**
+7. Vyber **Spustit pomocí příkazu** a zadej `sh`
+8. Teď můžeš zadávat příkazy (Eclipse Mosquitto image nemá bash, pouze sh)
 
 Příkazy pak zadáváš přímo bez `docker exec`:
 
