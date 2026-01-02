@@ -26,6 +26,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [VS Code](vscode.md) - Zkratky, rozšíření, nastavení, Jupyter Notebooks
 - [Docker](docker.md) - Container management, Docker Compose, Dockerfile
 - [Mosquitto](mosquitto.md) - MQTT broker, správa uživatelů, ACL, Docker/Synology
+- [PostgreSQL](postgresql.md) - TimescaleDB (časové řady), pgvector (embeddingy), zálohy
 
 ## Programovací jazyky & Runtime
 
