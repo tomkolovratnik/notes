@@ -78,6 +78,30 @@ notepad "$(cygpath -w ~/notes.txt)"
 cmd //c "echo Hello"                  # Dvojité // pro Windows přepínače
 ```
 
+#### cygpath - přehled přepínačů
+
+| Přepínač | Výstup | Příklad |
+|----------|--------|---------|
+| `-u` | Unix cesta (default) | `/c/Users/Tom` |
+| `-w` | Windows cesta | `C:\Users\Tom` |
+| `-m` | Mixed (Windows s /) | `C:/Users/Tom` |
+| `-d` | DOS 8.3 formát | `C:\PROGRA~1` |
+
+```bash
+# Speciální cesty
+cygpath -w ~                          # C:\Users\Tom (domovský adresář)
+cygpath -w .                          # C:\aktualni\adresar (pwd)
+cygpath -u "$APPDATA"                 # /c/Users/Tom/AppData/Roaming
+
+# Mixed formát (-m) - užitečný pro některé programy
+cygpath -m /c/Users/Tom               # C:/Users/Tom (s dopřednými lomítky)
+
+# Aktuální adresář v různých formátech
+pwd                                   # /d/Dev/project
+cygpath -w "$(pwd)"                   # D:\Dev\project
+cygpath -m "$(pwd)"                   # D:/Dev/project
+```
+
 ### Rychlý cd na Windows cestu
 
 ```bash
@@ -1321,6 +1345,54 @@ diff <(ls dir1) <(ls dir2)
 
 # Zpracování výstupu jako souboru
 while read line; do echo "$line"; done < <(ls -la)
+```
+
+### Command substitution
+
+Zachycení výstupu příkazu a jeho použití jako hodnoty.
+
+```bash
+# Moderní syntaxe $(...)  - doporučená
+current_date=$(date +%Y-%m-%d)         # Uloží "2024-01-15" do proměnné
+echo "Dnes je $(date +%A)"             # Vloží den v týdnu přímo do textu
+
+# Starší syntaxe `...` (backticks) - funguje stejně, ale hůř se čte a vnořuje
+current_date=`date +%Y-%m-%d`
+
+# Vnořené příkazy - $(…) se snadno vnořuje
+echo "Soubory v $(basename $(pwd)): $(ls | wc -l)"
+
+# S backticks je vnořování nepřehledné (nutné escapovat)
+echo "Aktuální adresář: `basename \`pwd\``"
+```
+
+**Proč používat uvozovky `"$(...)"` ?**
+
+```bash
+# Bez uvozovek - problém pokud výstup obsahuje mezery
+for f in $(ls); do echo $f; done       # Každé slovo zvlášť
+
+# S uvozovkami - výstup jako jeden celek
+filename="$(ls *.txt | head -1)"       # Bezpečné, i když název má mezery
+```
+
+**Praktické příklady:**
+
+```bash
+# Vytvoření uživatele s náhodným heslem
+mosquitto_passwd -b passwd user "$(openssl rand -base64 16)"
+
+# Záloha s datumem v názvu
+tar czf "backup-$(date +%Y%m%d).tar.gz" ./data
+
+# Git commit s počtem změněných souborů
+git commit -m "Refactor ($(git diff --cached --numstat | wc -l) files)"
+
+# Převod Windows cesty a použití
+cd "$(cygpath 'C:\Users\Tom\Documents')"
+
+# Podmínka na základě výstupu příkazu
+if [ "$(git status --porcelain)" ]; then echo "Jsou změny"; fi
 ```
 
 ### Běh na pozadí
