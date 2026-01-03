@@ -121,6 +121,37 @@ mosquitto_passwd /mosquitto/config/passwd admin
 mosquitto_passwd -b /mosquitto/config/passwd user1 tajneheslo
 ```
 
+### Vytvoření uživatele s náhodným heslem
+
+```bash
+# Vytvoření uživatele s náhodně vygenerovaným heslem (base64, 16 bajtů)
+sudo podman exec mosquitto mosquitto_passwd -c -b /mosquitto/config/passwd admin "$(openssl rand -base64 16)"
+```
+
+Rozbor příkazu:
+
+| Část | Význam |
+|------|--------|
+| `sudo` | Spustí příkaz s root oprávněními |
+| `podman exec` | Spustí příkaz uvnitř běžícího kontejneru (alternativa k `docker exec`) |
+| `mosquitto` | Název kontejneru |
+| `mosquitto_passwd` | Nástroj pro správu hesel Mosquitto |
+| `-c` | **Create** - vytvoří nový soubor (⚠️ přepíše existující!) |
+| `-b` | **Batch** - heslo se předá jako argument (ne interaktivně) |
+| `/mosquitto/config/passwd` | Cesta k souboru s hesly uvnitř kontejneru |
+| `admin` | Uživatelské jméno |
+| `"$(openssl rand -base64 16)"` | Vygeneruje náhodné 16-bajtové heslo v base64 |
+
+**⚠️ Pozor na `-c`:** Tento přepínač smaže všechny existující uživatele! Pro přidání dalšího uživatele bez mazání vynech `-c`:
+
+```bash
+# Přidání dalšího uživatele (bez -c = zachová existující)
+sudo podman exec mosquitto mosquitto_passwd -b /mosquitto/config/passwd sensor1 "$(openssl rand -base64 16)"
+
+# Totéž s Dockerem
+sudo docker exec mosquitto mosquitto_passwd -b /mosquitto/config/passwd sensor1 "$(openssl rand -base64 16)"
+```
+
 ### Výpis uživatelů
 
 ```bash
