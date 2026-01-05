@@ -1879,6 +1879,9 @@ find . -name "*.js" | xargs grep -l "TODO"
 
 Kopírování mezi terminálem a Windows schránkou.
 
+> **Poznámka:** `/dev/clipboard` v Git Bash na Windows **nefunguje** (není přítomen v `/dev/`).
+> Použij místo toho `clip.exe` a `powershell Get-Clipboard`.
+
 ```bash
 # Kopírování do schránky (Windows clip.exe)
 echo "text" | clip                      # Zkopíruj text do schránky
