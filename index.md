@@ -10,6 +10,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [AI Factory s Claude Code](ai-factory-claude-code-cz.md) - Multi-agent orchestrace, hooks, headless mode, .NET orchestrátor
 - [Hybridní agenti](hybrid-agents-guide.md) - Kombinace Claude Code a Codex CLI, Claude Squad
 - [Claude Code revoluce (Part 1)](claude-code-revolution-part1.md) - Jak AI transformovala softwarové inženýrství
+- [Claude Code Hooks (Part 2)](claude-code-hooks-part2.md) - Budování pozorovatelných AI systémů
 - [Multi-Agent orchestrace (Part 3)](claude-code-multiagent-part3.md) - 10+ Claude instancí paralelně
 - [AI Prompty](ai-prompts.md) - Prompty pro nastavení AI asistentů (ChatGPT, Claude)
 - [Lokální LLM](llm-local.md) - Inference servery bez Pythonu, CUDA build, llama.cpp, KoboldCpp
