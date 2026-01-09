@@ -157,6 +157,123 @@ Shell příkazy spouštěné při určitých událostech (např. před/po tool c
 ### Statusline
 Konfigurace stavového řádku pro zobrazení důležitých informací.
 
+## Paralelní instance (Multi-Agent)
+
+Více Claude Code instancí na jednom repozitáři pomocí Git Worktree.
+
+### Co je Git Worktree?
+
+**Normálně:** 1 repozitář = 1 adresář = 1 větev
+
+**S worktree:** 1 repozitář = N adresářů = N větví současně
+
+```
+~/projekt/              # main (hlavní repo)
+    └── .git/           # sdílený git
+~/projekt-feature1/     # feature/auth (worktree)
+~/projekt-feature2/     # feature/api (worktree)
+```
+
+**Worktree vs Clone:**
+- Zabírá ~10-20% místa oproti clone
+- Git historie sdílená (fetch jednou pro všechny)
+- Částečná izolace (sdílený .git)
+
+### Základní Git Worktree příkazy
+
+```bash
+# Vytvoření worktree s novou větví
+git worktree add ../projekt-feature -b feature/moje-feature
+
+# Seznam worktrees
+git worktree list
+
+# Smazání worktree
+git worktree remove ../projekt-feature
+
+# Vyčištění neplatných worktrees
+git worktree prune
+```
+
+### Praktické workflow - více agentů
+
+```bash
+# 1. Vytvoř worktrees pro různé vrstvy/úkoly
+cd ~/projekt
+git worktree add ../projekt-domain -b feature/domain-work
+git worktree add ../projekt-api -b feature/api-work
+git worktree add ../projekt-tests -b feature/tests-work
+
+# 2. Spusť Claude Code v každém worktree (nový terminál)
+cd ../projekt-domain && claude
+cd ../projekt-api && claude
+cd ../projekt-tests && claude
+
+# 3. Dej každému agentovi specifický úkol:
+# Agent 1: "Implementuj User entity v Domain vrstvě"
+# Agent 2: "Vytvoř AuthController s login/register endpointy"
+# Agent 3: "Napiš unit testy pro AuthService"
+
+# 4. Po dokončení - merge do hlavní větve
+cd ~/projekt
+git merge feature/domain-work
+git merge feature/api-work
+git merge feature/tests-work
+
+# 5. Cleanup
+git worktree remove ../projekt-domain
+git worktree remove ../projekt-api
+git worktree remove ../projekt-tests
+```
+
+### Struktura pro Clean Architecture
+
+```
+Agent: domain       → src/Domain/        → feature/domain-work
+Agent: application  → src/Application/   → feature/application-work
+Agent: infrastructure → src/Infrastructure/ → feature/infra-work
+Agent: api          → src/WebApi/        → feature/api-work
+Agent: tests        → tests/             → feature/tests-work
+```
+
+### Best Practices
+
+**Doporučeno:**
+- Jasně rozděl oblasti - každý agent = jiné soubory
+- Commituj často - malé, atomické commity
+- Synchronizuj před merge - `git fetch && git rebase`
+- Pojmenuj terminály - víš který agent je který
+
+**Nedoporučeno:**
+- Dva agenti na stejném souboru - přepíší se navzájem
+- Příliš mnoho agentů - nezvládneš reviewovat
+- Velké změny bez commitů - těžší merge
+
+### Řešení problémů
+
+```bash
+# "Branch already checked out" - větev je zamčená v jiném worktree
+git worktree list                        # Najdi kde
+git worktree remove <konfliktní-path>    # Smaž worktree
+
+# Lock file error - před spuštěním více agentů
+rm -f ~/.claude/*.lock
+
+# Dependencies v novém worktree
+cd ../projekt-feature
+dotnet restore    # .NET
+npm install       # Node.js
+```
+
+### Limity a doporučení
+
+| Metrika | Doporučení |
+|---------|------------|
+| Max paralelních agentů | 3-5 |
+| Min velikost úkolu | 30+ minut práce |
+| Překryv souborů | 0% (ideálně) |
+| Frekvence merge | Po každém milestonu |
+
 ## Viz také
 
 - [Kódovací agenti](coding-agents.md) - Porovnání Claude Code vs. Copilot, tipy
