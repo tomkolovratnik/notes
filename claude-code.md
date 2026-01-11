@@ -214,6 +214,101 @@ get_observations(ids=[123, 456])
 - Popisuj problémy Claude - aktivuje troubleshoot skill pro automatickou diagnostiku
 - Bug report: `cd ~/.claude/plugins/marketplaces/thedotmack && npm run bug-report`
 
+### Ralph (Autonomní vývoj)
+
+Framework pro autonomní iterativní vývoj - Claude Code opakovaně vylepšuje projekt až do dokončení, s ochranou proti nekonečným smyčkám a nadměrnému API usage.
+
+**GitHub:** https://github.com/frankbria/ralph-claude-code
+
+#### Instalace
+
+```bash
+# Globální instalace
+git clone https://github.com/frankbria/ralph-claude-code.git
+cd ralph-claude-code
+./install.sh                                      # Vytvoří příkazy: ralph, ralph-monitor, ralph-setup
+
+# Inicializace projektu
+ralph-setup my-project                            # Vytvoří strukturu projektu
+cd my-project
+ralph --monitor                                   # Spustí autonomní loop s monitoringem
+```
+
+**Požadavky:** Bash 4.0+, Claude Code CLI, tmux, jq, Git
+
+#### Struktura projektu
+
+```
+project/
+├── PROMPT.md              # Instrukce pro vývoj
+├── @fix_plan.md           # Prioritizovaný seznam úkolů
+├── @AGENT.md              # Build/run instrukce
+├── specs/                 # Technické specifikace
+├── logs/                  # Logy z běhu
+└── docs/generated/        # Auto-generovaná dokumentace
+```
+
+#### Klíčové funkce
+
+- 🔄 **Autonomní loop** - Opakované spouštění Claude Code s požadavky
+- 🛑 **Exit detection** - Automatické zastavení po dokončení cílů
+- ⚡ **Rate limiting** - Správa API volání (100/hod výchozí)
+- 🔌 **Circuit breaker** - Detekce zaseknutých smyček
+- 📊 **Live monitoring** - Real-time tmux dashboard
+- 📄 **PRD import** - Konverze MD, TXT, JSON, DOCX, PDF dokumentů
+
+#### Použití
+
+```bash
+# Základní spuštění
+ralph --monitor                   # S tmux monitoringem
+
+# Konfigurace
+ralph --calls 50                  # Limit 50 API volání/hod
+ralph --timeout 30                # 30min timeout (1-120 min)
+ralph --verbose                   # Detailní výpisy
+
+# Session management
+ralph --reset-session             # Vymazat stav session
+ralph --no-continue               # Vždy začít znovu
+
+# Monitoring
+ralph --status                    # JSON status
+ralph-monitor                     # Samostatný dashboard
+tail -f logs/ralph.log            # Sledování logů
+```
+
+#### Konfigurace úkolů (prd.json)
+
+```json
+{
+  "userStories": [
+    {
+      "id": "US001",
+      "title": "User authentication",
+      "priority": 1,
+      "acceptanceCriteria": [
+        "Email/password fields validated",
+        "JWT token returned on success"
+      ],
+      "completed": false
+    }
+  ]
+}
+```
+
+#### Best practices
+
+- **Jasné požadavky** - Specifické acceptance criteria v prd.json
+- **Prioritizace** - Použij @fix_plan.md pro řazení úkolů
+- **Hranice scope** - Definuj co je in-scope a out-of-scope
+- **Malé iterace** - Začni s 10 iteracemi, pak škáluj
+- **Monitoruj logy** - Sleduj progress v logs/
+
+**Zdroje:**
+- [Apidog tutorial](https://apidog.com/blog/use-ralph-wiggum-plugin/)
+- [AI Hero tips](https://www.aihero.dev/tips-for-ai-coding-with-ralph-wiggum)
+
 ## Paralelní instance (Multi-Agent)
 
 Více Claude Code instancí na jednom repozitáři pomocí Git Worktree.
