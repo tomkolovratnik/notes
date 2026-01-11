@@ -157,6 +157,63 @@ Shell příkazy spouštěné při určitých událostech (např. před/po tool c
 ### Statusline
 Konfigurace stavového řádku pro zobrazení důležitých informací.
 
+### Claude-Mem (Persistentní paměť)
+
+Plugin pro persistentní paměť Claude Code - automaticky zachycuje vše, co Claude dělá během coding sessions, komprimuje to pomocí AI a injektuje relevantní kontext do budoucích sessions.
+
+**GitHub:** https://github.com/thedotmack/claude-mem
+
+#### Instalace
+
+```bash
+# V Claude Code spusť:
+/plugin marketplace add thedotmack/claude-mem    # Přidání z marketplace
+/plugin install claude-mem                        # Instalace pluginu
+# Restartuj Claude Code - paměť z předchozích sessions bude automaticky dostupná
+```
+
+**Požadavky:**
+- Node.js 18.0.0+
+- Bun (auto-instalace)
+- uv (auto-instalace)
+- SQLite 3
+
+#### Klíčové funkce
+
+- 🧠 **Persistentní kontext** - Paměť přetrvává mezi sessions
+- 🔍 **Skill-based search** - Vyhledávání v historii projektu
+- 🖥️ **Web viewer** - UI na http://localhost:37777
+- 🔒 **Privacy control** - `<private>` tagy pro vyloučení citlivého obsahu
+- 📊 **Token cost visibility** - Zobrazení nákladů na tokeny
+
+#### Konfigurace
+
+Nastavení v `~/.claude-mem/settings.json` (vytvoří se automaticky):
+- AI model selection
+- Worker port (výchozí 37777)
+- Data directory location
+- Log level
+- Context injection parameters
+
+#### MCP Search nástroje
+
+3-vrstvý workflow pro efektivní vyhledávání (~10x úspora tokenů):
+
+```javascript
+// Vrstva 1: Kompaktní index (~50-100 tokenů/výsledek)
+search(query="authentication bug", type="bugfix", limit=10)
+
+// Vrstva 2: Chronologický kontext kolem konkrétní observace
+timeline(observation_id=123)
+
+// Vrstva 3: Plné detaily jen pro filtrované ID (~500-1000 tokenů)
+get_observations(ids=[123, 456])
+```
+
+**Tipy:**
+- Popisuj problémy Claude - aktivuje troubleshoot skill pro automatickou diagnostiku
+- Bug report: `cd ~/.claude/plugins/marketplaces/thedotmack && npm run bug-report`
+
 ## Paralelní instance (Multi-Agent)
 
 Více Claude Code instancí na jednom repozitáři pomocí Git Worktree.
