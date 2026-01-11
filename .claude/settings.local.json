@@ -23,7 +23,13 @@
       "Bash(xargs:*)",
       "Bash(git mv:*)",
       "WebFetch(domain:tomkolovratnik.github.io)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(md5sum:*)",
+      "Bash(__NEW_LINE__ echo \"=== File 2: Mastering Claude Hooks ===\")",
+      "Bash(__NEW_LINE__ echo \"=== File 3: Multi-Agent Orchestration ===\")",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:apidog.com)",
+      "WebFetch(domain:www.aihero.dev)"
     ],
     "deny": [],
     "ask": []
