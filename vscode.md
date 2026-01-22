@@ -574,3 +574,338 @@ df.describe()
 # Pak je možné spustit bez VS Code
 ```
 
+## Debugování .NET 8 ve WSL2
+
+Návod pro debugování .NET 8 aplikací, když jsou zdrojové kódy uložené ve WSL2 a vývoj probíhá přes VS Code.
+
+### Požadavky
+
+#### VS Code rozšíření
+
+```
+Remote - WSL          - Připojení VS Code k WSL2 filesystému
+C# Dev Kit            - Komplexní podpora pro .NET vývoj (obsahuje C# extension)
+```
+
+Instalace rozšíření: `Ctrl+Shift+X` a vyhledat název rozšíření.
+
+#### .NET 8 SDK ve WSL2
+
+```bash
+# Ověření instalace .NET ve WSL2
+dotnet --version                    # Zobrazí verzi .NET SDK
+
+# Instalace .NET 8 SDK (Ubuntu/Debian)
+wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+sudo apt update
+sudo apt install -y dotnet-sdk-8.0  # Instalace .NET 8 SDK
+```
+
+### Postup připojení k WSL2
+
+#### Otevření projektu ve WSL2 režimu
+
+```bash
+# Možnost 1: Otevřít VS Code přímo z WSL terminálu
+cd /home/user/projects/myapp        # Navigace do složky projektu
+code .                               # Otevře VS Code v WSL režimu
+
+# Možnost 2: Z VS Code pomocí Command Palette
+# Ctrl+Shift+P > "WSL: Connect to WSL"
+# Poté File > Open Folder a vybrat složku v WSL
+
+# Možnost 3: Z VS Code pomocí Remote Explorer
+# Kliknout na ikonu Remote Explorer v levém panelu
+# Vybrat WSL Targets > Ubuntu (nebo jiná distro)
+```
+
+#### Ověření WSL připojení
+
+V levém dolním rohu VS Code by měl být zobrazen indikátor `WSL: Ubuntu` (nebo název vaší distribuce). Pokud tam je, VS Code běží v WSL režimu.
+
+```bash
+# V integrovaném terminálu VS Code (Ctrl+`)
+uname -a                            # Mělo by zobrazit Linux kernel
+dotnet --info                       # Zobrazí .NET info včetně runtime paths
+```
+
+### Konfigurace launch.json
+
+Soubor `launch.json` se nachází ve složce `.vscode/` v kořenu projektu. Definuje jak se má aplikace spustit pro debugging.
+
+#### Konzolová aplikace
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (console)",           // Název konfigurace v dropdown menu
+            "type": "coreclr",                              // Typ debuggeru pro .NET Core/5+
+            "request": "launch",                            // Spustit novou instanci (ne attach)
+            "preLaunchTask": "build",                       // Spustit build task před debuggingem
+            "program": "${workspaceFolder}/bin/Debug/net8.0/MyApp.dll",  // Cesta k DLL
+            "args": [],                                     // Argumenty příkazové řádky
+            "cwd": "${workspaceFolder}",                    // Working directory
+            "console": "integratedTerminal",                // Výstup do VS Code terminálu
+            "stopAtEntry": false                            // Nezastavit na Main()
+        }
+    ]
+}
+```
+
+#### ASP.NET Core Web API
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (web)",               // Název konfigurace
+            "type": "coreclr",                              // Debugger pro .NET
+            "request": "launch",                            // Spustit aplikaci
+            "preLaunchTask": "build",                       // Build před spuštěním
+            "program": "${workspaceFolder}/bin/Debug/net8.0/MyWebApi.dll",  // Cesta k DLL
+            "args": [],                                     // CLI argumenty
+            "cwd": "${workspaceFolder}",                    // Working directory
+            "stopAtEntry": false,                           // Nezastavit na entry point
+            "serverReadyAction": {                          // Akce po startu serveru
+                "action": "openExternally",                 // Otevřít v prohlížeči
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)", // Regex pro URL
+                "uriFormat": "%s/swagger"                   // Otevřít Swagger UI
+            },
+            "env": {                                        // Environment variables
+                "ASPNETCORE_ENVIRONMENT": "Development",    // Development prostředí
+                "ASPNETCORE_URLS": "http://localhost:5000"  // URL pro server
+            }
+        }
+    ]
+}
+```
+
+#### Attach k běžícímu procesu
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Attach",                     // Název konfigurace
+            "type": "coreclr",                              // Debugger
+            "request": "attach",                            // Připojit se k procesu
+            "processId": "${command:pickProcess}"           // Vybrat proces z dialogu
+        }
+    ]
+}
+```
+
+### Konfigurace tasks.json
+
+Soubor `tasks.json` definuje build a další úlohy. Nachází se ve složce `.vscode/`.
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",                               // Název tasku (reference v launch.json)
+            "command": "dotnet",                            // Příkaz k spuštění
+            "type": "process",                              // Typ úlohy (process = přímé spuštění)
+            "args": [
+                "build",                                    // Argument: dotnet build
+                "${workspaceFolder}/MyApp.csproj",          // Cesta k projektu
+                "/property:GenerateFullPaths=true",         // Generovat plné cesty pro chyby
+                "/consoleloggerparameters:NoSummary"        // Bez summary na konci
+            ],
+            "problemMatcher": "$msCompile",                 // Parser pro chyby kompilace
+            "group": {
+                "kind": "build",                            // Skupina: build
+                "isDefault": true                           // Výchozí build task (Ctrl+Shift+B)
+            }
+        },
+        {
+            "label": "watch",                               // Task pro hot reload
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",                                    // dotnet watch
+                "run",                                      // run příkaz
+                "--project",
+                "${workspaceFolder}/MyApp.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "isBackground": true                            // Běží na pozadí
+        },
+        {
+            "label": "clean",                               // Vyčištění build artefaktů
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/MyApp.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "restore",                             // Obnovení NuGet balíčků
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "restore",
+                "${workspaceFolder}/MyApp.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
+```
+
+### Debugging workflow
+
+#### Nastavení breakpointů
+
+```
+F9                  - Přepnout breakpoint na aktuálním řádku
+Ctrl+Shift+F9       - Odstranit všechny breakpointy
+# Kliknout do levého okraje (gutter) vedle čísla řádku - přidá/odebere breakpoint
+
+# Podmíněný breakpoint:
+# Pravý klik na breakpoint > "Edit Breakpoint" > zadat podmínku (např. i > 10)
+```
+
+#### Spuštění debuggeru
+
+```
+F5                  - Spustit debugging (s vybranou konfigurací z launch.json)
+Ctrl+F5             - Spustit bez debuggeru
+Shift+F5            - Zastavit debugging
+Ctrl+Shift+F5       - Restart debugging
+```
+
+#### Ovládání během debuggingu
+
+```
+F10                 - Step Over (přeskočit volání funkce)
+F11                 - Step Into (vstoupit do funkce)
+Shift+F11           - Step Out (vystoupit z funkce)
+F5                  - Continue (pokračovat do dalšího breakpointu)
+```
+
+#### Debug panely
+
+```
+# Během debuggingu se zobrazí v levém panelu:
+Variables           - Lokální a globální proměnné
+Watch               - Sledované výrazy (přidat vlastní)
+Call Stack          - Zásobník volání
+Breakpoints         - Seznam všech breakpointů
+
+# Debug Console (Ctrl+Shift+Y):
+# Zde lze zadávat výrazy a vyhodnocovat je v kontextu aktuálního breakpointu
+```
+
+#### Hot Reload (ASP.NET Core)
+
+```bash
+# Spustit aplikaci s hot reload
+dotnet watch run                    # Automaticky restartuje při změně kódu
+
+# Ve VS Code:
+# Ctrl+Shift+P > "Tasks: Run Task" > "watch"
+
+# Hot Reload funguje pro:
+# - Změny v Razor views
+# - Změny v CSS/JS
+# - Většinu změn v C# kódu (ne všechny)
+```
+
+### Troubleshooting
+
+#### Debugger se nepřipojí
+
+```bash
+# Ověřit, že .NET SDK je správně nainstalován
+dotnet --info                       # Zobrazí SDK a runtime info
+
+# Ověřit, že projekt jde zkompilovat
+dotnet build                        # Mělo by proběhnout bez chyb
+
+# Zkontrolovat, že cesta v launch.json odpovídá skutečné DLL
+ls bin/Debug/net8.0/                # Ověřit existenci DLL souboru
+```
+
+#### "Could not find .NET Core debugger"
+
+```bash
+# Přeinstalovat C# extension
+# Ctrl+Shift+P > "Extensions: Uninstall Extension" > C#
+# Poté znovu nainstalovat C# Dev Kit
+
+# Nebo ručně stáhnout debugger
+# Ctrl+Shift+P > ".NET: Install New .NET SDK"
+```
+
+#### Breakpointy se nespouští (šedé kolečko)
+
+```json
+// V launch.json přidat/ověřit:
+{
+    "justMyCode": false,            // Debugovat i externí kód
+    "enableStepFiltering": false,   // Nefiltrovat kroky
+    "symbolOptions": {
+        "searchMicrosoftSymbolServer": true  // Hledat symboly na MS serveru
+    }
+}
+```
+
+```bash
+# Zkontrolovat, že build je v Debug konfiguraci
+dotnet build --configuration Debug  # Explicitně Debug build
+
+# Vyčistit a znovu zkompilovat
+dotnet clean && dotnet build
+```
+
+#### Port je obsazený (Web API)
+
+```bash
+# Najít proces na portu 5000
+lsof -i :5000                       # Zobrazí proces používající port
+# nebo
+netstat -tlnp | grep 5000           # Alternativa
+
+# Ukončit proces
+kill -9 <PID>                       # Ukončit proces podle PID
+
+# Nebo změnit port v launch.json:
+"env": {
+    "ASPNETCORE_URLS": "http://localhost:5001"  // Jiný port
+}
+```
+
+#### WSL2 - pomalý filesystem
+
+```bash
+# Projekt by měl být uložen ve WSL filesystému, ne na Windows disku
+# Správně: /home/user/projects/myapp
+# Špatně: /mnt/c/Users/user/projects/myapp (velmi pomalé)
+
+# Přesunout projekt do WSL
+cp -r /mnt/c/Users/user/projects/myapp ~/projects/
+```
+
+#### Nelze otevřít browser z WSL
+
+```bash
+# Nastavit výchozí browser pro WSL
+export BROWSER=wslview              # Použije Windows browser
+
+# Přidat do ~/.bashrc pro trvalé nastavení
+echo 'export BROWSER=wslview' >> ~/.bashrc
+
+# Nebo nainstalovat wslu utilitu
+sudo apt install wslu               # Obsahuje wslview
+```
+
