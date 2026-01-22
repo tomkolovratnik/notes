@@ -583,7 +583,7 @@ Návod pro debugování .NET 8 aplikací, když jsou zdrojové kódy uložené v
 #### VS Code rozšíření
 
 ```
-Remote - WSL          - Připojení VS Code k WSL2 filesystému
+WSL                   - Připojení VS Code k WSL2 filesystému (ms-vscode-remote.remote-wsl)
 C# Dev Kit            - Komplexní podpora pro .NET vývoj (obsahuje C# extension)
 ```
 
