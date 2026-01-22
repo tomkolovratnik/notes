@@ -20,11 +20,11 @@ Ctrl + k v      - Markdown preview
 ```
 
 ## Doporučená rozšíření
-- Prettier - Code formatter
-- ESLint
-- GitLens
-- Auto Rename Tag
-- Path Intellisense
+- **Prettier** - Automatické formátování kódu (JS, TS, CSS, HTML, JSON, Markdown)
+- **ESLint** - Statická analýza a linting pro JavaScript/TypeScript
+- **GitLens** - Rozšířené Git funkce (blame, historie, porovnání commitů)
+- **Auto Rename Tag** - Automatické přejmenování párového HTML/XML tagu
+- **Path Intellisense** - Autocomplete pro cesty k souborům
 
 ## Settings.json ukázky
 ```json
