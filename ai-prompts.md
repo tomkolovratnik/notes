@@ -246,6 +246,93 @@ Rozhovor končí zápisem kompletní specifikace do souboru. Před zápisem shrn
 
 ---
 
+## Techniky promptování
+
+Osvědčené meta-techniky pro lepší výsledky z AI modelů.
+
+### Reverse Prompting (Obrácený prompting)
+
+Místo zadávání instrukcí nechte AI, aby se **sám zeptal** na to, co potřebuje vědět. Model si kriticky promyslí požadavky než začne generovat odpověď.
+
+```
+Potřebuji [popsat úkol]. Než mi začneš pomáhat, polož mi všechny otázky,
+které potřebuješ zodpovědět, abys odvedl co nejlepší práci.
+Ptej se po skupinách 2-3 otázky a pokračuj, dokud nemáš vše potřebné.
+```
+
+### Role Stacking (Vrstvení rolí)
+
+Nepřiřazujte jednu roli — nechte AI analyzovat problém z **více expertních perspektiv současně**. Vytváří vnitřní "debatu", která odhalí slepá místa a chyby.
+
+```
+Analyzuj [téma/strategii/kód] ze tří perspektiv současně:
+1. [Expert A] zaměřený na [oblast A]
+2. [Expert B] zaměřený na [oblast B]
+3. [Expert C] zaměřený na [oblast C]
+Ukaž všechny tři pohledy a kde se rozcházejí.
+```
+
+### Verification Loop (Ověřovací smyčka)
+
+AI nejdřív vygeneruje řešení, pak **sám zkritizuje svůj výstup** a opraví nalezené chyby. Zachytí logické chyby, které projdou při jednorázovém generování.
+
+```
+Napiš [kód/text/řešení]. Po dokončení identifikuj 3 potenciální problémy,
+chyby nebo edge cases ve svém výstupu. Poté přepiš řešení tak,
+aby tyto problémy opravilo.
+```
+
+### Constraint Cascade (Kaskáda omezení)
+
+Nezadávejte všechny instrukce najednou. **Vrstvěte je postupně**, jak AI prokáže porozumění. Model pracuje lépe s inkrementální složitostí.
+
+```
+Krok 1: "Shrň tento článek ve 3 větách."
+[počkej na odpověď]
+Krok 2: "Identifikuj 3 nejslabší argumenty."
+[počkej na odpověď]
+Krok 3: "Napiš protiargument ke každému slabému místu."
+```
+
+---
+
+## Šablony pro business & marketing
+
+Univerzální prompt šablony pro analýzu a strategické plánování.
+
+### Objection Crusher (Řešení námitek)
+
+```
+Vyjmenuj všechny možné námitky zákazníků proti [produkt/služba].
+Ke každé námitce napiš 3 protiargumenty — jeden založený na sociálním
+důkazu, jeden na logice a jeden na emocích.
+Výstup formátuj jako FAQ sekci.
+```
+
+### Automation Architect (Architekt automatizace)
+
+```
+Zmapuj všechny opakující se úkoly v [typ podnikání/oddělení].
+Pro každý úkol navrhni:
+- Nástroj pro automatizaci
+- Kroky implementace
+- Odhadovanou úsporu času
+Seřaď podle ROI (nejvyšší přínos / nejnižší náročnost nahoře).
+```
+
+### Brand Voice Architect (Architekt hlasu značky)
+
+```
+Vytvoř kompletní průvodce hlasem značky pro [firma/projekt]:
+- Tón komunikace a osobnost
+- Jazykové vzorce a typický slovník
+- Fráze, kterým se vyhnout
+- Ukázkové texty pro různé scénáře (web, e-mail, sociální sítě)
+Výsledek musí být rozpoznatelný a konzistentní.
+```
+
+---
+
 ## Poznámky k použití
 
 ### Jak tyto prompty použít
