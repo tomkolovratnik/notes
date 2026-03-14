@@ -122,6 +122,54 @@ killall <name>                  # Ukončit všechny procesy daného jména
 df -h
 ```
 
+## tmux
+
+### Instalace
+```bash
+sudo apt install tmux                   # Instalace tmux
+```
+
+### Správa sessions
+```bash
+tmux                                    # Spuštění nové session
+tmux new -s <name>                      # Spuštění nové session s názvem
+tmux ls                                 # Výpis všech sessions
+tmux attach -t <name>                   # Připojení k session podle názvu
+tmux attach -t 0                        # Připojení k první session
+tmux kill-session -t <name>             # Ukončení session
+```
+
+### Klávesové zkratky (prefix = Ctrl+b)
+```bash
+# Sessions
+Ctrl+b d                                # Odpojení od session (detach)
+Ctrl+b s                                # Přehled všech sessions
+Ctrl+b $                                # Přejmenování session
+
+# Okna (windows)
+Ctrl+b c                                # Nové okno
+Ctrl+b ,                                # Přejmenování okna
+Ctrl+b n                                # Další okno
+Ctrl+b p                                # Předchozí okno
+Ctrl+b <number>                         # Přechod na okno podle čísla
+Ctrl+b w                                # Přehled všech oken
+Ctrl+b &                                # Zavření okna
+
+# Panely (panes)
+Ctrl+b %                                # Rozdělení vertikálně (vedle sebe)
+Ctrl+b "                                # Rozdělení horizontálně (nad sebou)
+Ctrl+b <šipky>                          # Přepínání mezi panely
+Ctrl+b z                                # Zoom panelu (maximalizace/obnovení)
+Ctrl+b x                                # Zavření panelu
+Ctrl+b o                                # Přechod na další panel
+```
+
+### Scrollování a kopírování
+```bash
+Ctrl+b [                                # Vstup do scroll módu (pohyb šipkami / PgUp/PgDn)
+q                                       # Ukončení scroll módu
+```
+
 ## Systémové informace
 
 ```bash
