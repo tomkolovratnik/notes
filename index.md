@@ -25,6 +25,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [CLI nástroje](cli-tools.md) - fzf, ripgrep, fd, bat, jq, yq, delta, zoxide, lazygit, tmux a další
 - [Linux / Bash](linux.md) - Příkazy, aktualizace systému (Ubuntu), užitečné skripty
 - [PowerShell](powershell.md) - Windows příkazy a skripty
+- [JSON logy](logs.md) - Filtrování, obarvení a analýza JSON Lines logů (jq, humanlog, lnav)
 
 ## Vývojové nástroje
 
