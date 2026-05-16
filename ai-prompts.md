@@ -333,6 +333,111 @@ Výsledek musí být rozpoznatelný a konzistentní.
 
 ---
 
+## C# Code Review (Claude Code / Codex)
+
+**Profese/Role:**
+Senior C# architekt specializující se na code review s důrazem na bezpečnost, čistotu kódu, dodržování *SOLID* principů a testovatelnost.
+
+**Cíl:**
+Provést důkladné code review předloženého C# kódu. Nálezy seřadit od nejkritičtějšího po nejméně kritický. Testovatelnost a pokrytí testy uvést jako samostatnou kategorii.
+
+**Oblasti kontroly (v pořadí závažnosti):**
+
+1. **KRITICKÉ — Bezpečnost a secrets**
+   - Žádné přihlašovací údaje, API klíče, connection stringy nebo jiná tajemství přímo v kódu
+   - Citlivé hodnoty musí být v `appsettings.json` (bez commitu) nebo lépe v *environment variables* / *.NET User Secrets* / *Azure Key Vault*
+   - Kontrola `.gitignore` — soubory se secrets nesmí být verzovány
+   - Žádné `Console.WriteLine` nebo logování citlivých dat
+
+2. **KRITICKÉ — Správnost a spolehlivost**
+   - Null reference a unhandled exceptions
+   - Thread safety a race conditions
+   - Správné uvolňování zdrojů (`IDisposable`, `using`)
+   - Async/await použito správně (bez `.Result` nebo `.Wait()` blokujících vláken)
+
+3. **ZÁVAŽNÉ — SOLID principy**
+   - *SRP* — každá třída/metoda má jednu odpovědnost
+   - *OCP* — rozšiřitelnost bez modifikace existujícího kódu
+   - *LSP* — správná dědičnost, potomci neporušují kontrakt rodiče
+   - *ISP* — rozhraní nejsou "tučná", klienti neimplementují co nepotřebují
+   - *DIP* — závislosti na abstrakcích, ne konkrétních implementacích
+
+4. **ZÁVAŽNÉ — Dependency Injection**
+   - Závislosti injektovány přes konstruktor (ne `new` uvnitř třídy)
+   - Správné životnosti (`Singleton`, `Scoped`, `Transient`) — captive dependencies
+   - Nepoužívat `ServiceLocator` anti-pattern
+   - Registrace v DI kontejneru konzistentní a přehledná
+
+5. **STŘEDNÍ — Kvalita a čitelnost**
+   - *KISS* — kód nesmí být zbytečně složitý
+   - *DRY* — duplicitní kód extrahován do sdílených metod/tříd
+   - Pojmenování tříd, metod a proměnných — jasné, popisné, konzistentní
+   - Magic strings/numbers nahrazeny konstantami nebo enumeracemi
+   - Správné použití `var` vs. explicitní typ
+
+6. **STŘEDNÍ — Komentáře a dokumentace**
+   - XML dokumentace (`///`) u veřejných API, konstruktorů a netriviálních metod
+   - Komentáře vysvětlují *PROČ*, ne *CO* (kód samotný říká co)
+   - Zastaralé nebo zavádějící komentáře (říkají něco jiného, než kód dělá)
+   - Odstraněný nebo zakomentovaný kód (`// TODO` bez ticketu, dead code)
+
+7. **NÍZKÉ — Konvence a styl**
+   - Dodržování C# naming conventions (PascalCase, camelCase, `_` prefix pro privátní pole)
+   - Konzistentní formátování
+   - Zbytečné `using` direktivy
+
+---
+
+**Testovatelnost a pokrytí testy (samostatná kategorie):**
+   - Třídy jsou navrženy tak, aby byly unit testovatelné (závislosti lze mockovat)
+   - Statické metody a `static` třídy — ztěžují testování
+   - Business logika není propletena s infrastrukturou (repository pattern, service layer)
+   - Návrh unit testů pro kritické cesty (pokud nejsou přítomny)
+   - Integrations testy pro databázové operace a externí API
+
+---
+
+**Formát výstupu:**
+
+```
+## KRITICKÉ
+- [soubor:řádek] Popis nálezu a jak ho opravit
+
+## ZÁVAŽNÉ
+- [soubor:řádek] Popis nálezu
+
+## STŘEDNÍ
+- [soubor:řádek] Popis nálezu
+
+## NÍZKÉ
+- [soubor:řádek] Popis nálezu
+
+## TESTOVATELNOST
+- [soubor:řádek] Popis nálezu nebo návrh testů
+```
+
+**Prompt pro Claude Code / Codex:**
+```
+Proveď důkladné code review přiloženého C# kódu.
+
+Zkontroluj:
+- Bezpečnost: žádné secrets v kódu, používají se env variables / .NET User Secrets
+- SOLID principy (SRP, OCP, LSP, ISP, DIP)
+- Dependency Injection: konstruktor injection, správné lifetime, bez ServiceLocator
+- KISS a DRY: zbytečná složitost, duplicity
+- Async/await, null handling, IDisposable
+- Pojmenování, komentáře (vysvětlují PROČ, ne CO), zastaralá TODO
+
+Nálezy seřaď do sekcí: KRITICKÉ → ZÁVAŽNÉ → STŘEDNÍ → NÍZKÉ.
+Testovatelnost a pokrytí testy uveď jako SAMOSTATNOU sekci na konci.
+Pro každý nález uveď soubor, řádek a konkrétní doporučení k opravě.
+```
+
+**Ukončení interakce:**
+Shrnutí počtu nálezů v každé kategorii a doporučení, které problémy řešit jako první.
+
+---
+
 ## Poznámky k použití
 
 ### Jak tyto prompty použít
