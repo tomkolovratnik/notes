@@ -438,6 +438,86 @@ Shrnutí počtu nálezů v každé kategorii a doporučení, které problémy ř
 
 ---
 
+## C# Project Status Snapshot (Mezi vývojovými fázemi)
+
+**Profese/Role:**
+Technický analytik a architect, který prozkoumá C# projekt a vytvoří strukturované shrnutí jeho stavu — jako podklad pro plánování další vývojové etapy.
+
+**Cíl:**
+Projít zdrojový kód, konfiguraci, testy a dokumentaci projektu. Odpovědět na otázky: *Co projekt dělá? Co je hotové? Co chybí? Na co si dát pozor?* Výstup slouží jako vstup pro plánování sprintu nebo etapy.
+
+**Co analyzovat:**
+- Struktura projektu (vrstvy, moduly, solution structure)
+- Implementované funkčnosti a business logika
+- Stav integrace externích systémů (DB, API, messaging)
+- Technický dluh a nedokončené části
+- Pokrytí testy
+- Konfigurace a nasazení (CI/CD, secrets, prostředí)
+
+**Formát výstupu:**
+
+```
+## 1. Co projekt dělá
+Stručný popis účelu a business kontextu (2–5 vět).
+Klíčové domény a entity.
+
+## 2. Architektura a struktura
+- Architektonický vzor (Clean Architecture, MVC, CQRS, ...)
+- Projekty v solution a jejich zodpovědnosti
+- Klíčové závislosti a technologie (EF Core, MediatR, ...)
+
+## 3. Co je hotové
+- [Funkčnost] — stručný popis
+- [Funkčnost] — stručný popis
+
+## 4. Nedokončené nebo rozepsané části
+- [Část] — co chybí / v jakém stavu to je
+- [Část] — co chybí / v jakém stavu to je
+
+## 5. Technický dluh a rizika
+- [Problém] — dopad a doporučení
+- [Problém] — dopad a doporučení
+
+## 6. Stav testů
+- Unit testy: [pokryto / nepokryto / částečně]
+- Integrační testy: [pokryto / nepokryto / částečně]
+- Klíčové oblasti bez testů: ...
+
+## 7. Konfigurace a prostředí
+- Jak se konfiguruje (appsettings, env, secrets)
+- Existující prostředí (dev, staging, prod)
+- Stav CI/CD pipeline
+
+## 8. Doporučení pro další etapu
+- Co dokončit jako první (co blokuje ostatní)
+- Co refaktorovat před rozšiřováním
+- Co sledovat / monitorovat
+```
+
+**Prompt pro Claude Code / Codex:**
+```
+Projdi celý projekt a vytvoř Project Status Snapshot — strukturované shrnutí,
+které mi poslouží jako podklad pro plánování další vývojové etapy.
+
+Zaměř se na:
+1. Co projekt dělá (business kontext, klíčové domény)
+2. Architektura a struktura solution
+3. Co je plně implementováno
+4. Co je nedokončené nebo rozepsané (half-done features, TODO, stub metody)
+5. Technický dluh a rizika (anti-patterns, porušení SOLID, chybějící error handling)
+6. Stav testů (co je pokryto, co chybí)
+7. Konfigurace a prostředí (appsettings, secrets, CI/CD)
+8. Doporučení — co řešit jako první v další etapě
+
+Výstup formátuj do sekcí 1–8. Buď konkrétní — uváděj názvy tříd, projektů
+a souborů. Vyhni se obecným frázím bez vazby na kód.
+```
+
+**Ukončení interakce:**
+Snapshot uložit do souboru `PROJECT-STATUS.md` (nebo vypsat do konzole). Přidat datum vytvoření a verzi/branch.
+
+---
+
 ## Poznámky k použití
 
 ### Jak tyto prompty použít
