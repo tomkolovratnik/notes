@@ -136,9 +136,12 @@ tmux new -s <name>                      # Spuštění nové session s názvem
 tmux new-session -A -s <name>           # Připojení k session, pokud existuje; jinak ji vytvoří
 tmux ls                                 # Výpis všech sessions
 tmux attach -t <name>                   # Připojení k session podle názvu
+tmux a -t <name>                        # Zkrácené připojení k session podle názvu
 tmux a                                  # Zkrácené připojení k poslední session
 tmux attach -t 0                        # Připojení k první session
+tmux rename-session -t <old> <new>      # Přejmenování session
 tmux kill-session -t <name>             # Ukončení session
+tmux kill-server                        # Ukončení všech sessions a tmux serveru
 ```
 
 ### Vzdálené připojení k session
