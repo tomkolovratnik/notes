@@ -135,8 +135,18 @@ tmux                                    # Spuštění nové session
 tmux new -s <name>                      # Spuštění nové session s názvem
 tmux ls                                 # Výpis všech sessions
 tmux attach -t <name>                   # Připojení k session podle názvu
+tmux a                                  # Zkrácené připojení k poslední session
 tmux attach -t 0                        # Připojení k první session
 tmux kill-session -t <name>             # Ukončení session
+```
+
+### Vzdálené připojení k session
+```bash
+# Připojení přes mosh (preferováno – odolné vůči výpadkům spojení)
+mosh <user>@<host> -- tmux attach -t <name>
+
+# Fallback přes SSH (pokud mosh UDP neprojde)
+ssh -t <user>@<host> tmux attach -t <name>
 ```
 
 ### Klávesové zkratky (prefix = Ctrl+b)
