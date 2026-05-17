@@ -133,6 +133,7 @@ sudo apt install tmux                   # Instalace tmux
 ```bash
 tmux                                    # Spuštění nové session
 tmux new -s <name>                      # Spuštění nové session s názvem
+tmux new-session -A -s <name>           # Připojení k session, pokud existuje; jinak ji vytvoří
 tmux ls                                 # Výpis všech sessions
 tmux attach -t <name>                   # Připojení k session podle názvu
 tmux a                                  # Zkrácené připojení k poslední session
