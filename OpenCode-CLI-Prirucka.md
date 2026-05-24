@@ -32,19 +32,20 @@
 16. [LSP integrace](#16-lsp-integrace)
 17. [MCP servery](#17-mcp-servery)
 18. [Pluginy](#18-pluginy)
-19. [Sessions a správa relací](#19-sessions-a-správa-relací)
-20. [Sdílení a export](#20-sdílení-a-export)
-21. [Headless server a vzdálené připojení](#21-headless-server-a-vzdálené-připojení)
-22. [GitHub integrace a CI/CD](#22-github-integrace-a-cicd)
-23. [Statistiky a sledování nákladů](#23-statistiky-a-sledování-nákladů)
-24. [Best practices](#24-best-practices)
-25. [Troubleshooting](#25-troubleshooting)
-26. [Příloha A – Kompletní reference CLI flagů](#příloha-a--kompletní-reference-cli-flagů)
-27. [Příloha B – Kompletní reference klíčů `opencode.json`](#příloha-b--kompletní-reference-klíčů-opencodejson)
-28. [Příloha C – Reference environment proměnných](#příloha-c--reference-environment-proměnných)
-29. [Příloha D – OpenCode vs Claude Code vs Codex – srovnání](#příloha-d--opencode-vs-claude-code-vs-codex--srovnání)
-30. [Příloha E – Glossář pojmů](#příloha-e--glossář-pojmů)
-31. [Příloha F – Užitečné zdroje a odkazy](#příloha-f--užitečné-zdroje-a-odkazy)
+19. [Hooky (lifecycle events)](#19-hooky-lifecycle-events)
+20. [Sessions a správa relací](#20-sessions-a-správa-relací)
+21. [Sdílení a export](#21-sdílení-a-export)
+22. [Headless server a vzdálené připojení](#22-headless-server-a-vzdálené-připojení)
+23. [GitHub integrace a CI/CD](#23-github-integrace-a-cicd)
+24. [Statistiky a sledování nákladů](#24-statistiky-a-sledování-nákladů)
+25. [Best practices](#25-best-practices)
+26. [Troubleshooting](#26-troubleshooting)
+27. [Příloha A – Kompletní reference CLI flagů](#příloha-a--kompletní-reference-cli-flagů)
+28. [Příloha B – Kompletní reference klíčů `opencode.json`](#příloha-b--kompletní-reference-klíčů-opencodejson)
+29. [Příloha C – Reference environment proměnných](#příloha-c--reference-environment-proměnných)
+30. [Příloha D – OpenCode vs Claude Code vs Codex – srovnání](#příloha-d--opencode-vs-claude-code-vs-codex--srovnání)
+31. [Příloha E – Glossář pojmů](#příloha-e--glossář-pojmů)
+32. [Příloha F – Užitečné zdroje a odkazy](#příloha-f--užitečné-zdroje-a-odkazy)
 
 ---
 
@@ -1488,7 +1489,166 @@ opencode --pure
 
 ---
 
-## 19. Sessions a správa relací
+## 19. Hooky (lifecycle events)
+
+OpenCode nepodporuje shell-command hooky přímo v konfiguraci jako Claude Code. Hooky jsou realizovány přes **plugin systém** (TypeScript/JavaScript soubor). Při každé lifecycle události OpenCode vyvolá zaregistrované handlery ve všech aktivních pluginech.
+
+### Srovnání s Claude Code
+
+| Aspekt | Claude Code | OpenCode |
+|---|---|---|
+| Konfigurace | `settings.json` – shell příkazy | Plugin (JS/TS soubor) |
+| Nutnost kódování | ❌ ne | ✅ ano (nebo third-party plugin) |
+| Počet event typů | ~5 (PreToolUse, PostToolUse, …) | 25+ |
+| Šablona | jednoduchý JSON | funkce vracející objekt s handlery |
+
+### Dostupné lifecycle události
+
+| Kategorie | Události |
+|---|---|
+| **Nástroje** | `tool.execute.before`, `tool.execute.after` |
+| **Session** | `session.created`, `session.updated`, `session.deleted`, `session.idle`, `session.error`, `session.compacted`, `session.diff`, `session.status` |
+| **Zprávy** | `message.updated`, `message.removed`, `message.part.updated`, `message.part.removed` |
+| **Soubory** | `file.edited`, `file.watcher.updated` |
+| **LSP** | `lsp.updated`, `lsp.client.diagnostics` |
+| **Oprávnění** | `permission.asked`, `permission.replied` |
+| **TUI** | `tui.prompt.append`, `tui.command.execute`, `tui.toast.show` |
+| **Shell** | `shell.env` |
+| **Příkazy** | `command.executed` |
+| **Instalace** | `installation.updated` |
+| **Úkoly** | `todo.updated` |
+| **Server** | `server.connected` |
+| **Experimentální** | `experimental.session.compacting` |
+
+### Vlastní plugin s hooky
+
+Soubor `.opencode/plugins/my-hooks.js`:
+
+```js
+export const MyHooks = async (ctx) => {
+  return {
+    // Spustí se před každým voláním nástroje
+    "tool.execute.before": async (input) => {
+      console.log(`Spouštím nástroj: ${input.tool}`)
+    },
+
+    // Spustí se po dokončení nástroje
+    "tool.execute.after": async (input, output) => {
+      if (output.error) {
+        console.error(`Nástroj ${input.tool} selhal:`, output.error)
+      }
+    },
+
+    // Spustí se, když OpenCode dokončí práci (session je idle)
+    "session.idle": async () => {
+      // Pošli notifikaci, ulož log, spusť post-processing, …
+    },
+
+    // Spustí se po zápisu do souboru
+    "file.edited": async (input) => {
+      console.log(`Upraven soubor: ${input.path}`)
+    }
+  }
+}
+```
+
+Registrace v `opencode.json`:
+
+```json
+{
+  "plugin": [".opencode/plugins/my-hooks.js"]
+}
+```
+
+### Praktické příklady
+
+#### Ochrana citlivých souborů
+
+```js
+export const GuardPlugin = async (ctx) => {
+  return {
+    "tool.execute.before": async (input) => {
+      const chráněné = [".env", "secrets.json", ".pem"]
+      if (chráněné.some(p => input.path?.includes(p))) {
+        throw new Error(`Přístup k ${input.path} je zablokován pluginem`)
+      }
+    }
+  }
+}
+```
+
+#### Logování všech akcí do souboru
+
+```js
+import { appendFileSync } from "fs"
+
+export const AuditPlugin = async (ctx) => {
+  const log = (msg) =>
+    appendFileSync("opencode-audit.log", `${new Date().toISOString()} ${msg}\n`)
+
+  return {
+    "tool.execute.before": async (input) =>
+      log(`BEFORE ${input.tool} ${JSON.stringify(input)}`),
+    "tool.execute.after":  async (input, out) =>
+      log(`AFTER  ${input.tool} ok=${!out.error}`),
+    "file.edited":         async (input) => log(`EDIT   ${input.path}`),
+    "session.created":     async ()       => log("SESSION created"),
+  }
+}
+```
+
+#### Desktop notifikace po dokončení úkolu (Linux/macOS)
+
+```js
+import { spawnSync } from "child_process"
+
+export const NotifyPlugin = async (ctx) => {
+  return {
+    "session.idle": async () => {
+      // Linux
+      spawnSync("notify-send", ["OpenCode", "Úkol dokončen"])
+      // macOS: spawnSync("osascript", ["-e", 'display notification "Hotovo" with title "OpenCode"'])
+    }
+  }
+}
+```
+
+### Shell hooky bez kódování (third-party plugin)
+
+Pokud nechcete psát JavaScript, použijte plugin **[OpenCode-Hooks](https://github.com/KristjanPikhof/OpenCode-Hooks)**, který načítá definice z `hooks.yaml` a spouští shell příkazy – chování podobné Claude Code hookům.
+
+Instalace:
+
+```bash
+opencode plugin KristjanPikhof/opencode-hooks --global
+```
+
+Konfigurace `hooks.yaml` v kořeni projektu:
+
+```yaml
+hooks:
+  # Spustí se před každým bash příkazem – zaloguje vstup
+  - event: tool.execute.before
+    condition: "tool == 'bash'"
+    action: bash
+    command: echo "Spouštím: $TOOL_INPUT"
+
+  # Notifikace po dokončení session (asynchronně – neblokuje)
+  - event: session.idle
+    action: bash
+    command: notify-send "OpenCode" "Úkol dokončen"
+    async: true
+
+  # Blokování nebezpečných příkazů
+  - event: tool.execute.before
+    condition: "tool == 'bash' && input contains 'rm -rf'"
+    action: deny
+    message: "Mazání rm -rf je zablokováno hooks.yaml"
+```
+
+---
+
+## 20. Sessions a správa relací
 
 OpenCode ukládá všechny sessions do SQLite databáze v `~/.local/share/opencode/`.
 
@@ -1540,7 +1700,7 @@ Manuální komprese: `/compact` nebo `<leader>c`.
 
 ---
 
-## 20. Sdílení a export
+## 21. Sdílení a export
 
 ### Sdílení session
 
@@ -1585,7 +1745,7 @@ V TUI lze exportovat konverzaci jako Markdown: `/export` nebo `<leader>x`.
 
 ---
 
-## 21. Headless server a vzdálené připojení
+## 22. Headless server a vzdálené připojení
 
 ### HTTP API server
 
@@ -1635,7 +1795,7 @@ ACP (Agent Client Protocol) komunikuje přes stdin/stdout pomocí nd-JSON. Slou�
 
 ---
 
-## 22. GitHub integrace a CI/CD
+## 23. GitHub integrace a CI/CD
 
 ### GitHub Actions workflow
 
@@ -1699,7 +1859,7 @@ opencode run \
 
 ---
 
-## 23. Statistiky a sledování nákladů
+## 24. Statistiky a sledování nákladů
 
 ```bash
 # Přehled za posledních 30 dní
@@ -1726,7 +1886,7 @@ Výstup zahrnuje:
 
 ---
 
-## 24. Best practices
+## 25. Best practices
 
 ### Správné používání kontextu
 
@@ -1775,7 +1935,7 @@ Výstup zahrnuje:
 
 ---
 
-## 25. Troubleshooting
+## 26. Troubleshooting
 
 ### Základní diagnostika
 
