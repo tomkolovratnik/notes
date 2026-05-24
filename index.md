@@ -8,6 +8,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Claude Code](claude-code.md) - CLI nástroj, tipy, konfigurace MCP serverů
 - [Claude Code CLI – Vyčerpávající příručka](Claude-Code-CLI-Prirucka.md) - Kompletní průvodce: CLI parametry, slash příkazy, settings.json, hooks, subagenti, skills, MCP, plugins
 - [OpenAI Codex CLI – Vyčerpávající příručka](OpenAI-Codex-CLI-Prirucka.md) - Kompletní průvodce: subcommandy, config.toml, profily, sandbox, AGENTS.md, hooks, MCP, plugins, CI/CD
+- [OpenCode CLI – Vyčerpávající příručka](OpenCode-CLI-Prirucka.md) - Kompletní průvodce: 75+ providerů, opencode.json, TUI, agenti, slash příkazy, klávesové zkratky, MCP, LSP, pluginy, CI/CD
 - [Claude Code Skills](claude-code-skills-pruvodce.md) - Skills a Subagents pro .NET vývojáře, progresivní disclosure
 - [AI Factory s Claude Code](ai-factory-claude-code-cz.md) - Multi-agent orchestrace, hooks, headless mode, .NET orchestrátor
 - [Hybridní agenti](hybrid-agents-guide.md) - Kombinace Claude Code a Codex CLI, Claude Squad
