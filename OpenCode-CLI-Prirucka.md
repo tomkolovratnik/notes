@@ -2273,3 +2273,4 @@ opencode --pure
 - [JSON Schema TUI](https://opencode.ai/tui.json) – pro validaci `tui.json`
 - [Providers / Models.dev](https://models.dev/) – seznam všech dostupných providerů a modelů
 - [MCP ekosystém](https://modelcontextprotocol.io/) – seznam dostupných MCP serverů
+- [OpenCode-Hooks](https://github.com/KristjanPikhof/OpenCode-Hooks) – plugin pro YAML-based shell hooky (alternativa k JS pluginům)
