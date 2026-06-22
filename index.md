@@ -48,6 +48,10 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 
 - [Windows](windows.md) - Virtuální plochy, zkratky, správa oken
 
+## Finance
+
+- [Finanční příručka](finance.md) - Slovníček pojmů z burzy a investování: ETF, settle date, oceňování portfolia, poplatky, daně
+
 ---
 
 ## Poznámky
