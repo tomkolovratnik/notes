@@ -25,6 +25,16 @@ psané srozumitelně pro postupné dostávání se do obrazu.
 
 ## Základní pojmy
 
+### Cenný papír (Security)
+Zastřešující pojem pro obchodovatelné finanční aktivum, které má hodnotu a dá se
+koupit/prodat. „Security" je nadřazený pojem – akcie, dluhopisy, ETF i deriváty jsou
+všechno cenné papíry (securities).
+- **Majetkové (equity)** – představují vlastnický podíl, typicky akcie.
+- **Dluhové (debt)** – představují půjčku, typicky dluhopisy.
+- **Derivátové** – hodnota odvozená od jiného aktiva (opce, futures).
+- Pozor na záměnu: v angličtině má slovo „security" i druhý význam – *zabezpečení*.
+  Ve finančním kontextu jde ale o **cenný papír**.
+
 ### Akcie (Stock / Share)
 Podíl na vlastnictví firmy. Když koupíš akcii, vlastníš malou část společnosti.
 - **Cena akcie** se mění podle nabídky a poptávky na burze.
