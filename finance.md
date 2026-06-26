@@ -101,6 +101,17 @@ Den, kdy se obchod skutečně fyzicky dokončí – peníze a cenné papíry zm�
 - Standard je dnes **T+1** (vypořádání jeden pracovní den po obchodu), dříve T+2.
 - Praktický dopad: peníze z prodeje můžeš mít „blokované" do data vypořádání.
 
+### Settlement (vypořádání)
+Samotný proces, při kterém se obchod fyzicky dokončí – kupující dostane cenné papíry
+a prodávající peníze. Zatímco **settle date** je *den*, kdy k tomu dojde, **settlement**
+je *samotná výměna* (vlastní vypořádání obchodu).
+- Probíhá na pozadí přes clearingové a depozitní instituce – jako investor to řešit
+  nemusíš, broker to zajistí automaticky.
+- Než settlement proběhne, obchod je sice uzavřený (na trade date), ale aktivum/peníze
+  ještě nejsou definitivně převedené.
+- **Praktický dopad:** po prodeji nemusí být peníze hned plně k dispozici k výběru –
+  uvolní se až po dokončení vypořádání (např. u T+1 jeden pracovní den po obchodu).
+
 ### Bid / Ask (nákupní / prodejní cena)
 - **Bid** – nejvyšší cena, kterou je někdo ochoten zaplatit (za kterou prodáš).
 - **Ask** (Offer) – nejnižší cena, za kterou je někdo ochoten prodat (za kterou koupíš).
