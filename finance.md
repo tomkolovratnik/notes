@@ -112,6 +112,18 @@ je *samotná výměna* (vlastní vypořádání obchodu).
 - **Praktický dopad:** po prodeji nemusí být peníze hned plně k dispozici k výběru –
   uvolní se až po dokončení vypořádání (např. u T+1 jeden pracovní den po obchodu).
 
+### Clearing (zúčtování)
+Mezikrok mezi uzavřením obchodu a jeho vypořádáním (settlement). Clearingová instituce
+spočítá, kdo komu co dluží – kolik cenných papírů a peněz si mají strany vzájemně
+převést – a zajistí, že obě strany svůj závazek splní.
+- **Clearingová instituce (clearinghouse)** stojí mezi kupujícím a prodávajícím a
+  garantuje obchod – snižuje riziko, že jedna strana nedodá (tzv. protistranní riziko).
+- Typicky probíhá **netting** – vzájemné započtení obchodů, takže se nepřevádí každý
+  obchod zvlášť, ale jen výsledný rozdíl.
+- **Posloupnost:** obchod (trade) → clearing (zúčtování) → settlement (vypořádání).
+- Jako investor s tím nepřijdeš do styku – běží na pozadí, zajišťuje ho broker
+  a clearingová instituce.
+
 ### Bid / Ask (nákupní / prodejní cena)
 - **Bid** – nejvyšší cena, kterou je někdo ochoten zaplatit (za kterou prodáš).
 - **Ask** (Offer) – nejnižší cena, za kterou je někdo ochoten prodat (za kterou koupíš).
