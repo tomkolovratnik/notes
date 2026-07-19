@@ -101,6 +101,112 @@ Model Context Protocol (MCP) servery rozšiřují Claude Code o dodatečné nás
 
 **Konfigurace:** Edituj `.claude/config.json` nebo globální konfiguracemi.
 
+## Architecture Decision Records (ADR)
+
+### Co je ADR
+
+ADR (Architecture Decision Record) je krátký strukturovaný dokument, který zaznamenává jedno konkrétní architektonické rozhodnutí – kontext problému, samotné rozhodnutí, zvažované alternativy a jeho důsledky. Záznamy se verzují spolu s kódem (typicky v `docs/adr/`) a číslují se postupně (0001, 0002, ...).
+
+### Proč je důležitý pro vibecoding a kódování s AI agenty
+
+- AI agent nemá paměť napříč konverzacemi/session – bez ADR opakovaně "znovuobjevuje" již jednou padlá rozhodnutí, nebo je nevědomky ruší v jiné konverzaci.
+- Vibecoding = rychlé iterativní generování kódu s menším lidským dohledem nad detaily → hrozí, že se architektura "rozjede" různými směry podle toho, jak agent zrovna interpretuje zadání.
+- ADR funguje jako dlouhodobá paměť projektu čitelná lidmi i agentem – před návrhem řešení si agent může přečíst historii rozhodnutí a nenavrhovat něco, co bylo záměrně zavrženo.
+- Umožňuje více agentům / paralelním subagentům pracovat konzistentně na stejném projektu – všichni čerpají ze stejného zdroje pravdy.
+- Usnadňuje code review vygenerovaného kódu – reviewer (člověk i agent) vidí *proč* bylo něco navrženo právě takto.
+
+### Struktura – formát MADR
+
+MADR (Markdown Architectural Decision Records) je dnes nejrozšířenější lehký formát ADR. Šablona:
+
+```markdown
+# <Číslo>. <Krátký název rozhodnutí>
+
+## Status
+Navrženo | Přijato | Zamítnuto | Nahrazeno ADR-00XX | Zastaralé
+
+## Kontext
+Jaký problém řešíme? Jaká jsou omezení (technická, obchodní, časová)?
+
+## Rozhodnutí
+Co jsme se rozhodli udělat a proč – hlavní zdůvodnění.
+
+## Zvažované alternativy
+- **Alternativa A** – popis, proč byla zamítnuta
+- **Alternativa B** – popis, proč byla zamítnuta
+
+## Důsledky
+### Pozitivní
+- ...
+### Negativní / rizika
+- ...
+
+## Odkazy
+- Související ADR, dokumentace, PR
+```
+
+### Kde a jak ADR ukládat
+
+```
+docs/
+└── adr/
+    ├── 0001-pouzit-postgresql-jako-hlavni-databazi.md
+    ├── 0002-autentizace-pres-jwt.md
+    └── 0003-monorepo-misto-multi-repo.md
+```
+
+- Soubory se číslují vzestupně, název obsahuje krátký slug rozhodnutí.
+- ADR se zpětně nemění – pokud se rozhodnutí zruší, vytvoří se nové ADR se statusem "Nahrazuje ADR-000X" a staré se označí jako "Zastaralé/Nahrazeno".
+- Volitelně lze použít `adr-tools` (sada Bash skriptů od M. Nygarda) pro generování a číslování:
+
+```bash
+adr init docs/adr                                  # inicializace ADR adresáře v repu
+adr new "Použít PostgreSQL jako hlavní databázi"    # vytvoří nové číslované ADR ze šablony
+adr new -s 5 "Nahradit REST API GraphQL"            # nové ADR, které nahrazuje (supersedes) ADR-0005
+```
+
+### Integrace do CLAUDE.md / AGENTS.md
+
+Aby agent ADR skutečně respektoval a sám je navrhoval, je potřeba mu to explicitně napsat do instrukcí (`CLAUDE.md` pro Claude Code, `AGENTS.md` jako obecný standard napříč nástroji). Ukázka sekce ke zkopírování:
+
+```markdown
+## Architecture Decision Records (ADR)
+
+Tento projekt používá ADR pro dokumentaci architektonických rozhodnutí v `docs/adr/`.
+
+### Před návrhem řešení
+- VŽDY si nejprve přečti existující ADR v `docs/adr/`, pokud se úkol týká
+  architektury, výběru knihovny, datového modelu nebo cross-cutting změny.
+- Neprosazuj řešení, které je v rozporu s platným (Přijatým) ADR, aniž bys
+  na to explicitně upozornil uživatele.
+
+### Kdy navrhnout nové ADR
+Navrhni nové ADR (a počkej na schválení uživatelem), pokud úkol zahrnuje:
+- výběr nové knihovny/frameworku/databáze,
+- změnu veřejného API nebo datového schématu,
+- zásadní změnu struktury projektu nebo deployment procesu,
+- rozhodnutí, které bude těžké později vrátit zpět.
+
+### Jak ADR vytvořit
+- Použij šablonu v `docs/adr/template.md` (formát MADR).
+- Číslo ADR = poslední použité číslo + 1.
+- Status nového ADR je vždy "Navrženo", dokud ho uživatel neschválí.
+- Pokud ADR nahrazuje starší rozhodnutí, uveď to v sekci Status obou souborů.
+```
+
+### Praktický workflow s agentem
+
+1. Uživatel zadá úkol s architektonickým dopadem (např. "přejdi z REST na GraphQL").
+2. Agent si přečte `docs/adr/` a instrukce v `CLAUDE.md`/`AGENTS.md`.
+3. Agent navrhne ADR se statusem "Navrženo" a stručně shrne alternativy a důsledky.
+4. Uživatel ADR schválí nebo upraví → status se změní na "Přijato".
+5. Agent teprve poté implementuje kód podle přijatého rozhodnutí.
+6. Commit obsahuje jak nové/aktualizované ADR, tak související kódové změny.
+
+### Viz také
+- MADR šablony a nástroje: https://adr.github.io/
+- adr-tools: https://github.com/npryce/adr-tools
+
 ## Codex
 
 GitHub Copilot a OpenAI Codex jsou AI-powered code completion systémy zaměřené na doplňování kódu v editoru.
@@ -218,4 +324,4 @@ function getUsersOrderedByRegistrationDate(userId) {
 
 ---
 
-**Poslední aktualizace:** 2025-11-07
+**Poslední aktualizace:** 2026-07-19
