@@ -21,12 +21,16 @@ mv <source> <dest>              # Přesun/přejmenování souboru
 rm <file>                       # Smazání souboru
 mkdir <dir>                     # Vytvoření adresáře
 touch <file>                    # Vytvoření prázdného souboru
+ln -s <target> <link>           # Vytvoření symbolického odkazu
 
 # Obsah
 cat <file>                      # Zobrazení obsahu souboru
 head <file>                     # Zobrazení prvních řádků
 tail <file>                     # Zobrazení posledních řádků
 grep <pattern> <file>           # Vyhledání textu v souboru
+wc -l <file>                    # Počet řádků v souboru
+sort <file>                     # Seřazení řádků
+uniq <file>                     # Odstranění duplicitních (sousedních) řádků
 
 # Oprávnění
 chmod +x <file>                 # Přidání práva spuštění
@@ -120,6 +124,54 @@ killall <name>                  # Ukončit všechny procesy daného jména
 
 # Diskový prostor (human-readable)
 df -h
+
+# Historie příkazů
+history                         # Zobrazení historie zadaných příkazů
+
+# Plánované úlohy (cron)
+crontab -e                      # Úprava plánovaných úloh aktuálního uživatele
+crontab -l                      # Výpis plánovaných úloh aktuálního uživatele
+```
+
+## Síť
+
+```bash
+ping <host>                     # Test dostupnosti hostitele
+curl <url>                      # Stažení/otestování obsahu z URL
+wget <url>                      # Stažení souboru z URL
+ss -tulpn                       # Výpis naslouchajících portů a procesů
+scp <source> <user>@<host>:<dest>  # Kopírování souboru přes SSH
+```
+
+## Archivy
+
+```bash
+tar -czvf archiv.tar.gz <dir>   # Vytvoření komprimovaného archivu (gzip)
+tar -xzvf archiv.tar.gz         # Rozbalení komprimovaného archivu
+zip -r archiv.zip <dir>         # Vytvoření zip archivu
+unzip archiv.zip                # Rozbalení zip archivu
+```
+
+## Systemd služby
+
+```bash
+sudo systemctl status <service>    # Stav služby
+sudo systemctl start <service>     # Spuštění služby
+sudo systemctl stop <service>      # Zastavení služby
+sudo systemctl restart <service>   # Restart služby
+sudo systemctl enable <service>    # Povolení automatického spuštění při startu
+sudo systemctl disable <service>   # Zakázání automatického spuštění při startu
+journalctl -u <service>            # Zobrazení logů dané služby
+```
+
+## Uživatelé a oprávnění
+
+```bash
+whoami                          # Aktuálně přihlášený uživatel
+id                               # Informace o UID/GID a skupinách uživatele
+sudo su -                       # Přepnutí na root uživatele
+passwd                          # Změna hesla aktuálního uživatele
+sudo adduser <user>             # Vytvoření nového uživatele
 ```
 
 ## tmux
@@ -204,4 +256,22 @@ htop                            # Interaktivní monitor (vyžaduje instalaci)
 # Síťové rozhraní
 ip addr                         # Moderní příkaz pro IP adresy
 ifconfig                        # Starší příkaz (může vyžadovat instalaci)
+```
+
+## Vypnutí a restart
+
+```bash
+# Restart
+sudo reboot                    # Okamžitý restart systému
+sudo shutdown -r now           # Okamžitý restart (alternativa)
+sudo shutdown -r +10           # Restart za 10 minut
+sudo shutdown -r "22:00"       # Naplánovaný restart v konkrétní čas
+
+# Vypnutí
+sudo shutdown -h now           # Okamžité vypnutí systému
+sudo poweroff                  # Okamžité vypnutí (alternativa)
+sudo shutdown -h +10           # Vypnutí za 10 minut
+
+# Ostatní
+sudo shutdown -c               # Zrušení naplánovaného vypnutí/restartu
 ```
