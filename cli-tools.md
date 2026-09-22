@@ -32,6 +32,7 @@ Moderní příkazové nástroje pro produktivnější práci v terminálu.
 | [ncdu](#ncdu---disk-usage-analyzer) | Interaktivní analýza místa na disku | du | ✅ |
 | [htop/btop](#htopbtop---system-monitoring) | Interaktivní monitoring systému | top | ⚠️ WSL |
 | [oh-my-posh](#oh-my-posh---moderní-prompt) | Moderní prompt pro shell | PS1 | ✅ |
+| [pandoc](#pandoc---převod-dokumentů-markdown--docxpdfhtml) | Převod Markdown → DOCX/PDF/HTML a dalších formátů | - | ✅ |
 
 ---
 
@@ -1970,6 +1971,161 @@ eval "$(oh-my-posh init bash --config $(oh-my-posh get themes --list | head -1))
 | Rychlost | Rychlý | Rychlejší |
 | Windows | Nativní, PowerShell integrace | Nativní |
 | Dokumentace | Dobrá | Výborná |
+
+---
+
+## pandoc - Převod dokumentů (Markdown → DOCX/PDF/HTML)
+
+Univerzální převodník dokumentů. Převádí Markdown na DOCX, PDF, HTML, EPUB, ODT a mnoho dalších formátů (i zpět).
+
+### Instalace
+
+```bash
+# Windows (Scoop)
+scoop install pandoc
+
+# Windows (winget)
+winget install JohnMacFarlane.Pandoc
+
+# Ubuntu
+sudo apt install pandoc
+
+# macOS
+brew install pandoc
+
+# Ověření instalace
+pandoc --version
+```
+
+> **Poznámka:** Pro export do PDF potřebuje pandoc externí PDF engine (viz níže). Pro DOCX a HTML žádné další závislosti nejsou potřeba.
+
+### Základní převod
+
+```bash
+# Markdown → DOCX (Word)
+pandoc soubor.md -o soubor.docx
+
+# Markdown → HTML (samostatný soubor včetně CSS)
+pandoc soubor.md -s -o soubor.html               # -s = standalone (kompletní HTML dokument s hlavičkou)
+
+# Markdown → PDF (vyžaduje PDF engine)
+pandoc soubor.md -o soubor.pdf
+
+# Markdown → EPUB / ODT
+pandoc soubor.md -o soubor.epub
+pandoc soubor.md -o soubor.odt
+
+# Explicitní formáty (když přípona nestačí)
+pandoc -f markdown -t docx soubor.md -o soubor.docx   # -f = vstupní formát, -t = výstupní formát
+
+# Zpětný převod DOCX → Markdown
+pandoc soubor.docx -o soubor.md
+pandoc soubor.docx -t gfm -o soubor.md           # gfm = GitHub Flavored Markdown
+```
+
+### Export do PDF
+
+Pandoc PDF nevytváří sám, ale přes externí engine. Nejjednodušší je `wkhtmltopdf` (přes HTML) nebo `typst`, nejkvalitnější je LaTeX (`xelatex`).
+
+```bash
+# Instalace enginů (Ubuntu)
+sudo apt install wkhtmltopdf                     # HTML → PDF, jednoduchá instalace
+sudo apt install texlive-xetex texlive-fonts-recommended texlive-lang-czech   # LaTeX (velké, ale nejlepší výstup)
+
+# Instalace enginů (Windows - Scoop)
+scoop install wkhtmltopdf
+scoop install typst                              # Moderní lehká alternativa LaTeXu
+
+# Převod přes wkhtmltopdf (renderuje přes HTML)
+pandoc soubor.md -o soubor.pdf --pdf-engine=wkhtmltopdf
+
+# Převod přes typst
+pandoc soubor.md -o soubor.pdf --pdf-engine=typst
+
+# Převod přes LaTeX (xelatex = podpora Unicode a českých znaků)
+pandoc soubor.md -o soubor.pdf --pdf-engine=xelatex
+
+# LaTeX - nastavení okrajů, fontu a velikosti písma
+# -V = proměnná šablony: geometry (okraje), mainfont (font s českou diakritikou),
+#      fontsize (velikost písma), lang (dělení slov a lokalizace pro češtinu)
+pandoc soubor.md -o soubor.pdf --pdf-engine=xelatex \
+  -V geometry:margin=2cm \
+  -V mainfont="DejaVu Sans" \
+  -V fontsize=11pt \
+  -V lang=cs
+```
+
+### Užitečné volby
+
+```bash
+# Obsah (table of contents)
+pandoc soubor.md -o soubor.docx --toc            # Vygeneruje obsah z nadpisů
+pandoc soubor.md -o soubor.pdf --toc --toc-depth=2   # Obsah jen do úrovně H2
+
+# Číslování nadpisů
+pandoc soubor.md -o soubor.pdf -N                # -N = číslované sekce
+
+# Zvýraznění syntaxe v code blocích
+pandoc soubor.md -o soubor.html -s --highlight-style=tango   # Styly: pygments, tango, kate, monochrome, zenburn...
+pandoc --list-highlight-styles                   # Seznam dostupných stylů
+
+# Metadata dokumentu (titulek, autor, datum)
+pandoc soubor.md -o soubor.docx -M title="Název" -M author="Jméno" -M date="2026-09-22"
+
+# Vlastní CSS pro HTML
+pandoc soubor.md -s -o soubor.html --css=styl.css
+
+# Spojení více souborů do jednoho dokumentu
+pandoc kapitola1.md kapitola2.md kapitola3.md -o kniha.docx
+
+# Cesta k obrázkům (relativní cesty v md)
+pandoc soubor.md -o soubor.docx --resource-path=./obrazky
+```
+
+### DOCX s vlastní šablonou stylů
+
+Vzhled Word dokumentu (fonty, barvy nadpisů, okraje) se řídí referenčním DOCX souborem.
+
+```bash
+# 1. Vygenerování výchozí šablony
+pandoc -o reference.docx --print-default-data-file reference.docx
+
+# 2. Otevři reference.docx ve Wordu a uprav styly (Normal, Heading 1, Heading 2, Code...)
+#    Obsah souboru je nepodstatný, pandoc přebírá jen definice stylů.
+
+# 3. Převod s vlastní šablonou
+pandoc soubor.md -o soubor.docx --reference-doc=reference.docx
+```
+
+### Hromadný převod
+
+```bash
+# Všechny .md soubory v adresáři → DOCX
+for f in *.md; do
+  pandoc "$f" -o "${f%.md}.docx"                 # ${f%.md} = název bez přípony
+done
+
+# Všechny .md → PDF s jednotným nastavením
+for f in *.md; do
+  pandoc "$f" -o "${f%.md}.pdf" --pdf-engine=xelatex -V geometry:margin=2cm -V lang=cs
+done
+```
+
+### Formáty
+
+```bash
+# Seznam podporovaných vstupních / výstupních formátů
+pandoc --list-input-formats
+pandoc --list-output-formats
+```
+
+| Vstup | Výstup | Poznámka |
+|-------|--------|----------|
+| `markdown`, `gfm` | `docx` | Word, funguje bez závislostí |
+| `markdown`, `gfm` | `pdf` | Vyžaduje PDF engine (xelatex, wkhtmltopdf, typst) |
+| `markdown`, `gfm` | `html` | S `-s` vznikne samostatný HTML soubor |
+| `markdown`, `gfm` | `epub`, `odt`, `rtf`, `pptx` | E-kniha, LibreOffice, RTF, PowerPoint |
+| `docx`, `html`, `latex` | `markdown` | Zpětný převod do Markdownu |
 
 ---
 

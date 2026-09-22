@@ -25,7 +25,7 @@ Centrální místo pro ukládání poznámek, návodů, kusů kódu, doporučen�
 - [Git Bash](git-bash.md) - Konfigurace, aliasy, klávesové zkratky, tipy pro maximální produktivitu
 - [Git Bash - Kurz](git-bash-kurz.md) - Praktický kurz od základů po pokročilé techniky (9 lekcí)
 - [Bash Scripting](bash-scripting.md) - Proměnné, podmínky, smyčky, funkce, error handling, debugging
-- [CLI nástroje](cli-tools.md) - fzf, ripgrep, fd, bat, jq, yq, delta, zoxide, lazygit, tmux a další
+- [CLI nástroje](cli-tools.md) - fzf, ripgrep, fd, bat, jq, yq, delta, zoxide, lazygit, tmux, pandoc a další
 - [Linux / Bash](linux.md) - Příkazy, aktualizace systému (Ubuntu), užitečné skripty
 - [PowerShell](powershell.md) - Windows příkazy a skripty
 - [JSON logy](logs.md) - Filtrování, obarvení a analýza JSON Lines logů (jq, humanlog, lnav)
