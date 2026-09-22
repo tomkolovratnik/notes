@@ -2030,7 +2030,7 @@ Pandoc PDF nevytváří sám, ale přes externí engine. Nejjednodušší je `wk
 ```bash
 # Instalace enginů (Ubuntu)
 sudo apt install wkhtmltopdf                     # HTML → PDF, jednoduchá instalace
-sudo apt install texlive-xetex texlive-fonts-recommended texlive-lang-czech   # LaTeX (velké, ale nejlepší výstup)
+sudo apt install texlive-xetex texlive-fonts-recommended texlive-lang-czechslovak   # LaTeX (velké, ale nejlepší výstup)
 
 # Instalace enginů (Windows - Scoop)
 scoop install wkhtmltopdf
